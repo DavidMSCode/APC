@@ -15,6 +15,7 @@ bin/*
 !bin/matrices
 !bin/Test.ipynb
 bin/de440.bsp
+!bin/*.py
 
 #external libraries
 extern/cspice/*
