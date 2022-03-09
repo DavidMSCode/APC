@@ -17,9 +17,6 @@
 #include <errno.h>
 #include <vector>
 
-
-FILE *fID;
-
 int main(){
   //satelltie properties
   double mass = 1000;                               //sat mass (kg)

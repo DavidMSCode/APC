@@ -14,6 +14,13 @@ build
 bin/*
 !bin/matrices
 !bin/Test.ipynb
+bin/de440.bsp
 
 #external libraries
 extern/cspice/*
+
+#documentation builds
+build/
+_build/
+_static/
+_templates/

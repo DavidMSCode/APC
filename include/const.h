@@ -1,6 +1,7 @@
 /* const.h
 AUTHOR:           Robyn Woollands (robyn.woollands@gmail.com)
 DATE WRITTEN:     May 2016
+DATE MODIFIED:    February 2022
 AFFILIATION:      Department of Aerospace Engineering, Texas A & M University, College Station, TX
 DESCRIPTION:      Constants
 */

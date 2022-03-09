@@ -1,3 +1,14 @@
+/**
+ * @file APC.cpp
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2022-03-07
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 /*
 *  AUTHORS:          David Stanley (davidms4@illinois.edu)
 *  DATE WRITTEN:     Feb 2022
@@ -90,6 +101,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   //free(Soln);
   return Solution;
 }
+
 
 class Orbit PropagateOrbit(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body){
   std::vector<std::vector<double> > solution;
