@@ -7,7 +7,7 @@ Welcome to APC's documentation!
 ===============================
 
 **APC** is a C++ and Python library for rapidly propagating the orbits of near Earth objects using a 
-variable fidelity gravity model as well as perturbations from atmnospheric drag, solar radiation pressure and third 
+variable fidelity gravity model as well as perturbations from atmospheric drag, solar radiation pressure and third 
 body gravitation. **This documentation is a work in progress!**
 
 .. toctree::
