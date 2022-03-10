@@ -39,10 +39,7 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="APC.html">APC</a></li>
 </ul>
 
@@ -72,17 +69,67 @@
              
   <section id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h1>
-<section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
-<p>To use APC, first install it using pip in the root directory of the APC source code:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>pip install .
+<p>Instructions for installation and use are a work in progress. Issues may be reported at <a class="reference external" href="https://github.com/DavidMSCode/APC/issues">https://github.com/DavidMSCode/APC/issues</a>.
+Installation from source
+————————
+Clone the APC github repository to your computer. The root of this directory will be referred to as ‘APC.’ Create a directory in ‘APC’ called ‘extern.’ The root folder structure should be similar to:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>APC
+├── CMakeLists.txt
+├── README.txt
+├── UserGuide.docx
+├── UserGuide.pdf
+├── bin
+├── docs_doxygen
+├── docs_sphinx
+├── extern
+├── getspice.py
+├── include
+├── pyproject.toml
+├── setup.py
+├── src
+├── srcMB
+├── srcPy
+└── srcTest
+</pre></div>
+</div>
+<p>Go to <a class="reference external" href="https://naif.jpl.nasa.gov/naif/toolkit_C.html">https://naif.jpl.nasa.gov/naif/toolkit_C.html</a> and download the correct cspice library for your system. The file will be called either “cspice.tar.z” or “cspice.zip”. Extract this file into the ‘APC/extern’ folder. The Folder structure should now look like:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>APC
+├── CMakeLists.txt
+├── README.txt
+├── UserGuide.docx
+├── UserGuide.pdf
+├── bin
+├── docs_doxygen
+├── docs_sphinx
+├── extern
+│   └── cspice
+│       ├── N0067
+│       ├── data
+│       ├── doc
+│       ├── etc
+│       ├── exe
+│       ├── include
+│       ├── lib
+│       ├── makeall.csh
+│       └── src
+├── getspice.py
+├── include
+├── pyproject.toml
+├── setup.py
+├── src
+├── srcMB
+├── srcPy
+└── srcTest
+</pre></div>
+</div>
+<p>Next install APC using pip in the root directory of the APC source code:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="go">APC $ pip install .</span>
 </pre></div>
 </div>
 <p>Then in a python file or notebook import the module:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">APC</span>
 </pre></div>
 </div>
-</section>
 </section>
 
 
