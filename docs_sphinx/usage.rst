@@ -1,6 +1,7 @@
 Usage
 =====
 Instructions for installation and use are a work in progress. Issues may be reported at https://github.com/DavidMSCode/APC/issues.
+
 Installation from source
 ------------------------
 Clone the APC github repository to your computer. The root of this directory will be referred to as 'APC.' Create a directory in 'APC' called 'extern.' The root folder structure should be similar to:
