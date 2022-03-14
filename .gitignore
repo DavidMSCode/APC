@@ -25,3 +25,5 @@ build/
 _build/
 _static/
 _templates/
+
+vc140.pdb

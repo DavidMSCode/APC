@@ -14,7 +14,7 @@
 #include <linktest.h>
 
 void Linktest(){
-    furnsh_c("/Users/davidstanley/Documents/Github/adaptive_picard_chebyshev_C/adaptive_picard_chebyshev_v4/bin/de430.bsp");
+    furnsh_c("de440.bsp");
     nestLinkMethod();
     kclear_c();
     std::cout << "finished linktest\n";

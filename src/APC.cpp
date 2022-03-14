@@ -30,7 +30,6 @@
 #include <APC.h>
 
 std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body){
-  printf("%s",typeid(r).name());
   //Convert vectors to array since pybind wants vectors but the functions are coded for arrays
   Orbit orb(area,reflectance,mass,drag_C, compute_drag, compute_SRP, compute_third_body);
   double* r0 = &r[0];
