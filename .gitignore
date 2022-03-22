@@ -9,6 +9,7 @@
 obj/*
 build/*
 build
+__pycache__
 
 #executables
 bin/*
@@ -27,3 +28,4 @@ _static/
 _templates/
 
 vc140.pdb
+
