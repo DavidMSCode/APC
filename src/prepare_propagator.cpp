@@ -38,6 +38,7 @@
 #include "c_functions.h"
 #include <vector>
 #include <iostream>
+#include "omp.h"
 
 void prepare_propagator(double* r0, double* v0, double t0, double t_final, double dt, double tp, double tol,
   int N, int M, int seg, int* prep_HS, std::vector<double> &t_orig, std::vector<double> &tvec,
@@ -98,24 +99,27 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
   }
 
   // LOAD PRECOMPUTED MATRICES
-  matrix_loader();
-  int idN;
-  idN = (N-10);
+    double* temp1;
+    double* temp2;
+    double* temp3;
+    double* temp4;
+    double* temp5;
+    double* temp6;
+  // #pragma omp critical(matrixloader)
+  // {
+    matrix_loader();
+    int idN;
+    idN = (N-10);
 
-  // Retrive Data from Storage Arrays
-  double* temp1;
-  double* temp2;
-  double* temp3;
-  double* temp4;
-  double* temp5;
-  double* temp6;
-  temp1 = &arr_T2[idN][0];
-  temp2 = &arr_P2[idN][0];
-  temp3 = &arr_T1[idN][0];
-  temp4 = &arr_P1[idN][0];
-  temp5 = &arr_Ta[idN][0];
-  temp6 = &arr_A[idN][0];
+    // Retrive Data from Storage Arrays
 
+    temp1 = &arr_T2[idN][0];
+    temp2 = &arr_P2[idN][0];
+    temp3 = &arr_T1[idN][0];
+    temp4 = &arr_P1[idN][0];
+    temp5 = &arr_Ta[idN][0];
+    temp6 = &arr_A[idN][0];
+  // }
   // BUILD MATRICES
   for (int j=1; j<=M+1; j++){
     for (int k=1; k<=N+1; k++){
@@ -147,5 +151,5 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
       A[ID2(j,k,N-1)] = temp6[ID2(j,k,Nmax+1)];   // Least Squares Operator
     }
   }
-std::cout << "finished loading matrices";
+//std::cout << "finished loading matrices";
 }

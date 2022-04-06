@@ -13,6 +13,17 @@
 
 #include <vector>
 #include <Orbit.h>
+#include <Ephemeris.hpp>
+
+/**
+ * @brief 
+ * 
+ * @param t0 
+ * @param tf 
+ * @return EmphemerisManager 
+ */
+class EphemerisManager cacheEphemeris(double t0, double tf);
+
 /**
  * @brief Returns propagated orbit solution given initial conditions.
  * 
@@ -37,7 +48,7 @@
  * @param compute_third_body Boolean to toggle third body perturbation computation on or off
  * @return std::vector<std::vector<double> > The solutions stored in a vector of vectors {t,x,y,z,u,v,w,H}
  */
-std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_srp, bool compute_third_body);
+std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit orbit, EphemerisManager ephem);
 
 /**
  * @brief Returns propagated orbit solution as an Orbit object given initial conditions.
@@ -59,6 +70,98 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
  * @param compute_third_body Boolean to toggle third body perturbation computation on or off
  * @return Orbit Orbit object that stores the solution and other relevant parameters
  */
-class Orbit PropagateOrbit(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_srp, bool compute_third_body);
+class Orbit PropagateOrbit(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit orbit, EphemerisManager ephem);
 
+/**
+ * @brief Structure containing the position and velocity of some orbit state.
+ * 
+ */
+struct SatState
+{
+    std::vector<double> r;
+    std::vector<double> v;
+};
+
+/**
+ * @brief 
+ * 
+ * @param r 
+ * @param v 
+ * @param pos_error 
+ * @param vel_error 
+ * @return std::vector<SatState> 
+ */
+std::vector<SatState> GenSigma13(std::vector<double> r, std::vector<double> v, double pos_error, double vel_error);
+
+/**
+ * @brief 
+ * 
+ * @param r 
+ * @param v 
+ * @param pos_error 
+ * @param vel_error 
+ * @return std::vector<SatState> 
+ */
+std::vector<SatState> GenSigma3(std::vector<double> r, std::vector<double> v, double pos_error, double vel_error);
+
+/**
+ * @brief 
+ * 
+ * @param sigma13 
+ */
+void printStateList(std::vector<SatState> sigma13);
+
+/**
+ * @brief 
+ * 
+ * @param state 
+ * @param i 
+ */
+void printState(SatState state, int i);
+
+
+/**
+ * @brief 
+ * 
+ * @param r 
+ * @param v 
+ * @param t0 
+ * @param tf 
+ * @param area 
+ * @param reflectance 
+ * @param mass 
+ * @param drag_C 
+ * @param compute_drag 
+ * @param compute_SRP 
+ * @param compute_third_body 
+ * @return std::vector<class Orbit> 
+ */
+std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body);
+
+/**
+ * @brief 
+ * 
+ * @param r 
+ * @param v 
+ * @param t0 
+ * @param tf 
+ * @param area 
+ * @param reflectance 
+ * @param mass 
+ * @param drag_C 
+ * @param compute_drag 
+ * @param compute_SRP 
+ * @param compute_third_body 
+ * @return std::vector<class Orbit> 
+ */
+class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body);
+
+/**
+ * @brief 
+ * 
+ * @param ephem 
+ * @param t0 
+ * @param tf 
+ */
+void MPGetTest(EphemerisManager ephem, double t0, double tf);
 #endif

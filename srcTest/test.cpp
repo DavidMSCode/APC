@@ -1,8 +1,8 @@
 /*
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
-*  LAST MODIFIED:    Aug 2021
-*  AFFILIATION:      Department of Aerospace Engineering, Texas A&M University, College Station, TX
+ * @ Modified by: Your name
+ * @ Modified time: 2022-04-06 13:18:35
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -16,6 +16,10 @@
 #include <time.h>  
 #include <errno.h>
 #include <vector>
+#include <iostream>
+#include <Ephemeris.hpp>
+
+
 
 int main(){
   //satelltie properties
@@ -27,11 +31,18 @@ int main(){
   bool compute_drag = true;                         //atmostpheric drag toggle
   bool compute_SRP = true;                          //Solar radiation pressure toggle
   bool compute_third_body = true;                   //Third body gravity toggle
+  //Ephemeris
+  string spk = "de440.bsp";
+  string lsk = "naif0012.tls";
+  list<string> bodies = {"SUN","MOON"};
+  string center = "Earth";
+  string frame = "J2000";
+
 
   // Initialize Input Variables
   // LEO
   std::vector<double> r0 = {0.0, -8000.0, 0.0};      // Initial Position (km)
-  std::vector<double> v0 = {7.0586826,  0.0, 0.0};   // Initial Velocity (km/s)
+  std::vector<double> v0 = {8,  0.0, 0.0};   // Initial Velocity (km/s)
   double t0    = 0.0;                                // Initial Times (s)
   double tf    = 10*5059.648765;                     // Final Time (s)
   // MEO
@@ -53,8 +64,16 @@ int main(){
   // double r0[3] = {7435.12, 0.0, 0.0};                            // Initial Position (km)
   // double v0[3] = {0.0, 4.299654205302486, 8.586211043023614};    // Initial Velocity (km/s)
   // double t0    = 0.0;                                            // Initial Times (s)
-  // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s)
-  Orbit orb = PropagateOrbit(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
-  //free(Soln);
+  // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s
+  
+  // EphemerisManager ephem(spk,lsk,t0,tf,bodies,center,frame);
+  // MPGetTest(ephem, t0, tf);
+  // std::cout << "Parallel Ephemeris Fetching Test Complete" << std::endl << "================================================" << std::endl;
+  Orbit orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
+  std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;
+  std::vector<SatState> sigma13 = GenSigma13(r0,v0,10,.1);
+  printStateList(sigma13);
+  std::vector<Orbit> orbits = ParallelPropagate(sigma13, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
+  std::cout << "Parallel Propagation Test Complete" << std::endl << "=================" << std::endl;
 
 }

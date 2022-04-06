@@ -1,7 +1,7 @@
 /*
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     June 2016
-*  LAST MODIFIED:    June 2016
+*  LAST MODIFIED:    April 2022
 *  AFFILIATION:      Department of Aerospace Engineering, Texas A&M University, College Station, TX
 *  DESCRIPTION:      Computes gravity using the variable fidelity force approximations
 *
@@ -36,15 +36,15 @@
 #define debug_grav 0
 #define debug_grav_itr 0
 
- void perturbed_gravity(double t, double* Xo, double err, int i, int M, double deg, int hot, double* G, double tol, int* itr, double* Feval){
+ void perturbed_gravity(double t, double* Xo, double err, int i, int M, double deg, int hot, double* G, double tol, int* itr, double* Feval, IterCounters& ITRs, double* del_G){
 
-   double Gapprox[3] = {0.0};
-   static double del_G[3*(Nmax+1)];
-   static int ITR1;
-   static int ITR2;
-   static int ITR3;
-   static int ITR4;
-   static int MODEL;
+  double Gapprox[3] = {0.0};
+  //retrieve iteration counter values
+  int ITR1=ITRs.ITR1;
+  int ITR2=ITRs.ITR2;
+  int ITR3=ITRs.ITR3;
+  int ITR4=ITRs.ITR4;
+  int MODEL=ITRs.MODEL;
    // Initialization
    if (*itr == 0 && hot == 0){
      ITR1     = 0;
@@ -220,6 +220,13 @@
    if (i==M+1){
       *itr = *itr + 1;
    }
+
+//store iteration coutners in struct
+ ITRs.ITR1=ITR1;
+ ITRs.ITR2=ITR2;
+ ITRs.ITR3=ITR3;
+ ITRs.ITR4=ITR4;
+ ITRs.MODEL=MODEL;
  return;
  }
 
