@@ -2,7 +2,7 @@
  * @ Author: Your name
  * @ Create Time: 2022-03-23 17:43:28
  * @ Modified by: Your name
- * @ Modified time: 2022-04-07 01:39:57
+ * @ Modified time: 2022-04-13 14:47:56
  * @ Description:
  */
 
@@ -239,7 +239,6 @@ std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0,
   std::vector<Orbit> orbits;
   //Spawn threads and start parallel for loop
   #pragma omp parallel for shared(orbits, n)
-  {
     for (int i=0;i<n;i++){
       //Thread debug print
       //std::cout<< "Orbit "+to_string(i)+" assigned to thread "+to_string(omp_get_thread_num())+".\n";
@@ -269,7 +268,6 @@ std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0,
         //std::cout << "Thread "+to_string(omp_get_thread_num())+" finished sucessfully.\n";
       }
     }
-  }
 return orbits;
 
 }
@@ -286,7 +284,6 @@ void MPGetTest(EphemerisManager ephem, double t0, double tf){
   int N = 1000;
   double dt = (tf-t0)/N;
   #pragma omp parallel for
-  {
     for(int i=0;i<1000;i++){
       double epoch = dt*i+t0;
       std::vector<double> sunstate = ephem.getState("SUN",epoch);
@@ -295,5 +292,4 @@ void MPGetTest(EphemerisManager ephem, double t0, double tf){
       std::string moonvec = vec2prettystring(moonstate);
       std::cout << to_string(epoch)+"s: Sun @ "+sunvec+" Moon @ " + moonvec + "\n";
     }
-  }
 }
