@@ -51,7 +51,10 @@ class Orbit
         std::vector<double> getVelocityX(){return Soln[4];};
         std::vector<double> getVelocityY(){return Soln[5];};
         std::vector<double> getVelocityZ(){return Soln[6];};
-        std::vector<std::vector<double>> getSolution(){return Soln;};
+        std::vector<double> getHamiltonian(){return Soln[7];};
+        std::vector<std::vector<double> > getPosition();        //rest of method in cpp
+        std::vector<std::vector<double> > getVelocity();        //rest of method in cpp
+        std::vector<std::vector<double> > getSolution(){return Soln;};
         double GetMass(){return satproperties.Mass;};
         double GetArea(){return satproperties.Area;};
         double GetDragCoefficient(){return satproperties.Cd;};

@@ -177,20 +177,11 @@ void Perturbed_SRP(double time, double* X, Orbit orb, EphemerisManager ephem, do
         double C = C_ckm;                                       //Speed of light (km/s)
 
         //Get Earth to Sun vector
-        ConstSpiceChar target[4] = "Sun";
-        ConstSpiceChar observer[6] = "Earth";
-        ConstSpiceChar iframe[6] = "J2000";
-        SpiceDouble epoch = time;
-        ConstSpiceChar abcorr[5] = "LT+S";
-        // #pragma omp critical (cspice_lock)
-        // {
-        //     spkezr_c( target, epoch, iframe, abcorr, observer, sunstate, &lt);
-        // }
-        //protect against simultaneous reading of ephermeris data. Should go into class and add atomic protection inside read method instead.
-        #pragma omp critical(readephem)
-        {
+        // ConstSpiceChar target[4] = "Sun";
+        // ConstSpiceChar observer[6] = "Earth";
+        // ConstSpiceChar iframe[6] = "J2000";
+        double epoch = time;
         sunstate = ephem.getState("SUN",epoch);
-        }
         for(int i=0;i<3;i++){
             sunvec[i]=sunstate[i];
             satsunvec[i] = sunvec[i]-satvec[i];
@@ -273,24 +264,10 @@ void Perturbed_three_body(double time, double* X, Orbit orb, EphemerisManager ep
     }
     if (orb.Compute_Third_Body){
         //Get Earth to Sun vector and Earth to moon vector
-        ConstSpiceChar targetsun[4] = "Sun";
-        ConstSpiceChar targetmoon[5] = "Moon";
-        ConstSpiceChar observer[6] = "Earth";
-        ConstSpiceChar iframe[6] = "J2000";
-        SpiceDouble epoch = time;
-        ConstSpiceChar abcorr[5] = "LT+S";                      //take into account light travel time
-        // #pragma omp critical (cspice_lock)
-        // {
-        //     spkezr_c( targetsun, epoch, iframe, abcorr, observer, sunstate, &lts);
-        //     spkezr_c( targetmoon, epoch, iframe, abcorr, observer, moonstate, &ltm);
-        // }
-
-        //protect against simultaneous reading of ephermeris data. Should go into class and add atomic protection inside read method instead.
-        #pragma omp critical(readephem)
-        {
+        double epoch = time;
+        //Read ephem data at current time
         sunstate = ephem.getState("SUN",epoch);
         moonstate = ephem.getState("MOON",epoch);
-        }
         //Get vectors from satellite to third bodies
         for(int i=0;i<3;i++){
             sunvec[i]=sunstate[i];

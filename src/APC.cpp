@@ -2,7 +2,7 @@
  * @ Author: Your name
  * @ Create Time: 2022-03-23 17:43:28
  * @ Modified by: Your name
- * @ Modified time: 2022-04-05 19:48:11
+ * @ Modified time: 2022-04-07 01:39:57
  * @ Description:
  */
 
@@ -40,7 +40,6 @@
 #include <sstream>
 #include <iterator>
 #include <Ephemeris.hpp>
-#include <omp.h>
 
 class EphemerisManager cacheEphemeris(double t0, double tf){
   //Ephemeris
@@ -232,8 +231,9 @@ std::vector<SatState> GenSigma3(std::vector<double> r, std::vector<double> v, do
 }
 
 std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body){
-  //
   int n = StateList.size();
+  int threads;
+  //std::cout<<"There are "+to_string(threads)+" available threads.\n";
   //cache ephemeris data for time range
   EphemerisManager ephem = cacheEphemeris(t0-1000,tf+1000);
   std::vector<Orbit> orbits;

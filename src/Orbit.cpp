@@ -41,6 +41,23 @@ Orbit::Orbit(const Orbit &O){
     //suborbital flag
     suborbital = O.suborbital;
 }
+//Getter Functions
+std::vector<std::vector<double> > Orbit::getPosition(){
+    std::vector<std::vector<double> >::const_iterator first = Soln.begin() + 1;
+    std::vector<std::vector<double> >::const_iterator last = Soln.begin() + 4;
+    std::vector<std::vector<double> > Position(first, last);
+
+    return Position;
+}
+std::vector<std::vector<double> > Orbit::getVelocity(){
+    std::vector<std::vector<double> >::const_iterator first = Soln.begin() + 4;
+    std::vector<std::vector<double> >::const_iterator last = Soln.begin() + 7;
+    std::vector<std::vector<double> > Velocity(first, last);
+
+    return Velocity;
+}
+
+
 
 //Setter Functions
 void Orbit::SetSolution(std::vector<std::vector<double > > Solution){
