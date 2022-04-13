@@ -1,31 +1,13 @@
 /**
- * @ Author: Your name
- * @ Create Time: 2022-03-23 17:43:28
- * @ Modified by: Your name
- * @ Modified time: 2022-04-13 14:47:56
- * @ Description:
- */
-
-/**
  * @file APC.cpp
- * @author your name (you@domain.com)
+ * @author David Stanley (davidms4@illinois.edu)
  * @brief 
  * @version 0.1
- * @date 2022-03-07
+ * @date 2022-04-13
  * 
  * @copyright Copyright (c) 2022
  * 
  */
-
-/*
-*  AUTHORS:          David Stanley (davidms4@illinois.edu)
-*  DATE WRITTEN:     Feb 2022
-*  LAST MODIFIED:    Feb 2022
-*  AFFILIATION:      Department of Aerospace Engineering, University of Illincois Champaign-Urbana
-*  DESCRIPTION:      Methods that are acessible from python and binding code
-*  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
-*                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
-*/
 
 #include "SpiceUsr.h"
 #include <adaptive_picard_chebyshev.h>
@@ -269,7 +251,6 @@ std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0,
       }
     }
 return orbits;
-
 }
 
 
