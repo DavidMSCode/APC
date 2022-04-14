@@ -39,6 +39,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#usage-examples">Usage examples</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">APC</a></li>
 </ul>
 
@@ -71,8 +72,24 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv412PropagateICsNSt6vectorIdEENSt6vectorIdEEddddddbbb">
-<span id="_CPPv312PropagateICsNSt6vectorIdEENSt6vectorIdEEddddddbbb"></span><span id="_CPPv212PropagateICsNSt6vectorIdEENSt6vectorIdEEddddddbbb"></span><span id="PropagateICs__std::vector:double:.std::vector:double:.double.double.double.double.double.double.b.b.b"></span><span class="target" id="_a_p_c_8h_1add56c51e91359e69583331183810e37d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PropagateICs</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">r</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tf</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">area</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">reflectance</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">mass</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">drag_C</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">compute_drag</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">compute_srp</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">compute_third_body</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412PropagateICsNSt6vectorIdEENSt6vectorIdEEddddddbbb" title="Permalink to this definition"></a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv414cacheEphemerisdd">
+<span id="_CPPv314cacheEphemerisdd"></span><span id="_CPPv214cacheEphemerisdd"></span><span id="cacheEphemeris__double.double"></span><span class="target" id="_a_p_c_8h_1a86da01993949e7b765596c0ae6b30015"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="n"><span class="pre">EphemerisManager</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cacheEphemeris</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414cacheEphemerisdd" title="Permalink to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t0</strong> – </p></li>
+<li><p><strong>tf</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>EmphemerisManager </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412PropagateICsNSt6vectorIdEENSt6vectorIdEEdd5Orbit16EphemerisManager">
+<span id="_CPPv312PropagateICsNSt6vectorIdEENSt6vectorIdEEdd5Orbit16EphemerisManager"></span><span id="_CPPv212PropagateICsNSt6vectorIdEENSt6vectorIdEEdd5Orbit16EphemerisManager"></span><span id="PropagateICs__std::vector:double:.std::vector:double:.double.double.Orbit.EphemerisManager"></span><span class="target" id="_a_p_c_8h_1a84ec81284d4dd447af7ffc9bde78b3b0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PropagateICs</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">r</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tf</span></span>, <span class="n"><span class="pre">Orbit</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">orbit</span></span>, <span class="n"><span class="pre">EphemerisManager</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ephem</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412PropagateICsNSt6vectorIdEENSt6vectorIdEEdd5Orbit16EphemerisManager" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Returns propagated orbit solution given initial conditions. </p>
 <p>The inputs of this function are given in an Earth centered inertial frame and returned in an Earth centered inertial frame. The output vectors are stored in a single vector such that each index corresponds to a single output vector. t=output[0], position (x,y,z) = output[1:3], velocity (u,v,w) = output[4:6], Hamiltonian = output[7].</p>
 <dl class="field-list simple">
@@ -98,8 +115,8 @@
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv414PropagateOrbitNSt6vectorIdEENSt6vectorIdEEddddddbbb">
-<span id="_CPPv314PropagateOrbitNSt6vectorIdEENSt6vectorIdEEddddddbbb"></span><span id="_CPPv214PropagateOrbitNSt6vectorIdEENSt6vectorIdEEddddddbbb"></span><span id="PropagateOrbit__std::vector:double:.std::vector:double:.double.double.double.double.double.double.b.b.b"></span><span class="target" id="_a_p_c_8h_1ad85688a4c17f6d83b3558643ff2b318c"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="n"><span class="pre">Orbit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PropagateOrbit</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">r</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tf</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">area</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">reflectance</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">mass</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">drag_C</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">compute_drag</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">compute_srp</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">compute_third_body</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414PropagateOrbitNSt6vectorIdEENSt6vectorIdEEddddddbbb" title="Permalink to this definition"></a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv414PropagateOrbitNSt6vectorIdEENSt6vectorIdEEdd5Orbit16EphemerisManager">
+<span id="_CPPv314PropagateOrbitNSt6vectorIdEENSt6vectorIdEEdd5Orbit16EphemerisManager"></span><span id="_CPPv214PropagateOrbitNSt6vectorIdEENSt6vectorIdEEdd5Orbit16EphemerisManager"></span><span id="PropagateOrbit__std::vector:double:.std::vector:double:.double.double.Orbit.EphemerisManager"></span><span class="target" id="_a_p_c_8h_1a1d59d5fc745bca7f50de6c120a1fed44"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="n"><span class="pre">Orbit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PropagateOrbit</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">r</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tf</span></span>, <span class="n"><span class="pre">Orbit</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">orbit</span></span>, <span class="n"><span class="pre">EphemerisManager</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ephem</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414PropagateOrbitNSt6vectorIdEENSt6vectorIdEEdd5Orbit16EphemerisManager" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Returns propagated orbit solution as an Orbit object given initial conditions. </p>
 <p>The inputs of this function are given in an Earth centered inertial frame and returned in an Earth centered inertial frame. The solution is stored in Orbit class object. <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -128,7 +145,157 @@
 </dl>
 </dd></dl>
 
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410GenSigma13NSt6vectorIdEENSt6vectorIdEEdd">
+<span id="_CPPv310GenSigma13NSt6vectorIdEENSt6vectorIdEEdd"></span><span id="_CPPv210GenSigma13NSt6vectorIdEENSt6vectorIdEEdd"></span><span id="GenSigma13__std::vector:double:.std::vector:double:.double.double"></span><span class="target" id="_a_p_c_8h_1acad56a9d1ad232436b925379156091e8"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv48SatState" title="SatState"><span class="n"><span class="pre">SatState</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GenSigma13</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">r</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">pos_error</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">vel_error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410GenSigma13NSt6vectorIdEENSt6vectorIdEEdd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Takes a satellite initial condition and returns 13 derived satellite initial conditions that were perturbed in velocty or position. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> – Initial satellite position (km) </p></li>
+<li><p><strong>v</strong> – Initial satellite velocity (km/s) </p></li>
+<li><p><strong>pos_error</strong> – Position perturbation (km) </p></li>
+<li><p><strong>vel_error</strong> – Velocity perturbation (km/s) </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>std::vector&lt;SatState&gt; The output vector of 13 satellite initial conditions </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414printStateListNSt6vectorI8SatStateEE">
+<span id="_CPPv314printStateListNSt6vectorI8SatStateEE"></span><span id="_CPPv214printStateListNSt6vectorI8SatStateEE"></span><span id="printStateList__std::vector:SatState:"></span><span class="target" id="_a_p_c_8h_1a16def67b36efa73c83b17910886023ff"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">printStateList</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv48SatState" title="SatState"><span class="n"><span class="pre">SatState</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">statelist</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414printStateListNSt6vectorI8SatStateEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Function writes the positions and velocities and id of a list of satellite states to stdout. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>statelist</strong> – A vector contatining satellite states </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410printState8SatStatei">
+<span id="_CPPv310printState8SatStatei"></span><span id="_CPPv210printState8SatStatei"></span><span id="printState__SatState.i"></span><span class="target" id="_a_p_c_8h_1a15e27c8ea22a059d6f7626367ff2ad20"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">printState</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv48SatState" title="SatState"><span class="n"><span class="pre">SatState</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">state</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410printState8SatStatei" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Writes a satellite state to stdout. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> – A struct of a satellites position and velocity </p></li>
+<li><p><strong>id</strong> – An integer id </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417ParallelPropagateNSt6vectorI8SatStateEEddddddbbb">
+<span id="_CPPv317ParallelPropagateNSt6vectorI8SatStateEEddddddbbb"></span><span id="_CPPv217ParallelPropagateNSt6vectorI8SatStateEEddddddbbb"></span><span id="ParallelPropagate__std::vector:SatState:.double.double.double.double.double.double.b.b.b"></span><span class="target" id="_a_p_c_8h_1ae9d69314bc35ab8b30715c6e894fcb53"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">Orbit</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ParallelPropagate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv48SatState" title="SatState"><span class="n"><span class="pre">SatState</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">StateList</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tf</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">area</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">reflectance</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">mass</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">drag_C</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">compute_drag</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">compute_SRP</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">compute_third_body</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417ParallelPropagateNSt6vectorI8SatStateEEddddddbbb" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Propagates multiple satellite orbits in parallel. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>StateList</strong> – A vector of satellite initial conditions in J2000 </p></li>
+<li><p><strong>t0</strong> – Epoch start time of satellite (s) </p></li>
+<li><p><strong>tf</strong> – Epoch end time of satellite (s) </p></li>
+<li><p><strong>area</strong> – “Cannonball” area of satellite (m^2) </p></li>
+<li><p><strong>reflectance</strong> – Coefficient of relectance of satellite </p></li>
+<li><p><strong>mass</strong> – Mass of satellite (kg) </p></li>
+<li><p><strong>drag_C</strong> – Drag coefficient of satellite </p></li>
+<li><p><strong>compute_drag</strong> – Boolean to toggle drag computation on or off </p></li>
+<li><p><strong>compute_SRP</strong> – Boolean to toggle solar radiation pressure computation on or off </p></li>
+<li><p><strong>compute_third_body</strong> – Boolean to toggle third body perturbation computation on or off </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>std::vector&lt;class Orbit&gt; Returns a vector of orbit objects that each describe the satellite properties and the propagation solution </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415SinglePropagateNSt6vectorIdEENSt6vectorIdEEddddddbbb">
+<span id="_CPPv315SinglePropagateNSt6vectorIdEENSt6vectorIdEEddddddbbb"></span><span id="_CPPv215SinglePropagateNSt6vectorIdEENSt6vectorIdEEddddddbbb"></span><span id="SinglePropagate__std::vector:double:.std::vector:double:.double.double.double.double.double.double.b.b.b"></span><span class="target" id="_a_p_c_8h_1a416de37e62c593dadc271df593f87910"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="n"><span class="pre">Orbit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SinglePropagate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">r</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tf</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">area</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">reflectance</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">mass</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">drag_C</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">compute_drag</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">compute_SRP</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">compute_third_body</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415SinglePropagateNSt6vectorIdEENSt6vectorIdEEddddddbbb" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Propagates a single satellite orbit. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> – Initial position of satellite (km) </p></li>
+<li><p><strong>v</strong> – Initial velocity of satellite (km/s) </p></li>
+<li><p><strong>t0</strong> – Epoch start time of satellite (s) </p></li>
+<li><p><strong>tf</strong> – Epoch end time of satellite (s) </p></li>
+<li><p><strong>area</strong> – “Cannonball” area of satellite (m^2) </p></li>
+<li><p><strong>reflectance</strong> – Coefficient of relectance of satellite </p></li>
+<li><p><strong>mass</strong> – Mass of satellite (kg) </p></li>
+<li><p><strong>drag_C</strong> – Drag coefficient of satellite </p></li>
+<li><p><strong>compute_drag</strong> – Boolean to toggle drag computation on or off </p></li>
+<li><p><strong>compute_SRP</strong> – Boolean to toggle solar radiation pressure computation on or off </p></li>
+<li><p><strong>compute_third_body</strong> – Boolean to toggle third body perturbation computation on or off </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>std::vector&lt;class Orbit&gt; Returns an orbit object that describes the satellite properties and the propagation solution </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49MPGetTest16EphemerisManagerdd">
+<span id="_CPPv39MPGetTest16EphemerisManagerdd"></span><span id="_CPPv29MPGetTest16EphemerisManagerdd"></span><span id="MPGetTest__EphemerisManager.double.double"></span><span class="target" id="_a_p_c_8h_1a681c7db1a3874f394a3f47f38607c217"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MPGetTest</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">EphemerisManager</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ephem</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49MPGetTest16EphemerisManagerdd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Tests the thread safety of the ephemeris manager by reading data from the EphemerisManager and writing to stdout in parallel. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ephem</strong> – EphemerisManager object containing ephermeris data for solar system objects over a given interval </p></li>
+<li><p><strong>t0</strong> – Beginning of EphemerisManager time interval (s) </p></li>
+<li><p><strong>tf</strong> – End of EphemerisManager time interval (s) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413Benchmark1000i">
+<span id="_CPPv313Benchmark1000i"></span><span id="_CPPv213Benchmark1000i"></span><span id="Benchmark1000__i"></span><span class="target" id="_a_p_c_8h_1a749ba62c14ebe0fc2dd53ee7a3f192bc"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Benchmark1000</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">max_threads</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413Benchmark1000i" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Calculates 1000 orbits to benchmark parallel processing performance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>std::pair&lt;int,double&gt; Returns a pair of values indicating the number of threads used and the time to finish the benchmark respectively. </p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv48SatState">
+<span id="_CPPv38SatState"></span><span id="_CPPv28SatState"></span><span id="SatState"></span><span class="target" id="struct_sat_state"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SatState</span></span></span><a class="headerlink" href="#_CPPv48SatState" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;&gt;</em></div>
+<p>Structure containing the position and velocity of some orbit state. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Param r</dt>
+<dd class="field-odd"><p>Satellite position (km) </p>
+</dd>
+<dt class="field-even">Param v</dt>
+<dd class="field-even"><p>Satellite velocity (km/s) </p>
+</dd>
+</dl>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8SatState1rE">
+<span id="_CPPv3N8SatState1rE"></span><span id="_CPPv2N8SatState1rE"></span><span id="SatState::r__std::vector:double:"></span><span class="target" id="struct_sat_state_1a2a7524362b696ffe0a2a5f0e43fa5e97"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">r</span></span></span><a class="headerlink" href="#_CPPv4N8SatState1rE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N8SatState1vE">
+<span id="_CPPv3N8SatState1vE"></span><span id="_CPPv2N8SatState1vE"></span><span id="SatState::v__std::vector:double:"></span><span class="target" id="struct_sat_state_1ad0c89869ac39c542cdbed18d8b4762e7"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v</span></span></span><a class="headerlink" href="#_CPPv4N8SatState1vE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
 </section>
 
 

@@ -76,15 +76,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a983f857a2d183637847a1d44191ff55a"><td class="memItemLeft" align="right" valign="top"><a id="a983f857a2d183637847a1d44191ff55a" name="a983f857a2d183637847a1d44191ff55a"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Orbit</b> (std::vector&lt; std::vector&lt; double &gt; &gt; Solution)</td></tr>
 <tr class="separator:a983f857a2d183637847a1d44191ff55a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a245fe71930c3fd61b8224932496fc315"><td class="memItemLeft" align="right" valign="top"><a id="a245fe71930c3fd61b8224932496fc315" name="a245fe71930c3fd61b8224932496fc315"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Orbit</b> (double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body)</td></tr>
-<tr class="separator:a245fe71930c3fd61b8224932496fc315"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ec338930045a4f7c1c8ea4bd8627f88"><td class="memItemLeft" align="right" valign="top"><a id="a1ec338930045a4f7c1c8ea4bd8627f88" name="a1ec338930045a4f7c1c8ea4bd8627f88"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Orbit</b> (double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id)</td></tr>
+<tr class="separator:a1ec338930045a4f7c1c8ea4bd8627f88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae69dad80391bf37b49f07db60df863a7"><td class="memItemLeft" align="right" valign="top"><a id="ae69dad80391bf37b49f07db60df863a7" name="ae69dad80391bf37b49f07db60df863a7"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Orbit</b> (const <a class="el" href="class_orbit.html">Orbit</a> &amp;O)</td></tr>
+<tr class="separator:ae69dad80391bf37b49f07db60df863a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18825d821cae2c987a84fc1d39a669bc"><td class="memItemLeft" align="right" valign="top"><a id="a18825d821cae2c987a84fc1d39a669bc" name="a18825d821cae2c987a84fc1d39a669bc"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>SetSolution</b> (std::vector&lt; std::vector&lt; double &gt; &gt; Solution)</td></tr>
 <tr class="separator:a18825d821cae2c987a84fc1d39a669bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19bf5ed12039b4f87d761a608fdd23fb"><td class="memItemLeft" align="right" valign="top"><a id="a19bf5ed12039b4f87d761a608fdd23fb" name="a19bf5ed12039b4f87d761a608fdd23fb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>SetProperties</b> (double area, double reflectance, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body)</td></tr>
-<tr class="separator:a19bf5ed12039b4f87d761a608fdd23fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa580e9376222e6d2c442de0146c77e8b"><td class="memItemLeft" align="right" valign="top"><a id="aa580e9376222e6d2c442de0146c77e8b" name="aa580e9376222e6d2c442de0146c77e8b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetProperties</b> (double area, double reflectance, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id)</td></tr>
+<tr class="separator:aa580e9376222e6d2c442de0146c77e8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0ac7ccbddbfba18a16e61509e8c0bfb"><td class="memItemLeft" align="right" valign="top"><a id="ac0ac7ccbddbfba18a16e61509e8c0bfb" name="ac0ac7ccbddbfba18a16e61509e8c0bfb"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>SetSubOrbital</b> ()</td></tr>
 <tr class="separator:ac0ac7ccbddbfba18a16e61509e8c0bfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -109,6 +112,18 @@ std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><
 <tr class="memitem:acf51791572b73340835e5a26b174c1aa"><td class="memItemLeft" align="right" valign="top"><a id="acf51791572b73340835e5a26b174c1aa" name="acf51791572b73340835e5a26b174c1aa"></a>
 std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getVelocityZ</b> ()</td></tr>
 <tr class="separator:acf51791572b73340835e5a26b174c1aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87a8c3873d88c56faf1df52ac8effcda"><td class="memItemLeft" align="right" valign="top"><a id="a87a8c3873d88c56faf1df52ac8effcda" name="a87a8c3873d88c56faf1df52ac8effcda"></a>
+std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getHamiltonian</b> ()</td></tr>
+<tr class="separator:a87a8c3873d88c56faf1df52ac8effcda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9714ad4cc68b481bdd4f2625f9a3fca"><td class="memItemLeft" align="right" valign="top"><a id="ae9714ad4cc68b481bdd4f2625f9a3fca" name="ae9714ad4cc68b481bdd4f2625f9a3fca"></a>
+std::vector&lt; std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getPosition</b> ()</td></tr>
+<tr class="separator:ae9714ad4cc68b481bdd4f2625f9a3fca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae91c06bf5978c52c09ff20b4c9ef5b92"><td class="memItemLeft" align="right" valign="top"><a id="ae91c06bf5978c52c09ff20b4c9ef5b92" name="ae91c06bf5978c52c09ff20b4c9ef5b92"></a>
+std::vector&lt; std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getVelocity</b> ()</td></tr>
+<tr class="separator:ae91c06bf5978c52c09ff20b4c9ef5b92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7c4b6a1002739066795037296d593a8"><td class="memItemLeft" align="right" valign="top"><a id="ae7c4b6a1002739066795037296d593a8" name="ae7c4b6a1002739066795037296d593a8"></a>
+std::vector&lt; std::vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getSolution</b> ()</td></tr>
+<tr class="separator:ae7c4b6a1002739066795037296d593a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a434cabb54e32855b11984915cf564713"><td class="memItemLeft" align="right" valign="top"><a id="a434cabb54e32855b11984915cf564713" name="a434cabb54e32855b11984915cf564713"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><b>GetMass</b> ()</td></tr>
 <tr class="separator:a434cabb54e32855b11984915cf564713"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -136,6 +151,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>Compute_Third_Body</b
 <tr class="memitem:ad62144263ed91c6a3a8dc8d3a25a2dee"><td class="memItemLeft" align="right" valign="top"><a id="ad62144263ed91c6a3a8dc8d3a25a2dee" name="ad62144263ed91c6a3a8dc8d3a25a2dee"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>suborbital</b></td></tr>
 <tr class="separator:ad62144263ed91c6a3a8dc8d3a25a2dee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3947b6e190e579eb4543c8bbf3f802c1"><td class="memItemLeft" align="right" valign="top"><a id="a3947b6e190e579eb4543c8bbf3f802c1" name="a3947b6e190e579eb4543c8bbf3f802c1"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>ID</b></td></tr>
+<tr class="separator:a3947b6e190e579eb4543c8bbf3f802c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a761ccedc3da231b074da6aa64f37cb6e"><td class="memItemLeft" align="right" valign="top"><a id="a761ccedc3da231b074da6aa64f37cb6e" name="a761ccedc3da231b074da6aa64f37cb6e"></a>
 struct SatProperties&#160;</td><td class="memItemRight" valign="bottom"><b>satproperties</b></td></tr>
 <tr class="separator:a761ccedc3da231b074da6aa64f37cb6e"><td class="memSeparator" colspan="2">&#160;</td></tr>

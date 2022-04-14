@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['orbit_0',['Orbit',['../class_orbit.html',1,'']]]
+  ['chebyshevephemeris_0',['ChebyshevEphemeris',['../class_chebyshev_ephemeris.html',1,'']]]
 ];
