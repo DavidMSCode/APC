@@ -33,7 +33,7 @@ double P [(Max_Degree+3)*(Max_Degree+3)] = {0.0};
 * This is the allocation for the maximum size associated
 * Legendre polynomical matrix scale factor
 */
-double scaleFactor [(Max_Degree+3)*(Max_Degree+3)] = {0.0};
+double scaleFactor[(Max_Degree+3)*(Max_Degree+3)] = {0.0};
 
 /*!
 * \brief Matrix Multiplication
@@ -110,16 +110,17 @@ void EGM2008( double* p, double* Gxyz, int DEG)
 		cmlambda[m] = 2.0*clambda*cmlambda[m-1] - cmlambda[m-2];
 	}
 
+	double P_priv[(Max_Degree+3)*(Max_Degree+3)] = {0.0};
+	double scaleFactor_priv[(Max_Degree+3)*(Max_Degree+3)] = {0.0};
+	loc_gravLegendre( phic, scaleFactor_priv, P_priv , DEG);
 
-	loc_gravLegendre( phic, scaleFactor, P , DEG);
-
-	loc_gravityPCPF( p, P, DEG, smlambda, cmlambda, r, scaleFactor, Gxyz );
+	loc_gravityPCPF( p, P_priv, DEG, smlambda, cmlambda, r, scaleFactor_priv, Gxyz );
 
 
 }
 
 /*!
-* \brief Gravity Potential Evaluation
+* \brief Gravity Potential Evaluationc++ co
 * This is the function that evaluates the spherical harmonic
 * serries to provide gravitational potential
 *

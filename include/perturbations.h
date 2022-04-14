@@ -15,12 +15,13 @@
 #include <string>
 #include <vector>
 #include <Orbit.h>
+#include "Ephemeris.hpp"
 
-void Perturbed_SRP(double time, double* X, Orbit orb, double* SRP_aECI);
+void Perturbed_SRP(double time, double* X, Orbit orb, EphemerisManager ephem, double* SRP_aECI);
 
 void Perturbed_Drag(double* X, double* V, Orbit orb, double* drag_aECEF);
 
-void Perturbed_three_body(double time, double* X, Orbit orb, double* third_body_aECI);
+void Perturbed_three_body(double time, double* X, Orbit orb, EphemerisManager ephem, double* third_body_aECI);
 
 int LastFirstSearch(double *p, int length_t, double key);
 

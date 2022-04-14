@@ -15,7 +15,8 @@
 #include <vector>
 #include <Orbit.h>
 #include <const.h>
-
+#include <omp.h>
+#include "Ephemeris.hpp"
 
 
 int LastFirstSearch(double *p, int length_t, double key){
@@ -152,7 +153,7 @@ double atmospheric_density(double alt){
     return density;
 }
 
-void Perturbed_SRP(double time, double* X, Orbit orb, double* SRP_aECI){
+void Perturbed_SRP(double time, double* X, Orbit orb, EphemerisManager ephem, double* SRP_aECI){
     double satvec[3];
     double sunvec[3];
     double satsununitvec[3];
@@ -160,8 +161,7 @@ void Perturbed_SRP(double time, double* X, Orbit orb, double* SRP_aECI){
     double norm_sunpos;
     double norm_satpos;
     double norm_satsunpos;
-    SpiceDouble sunstate [6];
-    SpiceDouble lt;
+    std::vector<double> sunstate;
 
     for(int i=0;i<3;i++){
         SRP_aECI[i]=0.0;
@@ -177,12 +177,11 @@ void Perturbed_SRP(double time, double* X, Orbit orb, double* SRP_aECI){
         double C = C_ckm;                                       //Speed of light (km/s)
 
         //Get Earth to Sun vector
-        ConstSpiceChar target[4] = "Sun";
-        ConstSpiceChar observer[6] = "Earth";
-        ConstSpiceChar iframe[6] = "J2000";
-        SpiceDouble epoch = time;
-        ConstSpiceChar abcorr[5] = "LT+S";
-        spkezr_c( target, epoch, iframe, abcorr, observer, sunstate, &lt);
+        // ConstSpiceChar target[4] = "Sun";
+        // ConstSpiceChar observer[6] = "Earth";
+        // ConstSpiceChar iframe[6] = "J2000";
+        double epoch = time;
+        sunstate = ephem.getState("SUN",epoch);
         for(int i=0;i<3;i++){
             sunvec[i]=sunstate[i];
             satsunvec[i] = sunvec[i]-satvec[i];
@@ -243,7 +242,7 @@ void Perturbed_Drag(double* X, double* V, Orbit orb, double* drag_aECEF){
     }
 };
 
-void Perturbed_three_body(double time, double* X, Orbit orb, double* third_body_aECI){
+void Perturbed_three_body(double time, double* X, Orbit orb, EphemerisManager ephem, double* third_body_aECI){
     double satvec[3];
     double sunvec[3];
     double moonvec[3];
@@ -256,10 +255,8 @@ void Perturbed_three_body(double time, double* X, Orbit orb, double* third_body_
     //double norm_moonpos
     double norm_satsunpos;
     double norm_satmoonpos;
-    SpiceDouble sunstate [6];
-    SpiceDouble moonstate [6];
-    SpiceDouble lts;
-    SpiceDouble ltm;
+    std::vector<double> sunstate;
+    std::vector<double> moonstate;
 
     for(int i=0;i<3;i++){
         third_body_aECI[i]=0.0;
@@ -267,14 +264,10 @@ void Perturbed_three_body(double time, double* X, Orbit orb, double* third_body_
     }
     if (orb.Compute_Third_Body){
         //Get Earth to Sun vector and Earth to moon vector
-        ConstSpiceChar targetsun[4] = "Sun";
-        ConstSpiceChar targetmoon[5] = "Moon";
-        ConstSpiceChar observer[6] = "Earth";
-        ConstSpiceChar iframe[6] = "J2000";
-        SpiceDouble epoch = time;
-        ConstSpiceChar abcorr[5] = "LT+S";                      //take into account light travel time
-        spkezr_c( targetsun, epoch, iframe, abcorr, observer, sunstate, &lts);
-        spkezr_c( targetmoon, epoch, iframe, abcorr, observer, moonstate, &ltm);
+        double epoch = time;
+        //Read ephem data at current time
+        sunstate = ephem.getState("SUN",epoch);
+        moonstate = ephem.getState("MOON",epoch);
         //Get vectors from satellite to third bodies
         for(int i=0;i<3;i++){
             sunvec[i]=sunstate[i];

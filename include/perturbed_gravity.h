@@ -16,7 +16,15 @@
 #include <stdlib.h>
 #include "const.h"
 
-void perturbed_gravity(double t, double* Xo, double err, int ii, int N, double deg, int hot, double* G, double tol, int* itr, double* Feval);
+struct IterCounters{
+    int ITR1 = 0;
+    int ITR2 = 0;
+    int ITR3 = 0;
+    int ITR4 = 0;
+    int MODEL = 0;
+};
+
+void perturbed_gravity(double t, double* Xo, double err, int ii, int N, double deg, int hot, double* G, double tol, int* itr, double* Feval, IterCounters& ITRs, double* del_G);
 
 void Grav_Approx(double t, double* X, double* dX, double* Feval);
 

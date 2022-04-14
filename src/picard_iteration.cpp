@@ -45,9 +45,12 @@
 #include <perturbations.h>
 #include <Orbit.h>
 #include "EGM2008.h"
+#include "matrix_loader.h"
 #include <vector>
+#include "Ephemeris.hpp"
+
 void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, int N, int M, double deg, int hot, double tol,
-  std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, double* Feval, std::vector<double> &Alpha, std::vector<double> &Beta, Orbit &orb){
+  std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, double* Feval, std::vector<double> &Alpha, std::vector<double> &Beta, Orbit &orb, EphemerisManager ephem){
   
   // Initialization
   bool suborbital = false;
@@ -77,6 +80,9 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
   std::vector<double> xECEFp((M+1)*3,0.0);
   std::vector<double> xECIp((M+1)*3,0.0);
   std::vector<double> del_a((M+1)*3,0.0);
+  //Perturbed Gravity iteration storage
+  IterCounters ITRs;
+  double del_G[3*(Nmax+1)];
 
   int itr, MaxIt;
   double err, w2;
@@ -107,7 +113,7 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
       // Convert from ECI to ECEF
       eci2ecef(times[i-1],xI,vI,xECEF,vECEF);
       // Compute Variable Fidelity Gravity
-      perturbed_gravity(times[i-1],xECEF,err,i,M,deg,hot,aECEF,tol,&itr,Feval);
+      perturbed_gravity(times[i-1],xECEF,err,i,M,deg,hot,aECEF,tol,&itr,Feval,ITRs,del_G);
       //Calculate acceleration from drag
       Perturbed_Drag(xECEF, vECEF, orb, drag_aECEF);
 
@@ -119,8 +125,8 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
       // Convert from ECEF to ECI
       ecef2eci(times[i-1],aECEF,aECI);
       //calculate SRP and Third Body
-      Perturbed_SRP(times[i-1], xI, orb, SRP_aECI);
-      Perturbed_three_body(times[i-1], xI, orb, third_body_aECI);
+      Perturbed_SRP(times[i-1], xI, orb, ephem, SRP_aECI);
+      Perturbed_three_body(times[i-1], xI, orb, ephem, third_body_aECI);
       //Add perturbations to acceleration.
       for(int k=0;k<3;k++){
         aECI[k] = aECI[k] + SRP_aECI[k] + third_body_aECI[k];

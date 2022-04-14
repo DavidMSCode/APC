@@ -31,3 +31,32 @@ def plot_circle(size,color='green',opacity=0.3,pos=[0,0,0],res=100):
     x,y = circles(size,pos,res)
     trace = go.Scatter(x=x,y=y,line=dict(color=color),fill='toself')
     return trace
+
+def traceOrbit(orbit):
+    Xs = orbit.getPosition()
+    trace = go.Scatter3d(x=Xs[0],y=Xs[1],z=Xs[2],mode='lines')
+    return (trace)
+
+def plotTraces(traces):
+    traceEarth = plot_sphere(6378,res=30)
+    traces.append(traceEarth)
+    fig = go.Figure(data=traces)
+    fig.update_coloraxes(showscale=False)
+    fig.update_layout(
+        title = "Highly eccentric orbit",
+        scene_aspectmode='data',
+        showlegend=False,
+        width = 800,
+        height = 800,
+        margin=dict(l=100, r=100, t=100, b=100))
+    return fig
+
+def plotOrbit(orbit):
+    trace = traceOrbit(orbit)
+    fig = plotTraces(trace)
+    return fig
+
+def plotMultiOrbits(orbits):
+    traces = [traceOrbit(orbit) for orbit in orbits]
+    fig = plotTraces(traces)
+    return fig

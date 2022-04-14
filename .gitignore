@@ -14,12 +14,12 @@ __pycache__
 #executables
 bin/*
 !bin/matrices
-!bin/Test.ipynb
+!bin/*.ipynb
 bin/de440.bsp
 !bin/*.py
 
 #external libraries
-extern/cspice/*
+extern/
 
 #documentation builds
 build/
