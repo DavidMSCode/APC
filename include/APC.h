@@ -75,6 +75,8 @@ class Orbit PropagateOrbit(std::vector<double> r, std::vector<double> v, double 
 /**
  * @brief Structure containing the position and velocity of some orbit state.
  * 
+ * @param r Satellite position (km)
+ * @param v Satellite velocity (km/s)
  */
 struct SatState
 {
@@ -83,85 +85,73 @@ struct SatState
 };
 
 /**
- * @brief 
+ * @brief Takes a satellite initial condition and returns 13 derived satellite initial conditions that were perturbed in velocty or position
  * 
- * @param r 
- * @param v 
- * @param pos_error 
- * @param vel_error 
- * @return std::vector<SatState> 
+ * @param r Initial satellite position (km)
+ * @param v Initial satellite velocity (km/s)
+ * @param pos_error Position perturbation (km)
+ * @param vel_error Velocity perturbation (km/s)
+ * @return std::vector<SatState> The output vector of 13 satellite initial conditions
  */
 std::vector<SatState> GenSigma13(std::vector<double> r, std::vector<double> v, double pos_error, double vel_error);
 
 /**
- * @brief 
+ * @brief Function writes the positions and velocities and id of a list of satellite states to stdout
  * 
- * @param r 
- * @param v 
- * @param pos_error 
- * @param vel_error 
- * @return std::vector<SatState> 
+ * @param statelist A vector contatining satellite states
  */
-std::vector<SatState> GenSigma3(std::vector<double> r, std::vector<double> v, double pos_error, double vel_error);
+void printStateList(std::vector<SatState> statelist);
 
 /**
- * @brief 
+ * @brief Writes a satellite state to stdout
  * 
- * @param sigma13 
+ * @param state A struct of a satellites position and velocity
+ * @param id An integer id 
  */
-void printStateList(std::vector<SatState> sigma13);
-
-/**
- * @brief 
- * 
- * @param state 
- * @param i 
- */
-void printState(SatState state, int i);
+void printState(SatState state, int id);
 
 
 /**
- * @brief 
+ * @brief Propagates multiple satellite orbits in parallel
  * 
- * @param r 
- * @param v 
- * @param t0 
- * @param tf 
- * @param area 
- * @param reflectance 
- * @param mass 
- * @param drag_C 
- * @param compute_drag 
- * @param compute_SRP 
- * @param compute_third_body 
- * @return std::vector<class Orbit> 
+ * @param StateList A vector of satellite initial conditions in J2000
+ * @param t0 Epoch start time of satellite (s)
+ * @param tf Epoch end time of satellite (s)
+ * @param area "Cannonball" area of satellite (m^2)
+ * @param reflectance Coefficient of relectance of satellite
+ * @param mass Mass of satellite (kg)
+ * @param drag_C Drag coefficient of satellite
+ * @param compute_drag Boolean to toggle drag computation on or off
+ * @param compute_SRP Boolean to toggle solar radiation pressure computation on or off
+ * @param compute_third_body Boolean to toggle third body perturbation computation on or off
+ * @return std::vector<class Orbit> Returns a vector of orbit objects that each describe the satellite properties and the propagation solution
  */
 std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body);
 
 /**
- * @brief 
+ * @brief Propagates a single satellite orbit
  * 
- * @param r 
- * @param v 
- * @param t0 
- * @param tf 
- * @param area 
- * @param reflectance 
- * @param mass 
- * @param drag_C 
- * @param compute_drag 
- * @param compute_SRP 
- * @param compute_third_body 
- * @return std::vector<class Orbit> 
+* @param r Initial position of satellite (km)
+ * @param v Initial velocity of satellite (km/s)
+ * @param t0 Epoch start time of satellite (s)
+ * @param tf Epoch end time of satellite (s)
+ * @param area "Cannonball" area of satellite (m^2)
+ * @param reflectance Coefficient of relectance of satellite
+ * @param mass Mass of satellite (kg)
+ * @param drag_C Drag coefficient of satellite
+ * @param compute_drag Boolean to toggle drag computation on or off
+ * @param compute_SRP Boolean to toggle solar radiation pressure computation on or off
+ * @param compute_third_body Boolean to toggle third body perturbation computation on or off
+ * @return std::vector<class Orbit> Returns an orbit object that describes the satellite properties and the propagation solution
  */
 class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body);
 
 /**
- * @brief 
+ * @brief Tests the thread safety of the ephemeris manager by reading data from the EphemerisManager and writing to stdout in parallel
  * 
- * @param ephem 
- * @param t0 
- * @param tf 
+ * @param ephem EphemerisManager object containing ephermeris data for solar system objects over a given interval
+ * @param t0  Beginning of EphemerisManager time interval (s)
+ * @param tf End of EphemerisManager time interval (s)
  */
 void MPGetTest(EphemerisManager ephem, double t0, double tf);
 
