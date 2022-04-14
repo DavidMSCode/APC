@@ -106,6 +106,7 @@ APC will be installed as a package in the virtual environment and may be importe
 To uninstall APC, run the following while the virtual environment is active
 
 .. code-block:: console
+    
     (.venv) $ pip uninstall APC
 
 Usage examples
