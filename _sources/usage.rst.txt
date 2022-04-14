@@ -6,6 +6,7 @@ Installation from source
 ------------------------
 Prerequisites
 _____________
+
 * A C++ compiler that supports the C++11 standard as well as OpenMP
 * Python 3.6+
 * OpenMP runtime library
@@ -112,16 +113,19 @@ Usage examples
 
 In the "bin" folder within "APC" there are two python notebooks that make use of the APC library. Test.ipynb demonstrates APC running sequentially and in parallel with a few orbtial plots. Benchmark.ipynb demonstrates the performance gains from running multiple orbits in parallel.
 Running these notebooks requires the following Python packages:
+
 * Numpy
 * Plotly
 
 For APC to utilize CSPICE, two CSPICE kernels must be present in the working directory
+
 1. An Earth, Moon, Sun ephemeris kernel file. de440.bsp from https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/ is suitable.
 2. A leapseconds kernel file. naif0012.tls from https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/ is suitable.
 
 The matrices folder must also be present in the working directory. These files contain data for the 2008 Earth gravity model and has the structure:
 
 ::
+
     matrices
     ├── A_matrices.bin
     ├── P1_matrices.bin
