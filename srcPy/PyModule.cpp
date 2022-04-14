@@ -24,7 +24,8 @@ PYBIND11_MODULE(APC, m) {
   m.def("Linktest",&Linktest,"testing linking against cspice");
   m.def("GenSigma13",&GenSigma13,"Generate 13 perturbed variations of an orbit");
   m.def("ParallelPropagate",&ParallelPropagate,"Propagates multiple orbits in parallel");
-  m.def("SinglePropagate",&SinglePropagate,"Propagates a single orbit"); 
+  m.def("SinglePropagate",&SinglePropagate,"Propagates a single orbit");
+  m.def("Benchmark1000",&Benchmark1000,"Returns the number of threads used and the time (s) to complete 1000 orbit propagations");
   py::class_<Orbit>(m, "Orbit")
         .def("getTimes", &Orbit::getTimes)
         .def("getPositionX", &Orbit::getPositionX)

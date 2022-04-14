@@ -16,16 +16,17 @@ if platform.system() == 'Darwin':
     #Mac OS unique args
    cpp_extra_args.append('-mmacosx-version-min=10.9')
    cpp_extra_args.append("-Xpreprocessor")                          #Enable OpenMP support on Clang++ for newer versions of Mac OS
-   link_args.append('-lomp')                                        #llvm OpenMP
    cpp_extra_args.append("-fopenmp")
-   cpp_extra_args.append('-std=c++11')       
+   cpp_extra_args.append('-std=c++11')
+   link_args.append('-lomp')                                        #llvm OpenMP   
+   cspice_lib = "extern/cspice/lib/cspice.a"                       #link against cspice library (external to normal lib locations)    
                 
-elif os.name == "nt":
+elif platform.system() == "Windows":
     #Windows Args
     link_args.append("/NODEFAULTLIB:library")
     cspice_lib = "extern/cspice/lib/cspice.lib"                     
 
-else:
+elif platform.system()=="Linux":
     #Linux args                                                               
     cspice_lib = "extern/cspice/lib/cspice.a"                       #link against cspice library (external to normal lib locations)
     cpp_extra_args.append("-fopenmp")                               #Enable multithreading through pragma statements

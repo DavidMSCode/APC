@@ -164,4 +164,13 @@ class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double
  * @param tf 
  */
 void MPGetTest(EphemerisManager ephem, double t0, double tf);
+
+/**
+ * @brief Calculates 1000 orbits to benchmark parallel processing performance
+ * 
+ * @return std::pair<int,double> Returns a pair of values indicating the number of threads used and the time to finish the benchmark respectively.
+ */
+std::pair<int,double>  Benchmark1000(int max_threads);
+
 #endif
+

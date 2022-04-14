@@ -21,6 +21,9 @@
 #include <iostream>
 #include <sstream>
 #include <iterator>
+#include <omp.h>
+#include <utility>
+#include <chrono>
 #include <Ephemeris.hpp>
 
 class EphemerisManager cacheEphemeris(double t0, double tf){
@@ -124,7 +127,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   ss << Hmax;
   std::string HmaxStr(ss.str());
 
-  std::cout << to_string(orb.ID)+":\tFunc Evals: " + to_string(total) + "  \t Hmax: " + HmaxStr + "\n";
+  //std::cout << to_string(orb.ID)+":\tFunc Evals: " + to_string(total) + "  \t Hmax: " + HmaxStr + "\n";
   // printf("Func Evals: %i\t",total);
   // printf("Hmax %1.16E\n",Hmax);
   //Assemble solution vector
@@ -273,4 +276,53 @@ void MPGetTest(EphemerisManager ephem, double t0, double tf){
       std::string moonvec = vec2prettystring(moonstate);
       std::cout << to_string(epoch)+"s: Sun @ "+sunvec+" Moon @ " + moonvec + "\n";
     }
+}
+
+std::pair<int,double>  Benchmark1000(int max_threads){
+  //Benchmarking function that solves 1000 orbits and reports the time for completion.
+  omp_set_num_threads(max_threads);
+  int procs = omp_get_num_procs();
+  auto start = std::chrono::steady_clock::now();
+  double t0 = 0;
+  double tf = 5059.648765;
+  double time = 0;
+  //number of seperate orbits
+  int n = 1000;
+  EphemerisManager ephem = cacheEphemeris(t0-1000,tf+1000);
+  std::vector<Orbit> orbits;
+  int j = 0;
+  //Spawn threads and start parallel for loop
+  #pragma omp parallel for shared(orbits, n, j)
+    for (int i=0;i<n;i++){
+      //Thread debug print
+      //std::cout<< "Orbit "+to_string(i)+" assigned to thread "+to_string(omp_get_thread_num())+".\n";
+      //Private varaibles
+      double t0_priv = t0;
+      double tf_priv = tf;
+      double area_priv = 10;
+      double reflectance_priv = 1.5;
+      double mass_priv = 1000;
+      double drag_C_priv = 2.0;
+      //Private initial state
+      std::vector<double> r0 = {8000, 0, 0};
+      std::vector<double> v0 = {0, 8, 0};
+      //Private orbit object
+      Orbit orbit(area_priv,reflectance_priv,mass_priv,drag_C_priv,false,false,false,i);
+      //thread debug
+
+      //std::cout << "Running thread "+to_string(omp_get_thread_num())+".\n";
+      orbit = PropagateOrbit(r0, v0,  t0_priv,  tf_priv,  orbit, ephem);
+      #pragma omp critical(writeout)
+      {
+        //Store solution even though it isn't returned as the writeout lock causes some overhead
+        orbits.push_back(orbit);
+        //std::cout << "Thread "+to_string(omp_get_thread_num())+" finished sucessfully.\n";
+      }
+    }
+    //get time at end
+    auto end = std::chrono::steady_clock::now();
+    std::chrono::duration<double> diff = end-start;
+    //return number of threads and the time to finish
+    std::pair<int,double> out = {min(max_threads,procs), diff.count()};
+    return out;
 }
