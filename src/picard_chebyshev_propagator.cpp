@@ -188,6 +188,7 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     breaks (due to perturbations) and the precomputed segment scheme fails to
     produce a solution that satisfies the required tolerance. This effect
     increases with increasing eccentricity. */
+    
     double orb_end = 0.0;
     reosc_perigee(X,V,times,Alpha,Beta,tf,t_final,t_orig,N,M,&k,seg,prep_HS,tol,&orb_end,tvec,r0,v0);
     // Segments per orbit counter

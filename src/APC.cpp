@@ -81,7 +81,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   double deg   = 70.0;                             // Gravity Degree (max 100)
   double tol   = 1.0e-15;                          // Tolerance
   // Initialize Output Variables
-  int soln_size = int(1.1*(tf/dt));
+  int soln_size = int(1.2*(tf/dt));
   if (soln_size == 1){
     soln_size = 2;
   }
