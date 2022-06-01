@@ -78,6 +78,14 @@ Once your virtual environment has been setup and activated install PyBind11 with
 
    (.venv) APC $ pip install pybind11
 
+.. code-block:: console
+
+   (.venv) APC $ conda install -c conda-forge pybind11
+
+If using pip or conda to install python packages is not an option then go to the 'Installing PyBind11 Manually'_.
+
+.. _Building APC:
+
 Building APC
 ____________
 
@@ -108,6 +116,26 @@ To uninstall APC, run the following while the virtual environment is active
 .. code-block:: console
     
     (.venv) $ pip uninstall APC
+
+.. _Installing Pybind11 Manually:
+
+Installing Pybind11 Manually
+----------------------------
+This method will work for compiling APC with a PyBind11 wrapper as long as you have access to Github. This section assumes you have followed the Installation from Source guide up to creating the python virtual environment.
+
+In the root folder where the APC repo was cloned run this git command to switch to the includePybind11 branch.
+
+.. code-block:: console
+    
+    (.venv) $ git checkout includePybind11
+
+A few files will change and in the extern folder there will be a submodule folder called "PyBind11" that will be empty. To sync this folder with the main PyBind11 repo run
+
+.. code-block:: console
+    
+    (.venv) $ git submodule update --init
+
+The folder should populate with the PyBind11 repo. Go to 'Building APC'_ to finish compiling the APC library from source.
 
 Usage examples
 ==============

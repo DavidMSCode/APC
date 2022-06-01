@@ -48,6 +48,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#building-apc-alternative">Building APC Alternative</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-pybind11-manually">Installing Pybind11 Manually</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#usage-examples">Usage examples</a></li>
@@ -151,9 +152,13 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="go">APC $ pip install pybind11</span>
 </pre></div>
 </div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="go">APC $ conda install -c conda-forge pybind11</span>
+</pre></div>
+</div>
+<p>If using pip or conda to install python packages is not an option then go to the ‘Installing PyBind11 Manually’_.</p>
 </section>
 <section id="building-apc">
-<h3>Building APC<a class="headerlink" href="#building-apc" title="Permalink to this headline"></a></h3>
+<span id="id1"></span><h3>Building APC<a class="headerlink" href="#building-apc" title="Permalink to this headline"></a></h3>
 <p>Move your consoles current working directory to “APC” and build the APC library.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="go">APC $ python setup.py build_ext --inplace</span>
 </pre></div>
@@ -175,6 +180,19 @@
 </pre></div>
 </div>
 </section>
+</section>
+<section id="installing-pybind11-manually">
+<span id="id2"></span><h2>Installing Pybind11 Manually<a class="headerlink" href="#installing-pybind11-manually" title="Permalink to this headline"></a></h2>
+<p>This method will work for compiling APC with a PyBind11 wrapper as long as you have access to Github. This section assumes you have followed the Installation from Source guide up to creating the python virtual environment.</p>
+<p>In the root folder where the APC repo was cloned run this git command to switch to the includePybind11 branch.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>git checkout includePybind11
+</pre></div>
+</div>
+<p>A few files will change and in the extern folder there will be a submodule folder called “PyBind11” that will be empty. To sync this folder with the main PyBind11 repo run</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>git submodule update --init
+</pre></div>
+</div>
+<p>The folder should populate with the PyBind11 repo. Go to ‘Building APC’_ to finish compiling the APC library from source.</p>
 </section>
 </section>
 <section id="usage-examples">
