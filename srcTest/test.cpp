@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2022-04-13 20:12:16
+ * @ Modified time: 2022-06-02 12:59:50
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -41,8 +41,13 @@ int main(){
 
   // Initialize Input Variables
   // LEO
-  std::vector<double> r0 = {0.0, -8000.0, 0.0};      // Initial Position (km)
-  std::vector<double> v0 = {8,  0.0, 0.0};   // Initial Velocity (km/s)
+  // std::vector<double> r0 = {0.0, -8000.0, 0.0};      // Initial Position (km)
+  // std::vector<double> v0 = {8,  0.0, 0.0};   // Initial Velocity (km/s)
+  // double t0    = 0.0;                                // Initial Times (s)
+  // double tf    = 10*5059.648765;                     // Final Time (s)
+  // LEO 2
+  std::vector<double> r0 = {8000, 0, 0.0};      // Initial Position (km)
+  std::vector<double> v0 = {0,  8, 0.0};   // Initial Velocity (km/s)
   double t0    = 0.0;                                // Initial Times (s)
   double tf    = 10*5059.648765;                     // Final Time (s)
   // MEO
@@ -85,6 +90,6 @@ int main(){
   // std::vector<Orbit> orbits = ParallelPropagate(largelist, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   // std::cout << "Parallel Propagation Test Complete" << std::endl << "=================" << std::endl;
 
-  std::pair<int,double> bench = Benchmark1000(12);
+  std::pair<int,double> bench = Benchmark1000(8);
   std::cout << "Benchmark with " << bench.first << " threads finished in " << bench.second << " seconds.\n";
 }

@@ -80,7 +80,7 @@ void rv2elm(double* r, double* v, double tol, double* elm){
     a   = INFINITY;
     p   = (pow(H,2))/C_MU;
   }
-  else if (fabs(1-e) > tol){
+  else{
     a   = -C_MU/2/xi;
     p   = a * (1 - pow(e,2));
   }
@@ -96,7 +96,7 @@ void rv2elm(double* r, double* v, double tol, double* elm){
     if (nvec[2] < 0){
       Om = 2*C_PI - Om;
     }
-  } else if (fabs(inc) < tol){
+  } else{
     Om = 0.0;
   }
 
@@ -107,7 +107,7 @@ void rv2elm(double* r, double* v, double tol, double* elm){
     if (evec[2] < 0){
       w = 2*C_PI - w;
     }
-  } else if (fabs(inc) < tol){
+  } else{
     w = 0.0;
   }
 
@@ -118,7 +118,7 @@ void rv2elm(double* r, double* v, double tol, double* elm){
   if (fabs(temp-1.0) <= tol){
     f = 0.0;
   }
-  else if (fabs(temp-1.0) > tol){
+  else{
     f = acos(temp);
   }
   // f = acos((evec[0]*r[0] + evec[1]*r[1] + evec[2]*r[2]) / R / e);
@@ -139,7 +139,7 @@ void rv2elm(double* r, double* v, double tol, double* elm){
 
   // Special Cases
   // Elliptical Equatorial (ascending node undefined)
-  double s;
+  double s = 0.0;
   if (inc < tol && e >= tol){
     s = acos(evec[0] / e);
     if (evec[1] < 0)

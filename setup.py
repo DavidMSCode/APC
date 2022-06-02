@@ -14,10 +14,11 @@ link_args = []
 cspice_lib = []
 if platform.system() == 'Darwin':
     #Mac OS unique args
-   cpp_extra_args.append('-mmacosx-version-min=10.9')
+   cpp_extra_args.append('-mmacosx-version-min=10.15')
    cpp_extra_args.append("-Xpreprocessor")                          #Enable OpenMP support on Clang++ for newer versions of Mac OS
    cpp_extra_args.append("-fopenmp")
    cpp_extra_args.append('-std=c++11')
+   link_args.append('-mmacosx-version-min=10.15') 
    link_args.append('-lomp')                                        #llvm OpenMP   
    cspice_lib = "extern/cspice/lib/cspice.a"                       #link against cspice library (external to normal lib locations)    
                 
