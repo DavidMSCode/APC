@@ -18,6 +18,7 @@
 #include <vector>
 #include <Orbit.h>
 #include <APC.h>
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <iterator>
@@ -323,6 +324,6 @@ std::pair<int,double>  Benchmark1000(int max_threads){
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> diff = end-start;
     //return number of threads and the time to finish
-    std::pair<int,double> out = {min(max_threads,procs), diff.count()};
+    std::pair<int,double> out = {std::min(max_threads,procs), diff.count()};
     return out;
 }

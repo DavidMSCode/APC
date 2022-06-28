@@ -85,7 +85,7 @@ std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v
   std::vector<double>  BETA((coeff_size*3),0.0);
   //BETA = static_cast<double*>(calloc((coeff_size*3),sizeof(double)));
   int total_seg = 0;
-  int sz = int(ceil(1.1*tf/Period)*seg);
+  int sz = int(ceil(1.2*tf/Period)*seg);
   std::vector<double> segment_times(sz,0.0);
   //memset( segment_times, 0.0, (sz*sizeof(double)));
   std::vector<double> W1(sz,0.0);

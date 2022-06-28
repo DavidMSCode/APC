@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2022-06-02 12:59:50
+ * @ Modified time: 2022-06-02 21:31:55
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -41,15 +41,15 @@ int main(){
 
   // Initialize Input Variables
   // LEO
-  // std::vector<double> r0 = {0.0, -8000.0, 0.0};      // Initial Position (km)
-  // std::vector<double> v0 = {8,  0.0, 0.0};   // Initial Velocity (km/s)
-  // double t0    = 0.0;                                // Initial Times (s)
-  // double tf    = 10*5059.648765;                     // Final Time (s)
-  // LEO 2
-  std::vector<double> r0 = {8000, 0, 0.0};      // Initial Position (km)
-  std::vector<double> v0 = {0,  8, 0.0};   // Initial Velocity (km/s)
+  std::vector<double> r0 = {6878, 0, 0.0};      // Initial Position (km)
+  std::vector<double> v0 = {0,  0.0, 7.61267977};   // Initial Velocity (km/s)
   double t0    = 0.0;                                // Initial Times (s)
   double tf    = 10*5059.648765;                     // Final Time (s)
+  // LEO 2
+  // std::vector<double> r0 = {8000, 0, 0.0};      // Initial Position (km)
+  // std::vector<double> v0 = {0,  8, 0.0};   // Initial Velocity (km/s)
+  // double t0    = 0.0;                                // Initial Times (s)
+  // double tf    = 10*5059.648765;                     // Final Time (s)
   // MEO
   // double r0[3] = {9000.0, 0.0, 0.0};                                // Initial Position (km)
   // double v0[3] = {0.0, 6.7419845635570, 1.806509319188210};         // Initial Velocity (km/s)
@@ -74,8 +74,8 @@ int main(){
   // EphemerisManager ephem(spk,lsk,t0,tf,bodies,center,frame);
   // MPGetTest(ephem, t0, tf);
   // std::cout << "Parallel Ephemeris Fetching Test Complete" << std::endl << "================================================" << std::endl;
-  // Orbit orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
-  // std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;
+  Orbit orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
+  std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;
   // std::vector<SatState> sigma13 = GenSigma13(r0,v0,10,.1);
 
   // int j = 0;

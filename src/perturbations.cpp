@@ -213,20 +213,20 @@ void Perturbed_SRP(double time, double* X, Orbit orb, EphemerisManager ephem, do
     }
 };
 
-void Perturbed_Drag(double* X, double* V, Orbit orb, double* drag_aECEF){
+void Perturbed_Drag(double* X_ECEF, double* V_ECEF, Orbit orbit, double* drag_aECEF){
     /* Returns the atmospheric drag acceleration on the sattelite in a given orbit around Earth. 
     */
     for(int i=0;i<3;i++){
         drag_aECEF[i]=0.0;
     }
-    if (orb.Compute_Drag){
-        double r = sqrt(pow(X[0],2)+pow(X[1],2)+pow(X[2],2));   //distance of sattelite from center of the earth in km
-        double s = sqrt(pow(V[0],2)+pow(V[1],2)+pow(V[2],2));   //speed of sattelite in km/s
+    if (orbit.Compute_Drag){
+        double r = sqrt(pow(X_ECEF[0],2)+pow(X_ECEF[1],2)+pow(X_ECEF[2],2));   //distance of sattelite from center of the earth in km
+        double s = sqrt(pow(V_ECEF[0],2)+pow(V_ECEF[1],2)+pow(V_ECEF[2],2));   //speed of sattelite in km/s
 
-        double Mass = orb.GetMass();                            //Sat mass (kg)
-        double Area_m = orb.GetArea();                          //Sat cannonball area (m^2)
+        double Mass = orbit.GetMass();                            //Sat mass (kg)
+        double Area_m = orbit.GetArea();                          //Sat cannonball area (m^2)
         double Area_km = Area_m/pow(1000,2);                    //Sat cannonball area (km^2)
-        double Cd = orb.GetDragCoefficient();                   //Sat drag coefficient 
+        double Cd = orbit.GetDragCoefficient();                   //Sat drag coefficient 
         double r_eq = C_Req;                                    //Equatorial radius (km)
         double alt = r-r_eq;                                    //Altitude (km)
 
@@ -237,7 +237,7 @@ void Perturbed_Drag(double* X, double* V, Orbit orb, double* drag_aECEF){
 
         for (int i=0;i<3;i++){
             //calc drag vector in km/s^2
-            drag_aECEF[i]= -drag_a*V[i]/s;
+            drag_aECEF[i]= -drag_a*V_ECEF[i]/s;
         }
     }
 };
