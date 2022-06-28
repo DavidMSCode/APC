@@ -15,6 +15,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -80,12 +81,12 @@
            <div itemprop="articleBody">
              
   <section id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h1>
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h1>
 <p>Instructions for installation and use. Issues may be reported at <a class="reference external" href="https://github.com/uiuc-ae-l3harris/APC-L3Harris">https://github.com/uiuc-ae-l3harris/APC-L3Harris</a>.</p>
 <section id="installation-from-source">
-<h2>Installation from source<a class="headerlink" href="#installation-from-source" title="Permalink to this headline"></a></h2>
+<h2>Installation from source<a class="headerlink" href="#installation-from-source" title="Permalink to this heading"></a></h2>
 <section id="prerequisites">
-<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline"></a></h3>
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>A C++ compiler that supports the C++11 standard as well as OpenMP</p></li>
 <li><p>Python 3.6+</p></li>
@@ -93,7 +94,7 @@
 </ul>
 </section>
 <section id="preparing-the-source-code">
-<h3>Preparing the source code<a class="headerlink" href="#preparing-the-source-code" title="Permalink to this headline"></a></h3>
+<h3>Preparing the source code<a class="headerlink" href="#preparing-the-source-code" title="Permalink to this heading"></a></h3>
 <p>Clone the APC github repository to your computer. The root of this directory will be referred to as ‘APC’. Create a directory in ‘APC’ called ‘extern’. The root folder structure should be similar to:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span>APC
 ├── CMakeLists.txt
@@ -146,7 +147,7 @@
 </div>
 </section>
 <section id="preparing-the-python-virtual-environment">
-<h3>Preparing the Python virtual environment<a class="headerlink" href="#preparing-the-python-virtual-environment" title="Permalink to this headline"></a></h3>
+<h3>Preparing the Python virtual environment<a class="headerlink" href="#preparing-the-python-virtual-environment" title="Permalink to this heading"></a></h3>
 <p>To prevent conflicting prerequisites, work in Python should be performed in a virtual environment. I recommend Anaconda for managing virtual environments. Alternatively, in Python 3.6+ the venv command can be used <a class="reference external" href="https://docs.python.org/3/library/venv.html">https://docs.python.org/3/library/venv.html</a>.</p>
 <p>Once your virtual environment has been setup and activated install PyBind11 with pip.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="go">APC $ pip install pybind11</span>
@@ -158,7 +159,7 @@
 <p>If using pip or conda to install python packages is not an option then go to the ‘Installing PyBind11 Manually’_.</p>
 </section>
 <section id="building-apc">
-<span id="id1"></span><h3>Building APC<a class="headerlink" href="#building-apc" title="Permalink to this headline"></a></h3>
+<span id="id1"></span><h3>Building APC<a class="headerlink" href="#building-apc" title="Permalink to this heading"></a></h3>
 <p>Move your consoles current working directory to “APC” and build the APC library.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="go">APC $ python setup.py build_ext --inplace</span>
 </pre></div>
@@ -169,7 +170,7 @@
 </div>
 </section>
 <section id="building-apc-alternative">
-<h3>Building APC Alternative<a class="headerlink" href="#building-apc-alternative" title="Permalink to this headline"></a></h3>
+<h3>Building APC Alternative<a class="headerlink" href="#building-apc-alternative" title="Permalink to this heading"></a></h3>
 <p>Instead of building the library inplace, the APC library can be installed in the current virtual environment with pip. In “APC” run the following</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="go">APC $ pip install .</span>
 </pre></div>
@@ -182,7 +183,7 @@
 </section>
 </section>
 <section id="installing-pybind11-manually">
-<span id="id2"></span><h2>Installing Pybind11 Manually<a class="headerlink" href="#installing-pybind11-manually" title="Permalink to this headline"></a></h2>
+<span id="id2"></span><h2>Installing Pybind11 Manually<a class="headerlink" href="#installing-pybind11-manually" title="Permalink to this heading"></a></h2>
 <p>This method will work for compiling APC with a PyBind11 wrapper as long as you have access to Github. This section assumes you have followed the Installation from Source guide up to creating the python virtual environment.</p>
 <p>In the root folder where the APC repo was cloned run this git command to switch to the includePybind11 branch.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>git checkout includePybind11
@@ -196,7 +197,7 @@
 </section>
 </section>
 <section id="usage-examples">
-<h1>Usage examples<a class="headerlink" href="#usage-examples" title="Permalink to this headline"></a></h1>
+<h1>Usage examples<a class="headerlink" href="#usage-examples" title="Permalink to this heading"></a></h1>
 <p>In the “bin” folder within “APC” there are two python notebooks that make use of the APC library. Test.ipynb demonstrates APC running sequentially and in parallel with a few orbtial plots. Benchmark.ipynb demonstrates the performance gains from running multiple orbits in parallel.
 Running these notebooks requires the following Python packages:</p>
 <ul class="simple">
