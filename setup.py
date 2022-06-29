@@ -24,10 +24,17 @@ if platform.system() == 'Darwin':
                 
 elif platform.system() == "Windows":
     #Windows Args
-    link_args.append("/NODEFAULTLIB:library")
-    cspice_lib = "extern/cspice/lib/cspice.lib" 
-    cpp_extra_args.append("/std:c++11")                    
-
+    """ignore incompatible runtime libs"""
+    link_args.append("/NODEFAULTLIB:msvcrt.lib")
+    link_args.append("/NODEFAULTLIB:libcmtd.lib")
+    link_args.append("/NODEFAULTLIB:msvcrtd.lib")
+    #link_args.append("/VERBOSE:LIB")
+    """link against cspice library"""
+    cspice_lib = "extern/cspice/lib/cspice.lib"
+    """use c++14 standard"""
+    cpp_extra_args.append("/std:c++14")
+    """enable openmp"""
+    cpp_extra_args.append("/openmp")                
 elif platform.system()=="Linux":
     #Linux args                                                               
     cspice_lib = "extern/cspice/lib/cspice.a"                       #link against cspice library (external to normal lib locations)
