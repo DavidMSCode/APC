@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <string.h>
+#include <string>
 #include <vector>
 #include <list>
 #include <map>
@@ -133,8 +133,8 @@ void ChebyshevEphemeris::getState(double* state, double epoch)
     // Check that the query epoch is within the allowed bounds
     if ( (epoch < initialEpoch) || (epoch > finalEpoch) )
     {
-        string error_msg = "Epoch " + to_string(epoch) + " is not within the allowed epoch range (" +
-                            to_string(initialEpoch) + ", " + to_string(finalEpoch) + ")";
+        string error_msg = "Epoch " + std::to_string(epoch) + " is not within the allowed epoch range (" +
+                            std::to_string(initialEpoch) + ", " + to_string(finalEpoch) + ")";
         throw std::invalid_argument( error_msg );
     }
 

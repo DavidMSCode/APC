@@ -25,14 +25,15 @@ if platform.system() == 'Darwin':
 elif platform.system() == "Windows":
     #Windows Args
     link_args.append("/NODEFAULTLIB:library")
-    cspice_lib = "extern/cspice/lib/cspice.lib"                     
+    cspice_lib = "extern/cspice/lib/cspice.lib" 
+    cpp_extra_args.append("/std:c++11")                    
 
 elif platform.system()=="Linux":
     #Linux args                                                               
     cspice_lib = "extern/cspice/lib/cspice.a"                       #link against cspice library (external to normal lib locations)
     cpp_extra_args.append("-fopenmp")                               #Enable multithreading through pragma statements
     link_args.append('-lgomp')                                       #GNU OpenMP library 
-    cpp_extra_args.append('-std=c++11')                             #use C++11 standard
+    cpp_extra_args.append('-std=c++14')                             #use C++11 standard
     
 
 #Get all necessary C++ source files
