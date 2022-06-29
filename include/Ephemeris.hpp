@@ -21,6 +21,7 @@
 
 #include "const.hpp"
 #include "c_functions2.hpp"
+#include "c_functions.h"
 #include "Ephemeris.hpp"
 #include "SpiceUsr.h"
 
@@ -68,8 +69,8 @@ class ChebyshevEphemeris
         double getFinalEpoch();
 
         // Static methods
-        static void fitChebyshevPolynomials(double s, int N, int M, double* T, double* A);
-        static void getChebyshevPolynomials(double s, int N, int M, int arg, double* T);
+        static void fitChebyshevPolynomials(double s, int N, int M, std::vector<double> &T, std::vector<double> &A);
+        static void getChebyshevPolynomials(double s, int N, int M, int arg, std::vector<double> &T);
 };
 
 // Class for managing the ephemeris of multiple celestial bodies

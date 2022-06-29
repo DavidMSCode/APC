@@ -17,7 +17,7 @@
 
 #include "SpiceUsr.h"
 #include "Ephemeris.hpp"
-
+#include "c_functions.h"
 using namespace std;
 
 ChebyshevEphemeris::ChebyshevEphemeris(){}
@@ -76,17 +76,17 @@ ChebyshevEphemeris::ChebyshevEphemeris(string spkFile,
             double s = -1.0;
 
             // Least Squares Operator (A)
-            double Ta[(N+1)*(N+1)];
-            memset( Ta, 0.0, ((N+1)*(N+1)*sizeof(double)));
-            double A[(N+1)*(N+1)];
-            memset( A, 0.0, ((N+1)*(N+1)*sizeof(double)));
+            std::vector<double> Ta((N+1)*(N+1),0.0);
+            // memset( Ta, 0.0, ((N+1)*(N+1)*sizeof(double)));
+            std::vector<double> A((N+1)*(N+1),0.0);
+            // memset( A, 0.0, ((N+1)*(N+1)*sizeof(double)));
 
             fitChebyshevPolynomials(s, N, N, Ta, A);
 
-            double tau[N+1];
-            memset( tau, 0.0, ((N+1)*sizeof(double)));
-            double time[(N+1)];
-            memset( time, 0.0, ((N+1)*sizeof(double)));
+            std::vector<double> tau(N+1,0.0);
+            // memset( tau, 0.0, ((N+1)*sizeof(double)));
+            std::vector<double> time((N+1),0.0);
+            // memset( time, 0.0, ((N+1)*sizeof(double)));
 
             for (int i=0; i<=N; i++)
             {
@@ -97,8 +97,8 @@ ChebyshevEphemeris::ChebyshevEphemeris(string spkFile,
             // Compute States
             double state[6] = {0.0};
             double owlt = 0.0;
-            double X[6*(N+1)];
-            memset( X, 0.0, (6*(N+1)*sizeof(double)));
+            std::vector<double> X(6*(N+1),0.0);
+            // memset( X, 0.0, (6*(N+1)*sizeof(double)));
 
             for (int i=0; i<=N; i++)
             {
@@ -110,7 +110,7 @@ ChebyshevEphemeris::ChebyshevEphemeris(string spkFile,
             }
 
             // Compute Chebyshev Coefficients
-            matmul(A, X, coeff.data(), N+1, N+1, 6, N+1, N+1, N+1);
+            coeff = matmul(A, X, N+1, N+1, 6, N+1, N+1);
             this->coefficients.push_back(coeff);
             t0 = t1;
         }
@@ -145,8 +145,8 @@ void ChebyshevEphemeris::getState(double* state, double epoch)
     double tau = (epoch - w1[idx])/w2[idx];
 
     // Interpolate Chebyshev Polynomials
-    double T[(N+1)];
-    memset( T, 0.0, ( (N+1)*sizeof(double) ) );
+    std::vector<double> T((N+1),0.0);
+    // memset( T, 0.0, ( (N+1)*sizeof(double) ) );
 
     for (int i=0; i<=N; i++)
     {
@@ -154,17 +154,17 @@ void ChebyshevEphemeris::getState(double* state, double epoch)
     }
 
     // Compute state
-    matmul(T, coefficients[idx].data(), state, 1, N+1, 6, 1, N+1, 1);
+    state = &matmul(T, coefficients[idx], 1, N+1, 6, 1, N+1)[0];
 }
 
-void ChebyshevEphemeris::fitChebyshevPolynomials(double s, int N, int M, double* T, double* A)
+void ChebyshevEphemeris::fitChebyshevPolynomials(double s, int N, int M, std::vector<double> &T, std::vector<double> &A)
 {
     // Generate Chebyshev Polyniomials
     getChebyshevPolynomials(s, N, M, 2, T);
 
     // Weight Matrix
-    double W[(M+1)*(M+1)];
-    memset( W, 0.0, ( (M+1)*(M+1)*sizeof(double) ) );
+    std::vector<double> W((M+1)*(M+1),0.0);
+    // memset( W, 0.0, ( (M+1)*(M+1)*sizeof(double) ) );
     for (int i=1; i<=M+1; i++)
     {
         for (int j=1; j<=M+1; j++)
@@ -180,8 +180,8 @@ void ChebyshevEphemeris::fitChebyshevPolynomials(double s, int N, int M, double*
     W[ID2(M+1,M+1,M+1)] = 0.5;
 
     // V Matrix
-    double V[(N+1)*(N+1)];
-    memset( V, 0.0, ((N+1)*(N+1)*sizeof(double)));
+    std::vector<double> V((N+1)*(N+1),0.0);
+    // memset( V, 0.0, ((N+1)*(N+1)*sizeof(double)));
     for (int i=1; i<=N+1; i++)
     {
         for (int j=1; j<=N+1; j++)
@@ -205,8 +205,8 @@ void ChebyshevEphemeris::fitChebyshevPolynomials(double s, int N, int M, double*
     }
 
     // T Transpose
-    double TT[(N+1)*(M+1)];
-    memset( TT, 0.0, ((N+1)*(M+1)*sizeof(double)));
+    std::vector<double> TT((N+1)*(M+1),0.0);
+    // memset( TT, 0.0, ((N+1)*(M+1)*sizeof(double)));
     for (int i=1; i<=N+1; i++)
     {
         for (int j=1; j<=M+1; j++)
@@ -216,18 +216,19 @@ void ChebyshevEphemeris::fitChebyshevPolynomials(double s, int N, int M, double*
     }
 
     // Least Squares Operator
-    double TTW[(M+1)*(M+1)];
-    memset( TTW, 0.0, ((M+1)*(M+1)*sizeof(double)));
-    matmul(TT,W,TTW,N+1,M+1,M+1,N+1,M+1,N+1);
-    matmul(V,TTW,A,N+1,N+1,M+1,N+1,N+1,N+1);
+    std::vector<double> TTW((M+1)*(M+1),0.0);
+    // memset( TTW, 0.0, ((M+1)*(M+1)*sizeof(double)));
+    
+    TTW = matmul(TT,W,N+1,M+1,M+1,N+1,M+1);
+    A = matmul(V,TTW,N+1,N+1,M+1,N+1,N+1);
 }
 
-void ChebyshevEphemeris::getChebyshevPolynomials(double s, int N, int M, int arg, double* T)
+void ChebyshevEphemeris::getChebyshevPolynomials(double s, int N, int M, int arg, std::vector<double> &T)
 {
 
   // Cosine Sample Points
-  double tau[(M+1)];
-  memset( tau, 0.0, ((M+1)*sizeof(double)));
+  std::vector<double> tau((M+1),0.0);
+//   memset( tau, 0.0, ((M+1)*sizeof(double)));
   for (int i=0; i<=M; i++){
     tau[i] = s*cos(i*C_PI/M);
   }
