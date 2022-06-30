@@ -17,26 +17,33 @@ link_args = []
 cspice_lib = []
 if platform.system() == 'Darwin':
     #Mac OS unique args
-   cpp_extra_args.append('-mmacosx-version-min=10.9')
+   cpp_extra_args.append('-mmacosx-version-min=10.15')
    cpp_extra_args.append("-Xpreprocessor")                          #Enable OpenMP support on Clang++ for newer versions of Mac OS
    cpp_extra_args.append("-fopenmp")
    cpp_extra_args.append('-std=c++11')
+   link_args.append('-mmacosx-version-min=10.15') 
    link_args.append('-lomp')                                        #llvm OpenMP   
    cspice_lib = "extern/cspice/lib/cspice.a"                       #link against cspice library (external to normal lib locations)    
                 
 elif platform.system() == "Windows":
     #Windows Args
-    link_args.append("/NODEFAULTLIB:library")
+    """ignore incompatible runtime libs"""
+    link_args.append("/NODEFAULTLIB:msvcrt.lib")
+    link_args.append("/NODEFAULTLIB:libcmtd.lib")
+    link_args.append("/NODEFAULTLIB:msvcrtd.lib")
+    #link_args.append("/VERBOSE:LIB")
+    """link against cspice library"""
     cspice_lib = "extern/cspice/lib/cspice.lib"
-    cpp_extra_args.append("/openmp")  
-    cpp_extra_args.append("/std:c++14")               
-
+    """use c++14 standard"""
+    cpp_extra_args.append("/std:c++14")
+    """enable openmp"""
+    cpp_extra_args.append("/openmp")                
 elif platform.system()=="Linux":
     #Linux args                                                               
     cspice_lib = "extern/cspice/lib/cspice.a"                       #link against cspice library (external to normal lib locations)
     cpp_extra_args.append("-fopenmp")                               #Enable multithreading through pragma statements
-    link_args.append('-lgomp')                                      #GNU OpenMP library 
-    cpp_extra_args.append('-std=c++11')                             #use C++11 standard
+    link_args.append('-lgomp')                                       #GNU OpenMP library 
+    cpp_extra_args.append('-std=c++14')                             #use C++11 standard
     
 
 #Get all necessary C++ source files

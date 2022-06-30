@@ -38,6 +38,8 @@ def traceOrbit(orbit):
     return (trace)
 
 def plotTraces(traces):
+    if not isinstance(traces,list):
+        traces = [traces]
     traceEarth = plot_sphere(6378,res=30)
     traces.append(traceEarth)
     fig = go.Figure(data=traces)
