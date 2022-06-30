@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2022
  * 
  */
-
+#include <APC.h>
 #include "SpiceUsr.h"
 #include <adaptive_picard_chebyshev.h>
 #include <c_functions.h>
@@ -17,7 +17,6 @@
 #include <errno.h>
 #include <vector>
 #include <Orbit.h>
-#include <APC.h>
 #include <algorithm>
 #include <iostream>
 #include <sstream>
