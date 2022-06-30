@@ -20,6 +20,7 @@
 #include <Ephemeris.hpp>
 #include <utility>
 
+using namespace std;
 
 int main(){
   //satelltie properties
@@ -28,9 +29,9 @@ int main(){
   double reflectance = 1.5;                        //sat refelction absorption ratio
   double drag_C = 2.0;                              //sat coefficient of drag
   //Perturbation calc flags
-  bool compute_drag = true;                         //atmostpheric drag toggle
-  bool compute_SRP = true;                          //Solar radiation pressure toggle
-  bool compute_third_body = true;                   //Third body gravity toggle
+  bool compute_drag = false;                         //atmostpheric drag toggle
+  bool compute_SRP = false;                          //Solar radiation pressure toggle
+  bool compute_third_body = false;                   //Third body gravity toggle
   //Ephemeris
   string spk = "de440.bsp";
   string lsk = "naif0012.tls";
@@ -41,18 +42,21 @@ int main(){
 
   // Initialize Input Variables
   // LEO
-  std::vector<double> r0 = {6878, 0, 0.0};      // Initial Position (km)
-  std::vector<double> v0 = {0,  0.0, 7.61267977};   // Initial Velocity (km/s)
-  double t0    = 0.0;                                // Initial Times (s)
-  double tf    = 10*5059.648765;                     // Final Time (s)
-  // LEO 2
-  // std::vector<double> r0 = {8000, 0, 0.0};      // Initial Position (km)
-  // std::vector<double> v0 = {0,  8, 0.0};   // Initial Velocity (km/s)
+  // vector<double> r0 = {7000, 0.0, 0.0};         // Initial Position (km)
+  // vector<double> v0 = {0.0,  7.54604911, 0.};   // Initial Velocity (km/s)
   // double t0    = 0.0;                                // Initial Times (s)
   // double tf    = 10*5059.648765;                     // Final Time (s)
+
+  //SSO
+  vector<double> r0 = {6678,  0,  0};                  // Initial Position (km)
+  vector<double> v0 = {0,  0,  7.7451257}; // Initial Velocity (km/s)
+  double T = 5431.013011331035;                               //Orbital period (s)
+  double t0 = 0;                                              //initial time (s)
+  double tf = 1000*T;                                              //final time (s)
+       
   // MEO
-  // double r0[3] = {9000.0, 0.0, 0.0};                                // Initial Position (km)
-  // double v0[3] = {0.0, 6.7419845635570, 1.806509319188210};         // Initial Velocity (km/s)
+  //std::vector<double> r0 = {9000.0, 0.0, 0.0};                                // Initial Position (km)
+  //std::vector<double> v0 = {0.0, 6.7419845635570, 1.806509319188210};         // Initial Velocity (km/s)
   // double t0    = 0.0;                                               // Initial Times (s)
   // double tf    = 3.0*9.952014050491189e+03;                         // Final Time (s)
   // GEO
@@ -71,12 +75,12 @@ int main(){
   // double t0    = 0.0;                                            // Initial Times (s)
   // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s
   
-  // EphemerisManager ephem(spk,lsk,t0,tf,bodies,center,frame);
-  // MPGetTest(ephem, t0, tf);
-  // std::cout << "Parallel Ephemeris Fetching Test Complete" << std::endl << "================================================" << std::endl;
+  //EphemerisManager ephem(spk,lsk,t0,tf,bodies,center,frame);
+  //MPGetTest(ephem, t0, tf);
+  std::cout << "Parallel Ephemeris Fetching Test Complete" << std::endl << "================================================" << std::endl;
   Orbit orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;
-  // std::vector<SatState> sigma13 = GenSigma13(r0,v0,10,.1);
+  std::vector<SatState> sigma13 = GenSigma13(r0,v0,10,.1);
 
   // int j = 0;
   // std::vector<SatState> largelist;

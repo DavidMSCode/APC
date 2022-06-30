@@ -19,7 +19,7 @@ bin/de440.bsp
 !bin/*.py
 
 #external libraries
-extern/
+extern/cspice*
 
 #documentation builds
 build/

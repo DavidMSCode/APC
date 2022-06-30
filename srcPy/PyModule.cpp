@@ -8,7 +8,7 @@
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
 */
 
-#include <pybind11/pybind11.h>
+#include <pybind11/pybind11.h>      //Pybind11 headers must be first include
 #include <pybind11/stl.h>
 #include <Orbit.h>
 #include <linktest.h>

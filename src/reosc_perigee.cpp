@@ -60,11 +60,10 @@ void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<d
     rv2elm(r,v,tol,elm);
     fvec[i-1] = elm[6];
     e = elm[2];
-
   }
 
   if (*k == seg-1 || (*k == *prep_HS && fabs(tf - t_final)/tf > tol)){
-    if (fabs(e) > 1e-6){    // Skip for zero eccentricity (no need to re-osculate as perigee is undefined)
+    if (fabs(e) > 1e-15){    // Skip for zero eccentricity (no need to re-osculate as perigee is undefined)
       for (int i=1; i<=M+1; i++){
         // If passing through perigee
         if ((i > 2) && (fvec[i-1] < fvec[i-2])){
