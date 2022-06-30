@@ -14,7 +14,7 @@
 *    xB  -- ECEF Position (km)
 *    vB  -- ECEF Velocity (km/s)
 */
-
+#include <math.h>
 #include "eci2ecef.h"
 #include "const.h"
 
