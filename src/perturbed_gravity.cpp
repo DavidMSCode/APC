@@ -27,8 +27,8 @@
 */
 
 #include "perturbed_gravity.h"
-#include "EGM2008.h"
 #include "const.h"
+#include "EGM2008.h"
 #include "c_functions.h"
 #include "matrix_loader.h"
 #include "radial_gravity.h"

@@ -19,10 +19,7 @@
 *    AAS/AIAA Space Flight Mechanics Meeting, Williamsburg, Virginia, 2015.
 */
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include "radial_gravity.h"
 #include "const.h"
 #include "c_functions.h"
 

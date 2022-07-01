@@ -9,14 +9,8 @@
 #ifndef __PI__
 #define __PI__
 
-#include <stdio.h>
-#include <math.h>
-#include <complex.h>
-#include <string.h>
-#include <stdlib.h>
-#include <Orbit.h>
-#include "const.h"
-#include <vector>
+
+#include "Orbit.h"
 #include "Ephemeris.hpp"
 
 void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, int N, int M, double deg, int hot, double tol,

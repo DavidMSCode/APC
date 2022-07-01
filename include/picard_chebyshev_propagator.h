@@ -9,14 +9,9 @@
 #ifndef __PROP__
 #define __PROP__
 
-#include <stdio.h>
-#include <math.h>
-#include <complex.h>
-#include <string.h>
-#include <stdlib.h>
-#include "const.h"
-#include <Orbit.h>
 #include <vector>
+
+#include "Orbit.h"
 #include "Ephemeris.hpp"
 
 std::vector<std::vector<double> >  picard_chebyshev_propagator(double* r0, double* v0, double t0, double t_final,double deg, double tol, double Period,

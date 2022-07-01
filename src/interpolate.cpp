@@ -23,10 +23,12 @@
 * COMMENTS:
 *
 */
+#include <vector>
 #include <iostream>
+
 #include "interpolate.h"
 #include "c_functions.h"
-#include <vector>
+
 
 std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> BETA, int soln_size, int coeff_size, int N, std::vector<double> seg_times,
   std::vector<double> W1, std::vector<double> W2, double t0, double tf, double dt, int total_segs){

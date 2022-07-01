@@ -7,15 +7,14 @@
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
 */
-
-#include "SpiceUsr.h"
-#include <c_functions.h>
 #include <math.h>
 #include <string>
 #include <vector>
-#include <Orbit.h>
-#include <const.h>
-#include <omp.h>
+
+#include "perturbations.h"
+#include "c_functions.h"
+#include "Orbit.h"
+#include "const.h"
 #include "Ephemeris.hpp"
 
 

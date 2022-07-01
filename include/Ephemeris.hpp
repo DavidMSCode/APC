@@ -9,21 +9,10 @@
 #ifndef _EPHEM_H_
 #define _EPHEM_H_
 
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
 #include <vector>
-#include <cassert>
-#include <list>
+#include <string>
 #include <map>
-
-#include "const.hpp"
-#include "c_functions2.hpp"
-#include "c_functions.h"
-#include "Ephemeris.hpp"
-#include "SpiceUsr.h"
+#include <list>
 
 using namespace std;
 

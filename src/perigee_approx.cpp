@@ -17,11 +17,6 @@
 *    tp    -- Time of perigee passage (s)
 *    ind   -- Index in array corresponding to perigee
 */
-
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "perigee_approx.h"
 #include "c_functions.h"
 

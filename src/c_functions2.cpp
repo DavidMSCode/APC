@@ -5,11 +5,8 @@
 *  AFFILIATION:      Department of Aerospace Engineering, Texas A&M University, College Station, TX
 *  DESCRIPTION:      Performs some simple vector-matrix operations
 */
-
 #include <math.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+
 #include "c_functions2.hpp"
 
 // Cross Product in 3D

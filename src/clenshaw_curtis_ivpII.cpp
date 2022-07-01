@@ -18,15 +18,15 @@
 *    A   -- Least Squares Operator [(N-1)x(M+1)]
 */
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+
+
+#include <vector>
+
 #include "lsq_chebyshev_fit.h"
 #include "c_functions.h"
 #include "chebyshev.h"
 #include "const.h"
-#include <vector>
+
 
 void clenshaw_curtis_ivpII( int N, int M, std::vector<double> &T2, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &P1, std::vector<double> &Ta, std::vector<double> &A ){
 

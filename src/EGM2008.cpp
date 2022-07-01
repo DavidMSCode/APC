@@ -17,6 +17,8 @@
 * This file contains the fuctions for the EGM2008 Gravity Spherical
 * harmonic libriary
 */
+#include <math.h>
+
 
 #include "EGM2008.h"
 #include "EGM2008.cc"

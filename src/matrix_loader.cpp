@@ -6,11 +6,10 @@
 *  DESCRIPTION:      Loads constant matrices required for the Adaptive Picard-Chebyshev numerical integration method
 */
 
-#include <math.h>
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+
 #include "matrix_loader.h"
+
 
 // Initialize Arrays
 double arr_T2[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];

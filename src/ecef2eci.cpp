@@ -12,7 +12,9 @@
 * OUTPUTS:
 *    acc -- ECEF Acceleration (km/s^2)
 */
+#include <math.h>
 
+#include "const.h"
 #include "ecef2eci.h"
 
 void ecef2eci (double t,double* aB, double* acc){

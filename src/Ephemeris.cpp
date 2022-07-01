@@ -6,18 +6,19 @@
 *  DESCRIPTION:      Ephemeris computation using Chebyshev polynomials
 */
 
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string>
+
+#include <stdexcept>
 #include <vector>
-#include <list>
+#include <string>
 #include <map>
+#include <list>
 
 #include "SpiceUsr.h"
+
 #include "Ephemeris.hpp"
 #include "c_functions.h"
+#include "c_functions2.hpp"
+#include "const.h"
 using namespace std;
 
 ChebyshevEphemeris::ChebyshevEphemeris(){}

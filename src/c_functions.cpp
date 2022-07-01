@@ -6,13 +6,12 @@
 *  DESCRIPTION:      Performs some simple vector-matrix operations
 */
 
-#include "c_functions.h"
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+
+
 #include <vector>
 #include <iostream>
+
+#include "c_functions.h"
 // Cross Product in 3D
 // INPUT:  vector a & vector b
 // OUTPUT: vector c, (c = axb)

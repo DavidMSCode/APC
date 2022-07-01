@@ -27,11 +27,13 @@
 *    r0   -- Initial position for the start of the next orbit segment (km)
 *    v0   -- Initial velocity for the start of the next orbit segment (km/s)
 */
+#include <vector>
 
 #include "reosc_perigee.h"
+#include "const.h"
 #include "c_functions.h"
 #include "rv2elm.h"
-#include <vector>
+
 
 void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, std::vector<double> &Alpha, std::vector<double> &Beta,
   double tf, double t_final, std::vector<double> &t_orig, int N, int M, int* k, int seg, int* prep_HS,

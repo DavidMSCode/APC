@@ -37,6 +37,7 @@
 #include "rv2elm.h"
 #include "adaptive_picard_chebyshev.h"
 #include "c_functions.h"
+#include "const.h"
 
 void rv2elm(double* r, double* v, double tol, double* elm){
 

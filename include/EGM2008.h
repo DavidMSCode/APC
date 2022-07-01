@@ -9,16 +9,6 @@
  *  DESCRIPTION:      Computes Spherical Harmonic gravity for Orbit propagation using MCPI
  */
 
-
-
-
-#include <math.h>
-#include <stdio.h>
-#include <time.h>
-#include <stdlib.h>
-
-#include "const.h"
-
 /* Macro for looking up indices using "1" based addressing ( a la fortran and matlab )
  and column-major array format [Note ld = Num of rows]
  */

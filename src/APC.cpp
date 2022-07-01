@@ -8,24 +8,27 @@
  * @copyright Copyright (c) 2022
  * 
  */
-
-#include "SpiceUsr.h"
-#include <adaptive_picard_chebyshev.h>
-#include <c_functions.h>
-#include <EGM2008.h>
 #include <time.h> 
 #include <errno.h>
 #include <vector>
-#include <Orbit.h>
-#include <APC.h>
 #include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <iterator>
-#include <omp.h>
 #include <utility>
 #include <chrono>
-#include <Ephemeris.hpp>
+#include <list>
+#include <string>
+
+#include <omp.h>
+#include "SpiceUsr.h"
+
+#include "APC.h"
+#include "adaptive_picard_chebyshev.h"
+#include "c_functions.h"
+#include "EGM2008.h"
+#include "Orbit.h"
+#include "Ephemeris.hpp"
 
 class EphemerisManager cacheEphemeris(double t0, double tf){
   //Ephemeris

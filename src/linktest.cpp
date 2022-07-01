@@ -8,10 +8,13 @@
 *  OUTPUT:
 *  COMMENTS:
 */
+#include <iostream>
 
 #include "SpiceUsr.h"
-#include <iostream>
-#include <linktest.h>
+
+#include "linktest.h"
+
+
 
 void Linktest(){
     furnsh_c("de440.bsp");

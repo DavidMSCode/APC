@@ -28,11 +28,11 @@
 *
 */
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+
+#include <vector>
+
 #include "polydegree_segments.h"
+#include "const.h"
 #include "rv2elm.h"
 #include "FandG.h"
 #include "c_functions.h"
@@ -41,7 +41,7 @@
 #include "EGM2008.h"
 #include "lsq_chebyshev_fit.h"
 #include "matrix_loader.h"
-#include <vector>
+
 
 void polydegree_segments(double* r0,double* v0, double deg, double tol, double* Feval, int* seg, int* degree, double* tp, double* Period){
 

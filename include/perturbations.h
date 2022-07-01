@@ -12,8 +12,6 @@
 #ifndef __PERTURBATIONS__
 #define __PERTURBATIONS__
 
-#include <string>
-#include <vector>
 #include <Orbit.h>
 #include "Ephemeris.hpp"
 

@@ -18,8 +18,10 @@
 * 2. Junkins, J.L., and Woollands, R., "Adaptive-Picard-Chebyshev for Propagating Perturbed Two-Body Orbits",
 *    JGCD, submitted 2017.
 */
+#include <math.h>
 
 #include "picard_error_feedback.h"
+#include "const.h"
 
 void picard_error_feedback(double* X, double* del_X, double* del_a){
 

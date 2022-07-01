@@ -31,14 +31,18 @@
 * COMMENTS:
 *
 */
+#include <vector>
+#include <iostream>
+
+#include <omp.h>
 
 #include "prepare_propagator.h"
+#include "const.h"
 #include "matrix_loader.h"
 #include "rv2elm.h"
 #include "c_functions.h"
-#include <vector>
-#include <iostream>
-#include "omp.h"
+
+
 
 void prepare_propagator(double* r0, double* v0, double t0, double t_final, double dt, double tp, double tol,
   int N, int M, int seg, int* prep_HS, std::vector<double> &t_orig, std::vector<double> &tvec,

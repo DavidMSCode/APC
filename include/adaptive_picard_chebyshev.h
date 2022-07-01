@@ -8,15 +8,6 @@
 
 #ifndef __APC__
 #define __APC__
-
-#include <stdio.h>
-#include <math.h>
-#include <complex.h>
-#include <string.h>
-#include <stdlib.h>
-#include <vector>
-
-#include "const.h"
 #include "Orbit.h"
 #include "Ephemeris.hpp"
 

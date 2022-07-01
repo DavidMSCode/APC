@@ -29,8 +29,12 @@
 *
 */
 
+
+
 #include <vector>
+
 #include "adaptive_picard_chebyshev.h"
+#include "const.h"
 #include "polydegree_segments.h"
 #include "prepare_propagator.h"
 #include "picard_chebyshev_propagator.h"

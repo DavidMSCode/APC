@@ -9,12 +9,6 @@
 #ifndef __INT__
 #define __INT__
 
-#include <stdio.h>
-#include <math.h>
-#include <complex.h>
-#include <string.h>
-#include <stdlib.h>
-#include "const.h"
 #include <vector>
 
 std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> BETA, int soln_size, int coeff_size, int N, std::vector<double> seg_times,

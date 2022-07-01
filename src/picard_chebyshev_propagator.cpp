@@ -38,15 +38,17 @@
 *    segment_times -- Array of segment start and end times
 */
 
+
+#include <vector>
+
 #include "picard_chebyshev_propagator.h"
+#include "const.h"
 #include "prepare_propagator.h"
 #include "picard_iteration.h"
 #include "FandG.h"
 #include "reosc_perigee.h"
 #include "c_functions.h"
-#include <Orbit.h>
-#include <vector>
-#include <iostream>
+#include "Orbit.h"
 #include "Ephemeris.hpp"
 
 std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double* v0, double t0, double t_final,double deg, double tol, double Period,
@@ -234,5 +236,5 @@ for (int i=0;i<3;i++){
   *total_seg = seg_cnt;
   std::vector<std::vector<double> > states = {Xpoints,Vpoints};
   return states;
-  std::cout << "finished propagating";
+  // std::cout << "finished propagating";
 }

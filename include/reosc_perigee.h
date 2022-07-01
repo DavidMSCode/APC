@@ -9,12 +9,6 @@
 #ifndef __PER__
 #define __PER__
 
-#include <stdio.h>
-#include <math.h>
-#include <complex.h>
-#include <string.h>
-#include <stdlib.h>
-#include "const.h"
 #include <vector>
 
 void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, std::vector<double> &Alpha, std::vector<double> &Beta,

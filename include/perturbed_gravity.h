@@ -8,14 +8,7 @@
 
 #ifndef __PERT__
 #define __PERT__
-
-#include <stdio.h>
-#include <math.h>
-#include <complex.h>
-#include <string.h>
-#include <stdlib.h>
-#include "const.h"
-
+ 
 struct IterCounters{
     int ITR1 = 0;
     int ITR2 = 0;

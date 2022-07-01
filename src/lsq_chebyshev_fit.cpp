@@ -15,14 +15,13 @@
 *    T  -- Chebyshev matrix
 */
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+
+#include <vector>
+
 #include "lsq_chebyshev_fit.h"
+#include "const.h"
 #include "chebyshev.h"
 #include "c_functions.h"
-#include <vector>
 
 void lsq_chebyshev_fit(double s, int N, int M, std::vector<double> &T, std::vector<double> &A){
 

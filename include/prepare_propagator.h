@@ -9,12 +9,6 @@
 #ifndef __PP__
 #define __PP__
 
-#include <stdio.h>
-#include <math.h>
-#include <complex.h>
-#include <string.h>
-#include <stdlib.h>
-#include "const.h"
 #include <vector>
 
 void prepare_propagator(double* r0, double* v0, double t0, double t_final, double dt, double tp, double tol,

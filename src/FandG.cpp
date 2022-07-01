@@ -1,4 +1,19 @@
+/**
+ * @file FandG.cpp
+ * @author Robyn Woollands (rmw@illinois.edu)
+ * @brief 
+ * @version 0.1
+ * @date 2022-06-30
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
+#include <math.h>
+
 #include "FandG.h"
+#include "const.h"
+
 
 /*! \brief Calculates the analytic solution to the unperturbed orbit problem using F&G solution
  *   Used as a "warm-start" for MCPI.
