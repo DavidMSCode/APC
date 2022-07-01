@@ -6,6 +6,7 @@
 *  DESCRIPTION:      Ephemeris computation using Chebyshev polynomials
 */
 
+#include <math.h>
 
 #include <stdexcept>
 #include <vector>
@@ -14,7 +15,6 @@
 #include <list>
 
 #include "SpiceUsr.h"
-
 #include "Ephemeris.hpp"
 #include "c_functions.h"
 #include "c_functions2.hpp"

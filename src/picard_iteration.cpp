@@ -34,6 +34,8 @@
 * 2. Junkins, J.L., and Woollands, R., "Adaptive-Picard-Chebyshev for Propagating Perturbed Two-Body Orbits",
 *    JGCD, submitted 2017.
 */
+#include <math.h>
+
 #include <vector>
 
 #include "picard_iteration.h"

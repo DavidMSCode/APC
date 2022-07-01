@@ -10,6 +10,8 @@
  */
 #include <time.h> 
 #include <errno.h>
+#include <math.h>
+
 #include <vector>
 #include <algorithm>
 #include <iostream>

@@ -15,6 +15,7 @@
 *    T   -- Chebyshev polynomials
 */
 
+#include <math.h>
 
 #include <vector>
 

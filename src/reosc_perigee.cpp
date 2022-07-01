@@ -27,6 +27,8 @@
 *    r0   -- Initial position for the start of the next orbit segment (km)
 *    v0   -- Initial velocity for the start of the next orbit segment (km/s)
 */
+#include <math.h>
+
 #include <vector>
 
 #include "reosc_perigee.h"

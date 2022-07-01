@@ -38,6 +38,7 @@
 *    segment_times -- Array of segment start and end times
 */
 
+#include <math.h>
 
 #include <vector>
 

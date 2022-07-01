@@ -30,7 +30,7 @@
 */
 
 
-
+#include <math.h>
 #include <vector>
 
 #include "adaptive_picard_chebyshev.h"

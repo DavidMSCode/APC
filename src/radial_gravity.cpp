@@ -18,6 +18,7 @@
 *    Evaluation of the Spherical Harmonic Gravity Series for Numerical Orbit Propagation",
 *    AAS/AIAA Space Flight Mechanics Meeting, Williamsburg, Virginia, 2015.
 */
+#include <math.h>
 
 #include "radial_gravity.h"
 #include "const.h"

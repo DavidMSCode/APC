@@ -25,6 +25,7 @@
 *    Modified Chebyshev Picard Iteration for Perturbed Orbit Propagation", Computational
 *    Modelling in Engineering & Sciences, Vol. 111, pp, 29-64, 2016.
 */
+#include <math.h>
 
 #include "perturbed_gravity.h"
 #include "const.h"

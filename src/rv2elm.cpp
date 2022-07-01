@@ -33,6 +33,7 @@
 * COMMENTS:
 *
 */
+#include <math.h>
 
 #include "rv2elm.h"
 #include "adaptive_picard_chebyshev.h"
