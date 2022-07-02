@@ -1,5 +1,8 @@
-include_directories(${APC_SOURCE_DIR}/include ${APC_SOURCE_DIR}/extern/cspice/include)
-SET(CMAKE_OSX_ARCHITECTURES x86_64)
+include_directories(${APC_SOURCE_DIR}/include ${APC_SOURCE_DIR}/extern/cspice/include) #add header file locations for APC and CSPICE
+SET(CMAKE_OSX_ARCHITECTURES x86_64) #architechture for Mac OS
+find_package(OpenMP REQUIRED)
+
+# Source files must be listed here to be compiled into the APC library
 add_library(APC 
 FandG.cpp
 EGM2008.cc
@@ -9,6 +12,7 @@ Orbit.cpp
 adaptive_picard_chebyshev.cpp
 c_functions.cpp
 chebyshev.cpp
+Ephemeris.cpp
 clenshaw_curtis_ivpII.cpp
 ecef2eci.cpp
 eci2ecef.cpp
@@ -28,4 +32,5 @@ radial_gravity.cpp
 reosc_perigee.cpp
 rv2elm.cpp)
 
-target_link_libraries(APC ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.a)
+target_link_libraries(APC ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.*) #link cspice library
+target_link_libraries(APC OpenMP::OpenMP_CXX)   #link openmp library

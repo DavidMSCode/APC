@@ -7,23 +7,37 @@
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
 */
+#include <windows.h>
+#include <string>
+#include <limits.h>
+#include <iostream>
+
+#include <vector>
+#include <iostream>
+#include <utility>
+
 
 #include <APC.h>
 #include <adaptive_picard_chebyshev.h>
 #include <c_functions.h>
 #include <Orbit.h>
 #include <EGM2008.h>
-#include <time.h>  
-#include <errno.h>
-#include <vector>
-#include <iostream>
 #include <Ephemeris.hpp>
-#include <utility>
+
 
 using namespace std;
 
+string getCurrentDir() {
+    char buff[MAX_PATH];
+    GetModuleFileName( NULL, buff, MAX_PATH );
+    string::size_type position = string( buff ).find_last_of( "\\/" );
+    return string( buff ).substr( 0, position);
+}
+
 int main(){
-  //satelltie properties
+  //print cwd
+  cout << "Current working directory : " << getCurrentDir() << "\n";
+  //satellite properties
   double mass = 1000;                               //sat mass (kg)
   double area = 10;                                 //sat wetted area (m^2)
   double reflectance = 1.5;                        //sat refelction absorption ratio
@@ -52,7 +66,7 @@ int main(){
   vector<double> v0 = {0,  0,  7.7451257}; // Initial Velocity (km/s)
   double T = 5431.013011331035;                               //Orbital period (s)
   double t0 = 0;                                              //initial time (s)
-  double tf = 1000*T;                                              //final time (s)
+  double tf = 10*T;                                              //final time (s)
        
   // MEO
   //std::vector<double> r0 = {9000.0, 0.0, 0.0};                                // Initial Position (km)

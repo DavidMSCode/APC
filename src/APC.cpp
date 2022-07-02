@@ -32,7 +32,7 @@
 #include "Orbit.h"
 #include "Ephemeris.hpp"
 
-class EphemerisManager cacheEphemeris(double t0, double tf){
+EphemerisManager cacheEphemeris(double t0, double tf){
   //Ephemeris
   string spk = "de440.bsp";               //Ephemeris file for sun earth and moon
   string lsk = "naif0012.tls";            //leap second kernel
@@ -70,8 +70,8 @@ string vec2prettystring(std::vector<double> vector){
 }
 
 void printStateList(std::vector<SatState> statelist){
-  int N = statelist.size();
-  for(int i=0;i<N;i++){
+  size_t N = statelist.size();
+  for(auto i=0;i<N;i++){
       printState(statelist[i],i);
       if (i!=N-1){
         std::cout << std::endl;
@@ -222,7 +222,7 @@ std::vector<SatState> GenSigma3(std::vector<double> r, std::vector<double> v, do
 }
 
 std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body){
-  int n = StateList.size();
+  size_t n = StateList.size();
   int threads;
   //std::cout<<"There are "+to_string(threads)+" available threads.\n";
   //cache ephemeris data for time range
@@ -273,11 +273,13 @@ class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double
 void MPGetTest(EphemerisManager ephem, double t0, double tf){
   int N = 1000;
   double dt = (tf-t0)/N;
+  string target1 = "SUN";
+  string target2 = "MOON";
   #pragma omp parallel for
     for(int i=0;i<1000;i++){
       double epoch = dt*i+t0;
-      std::vector<double> sunstate = ephem.getState("SUN",epoch);
-      std::vector<double> moonstate = ephem.getState("MOON",epoch);
+      std::vector<double> sunstate = ephem.getState(target1,epoch);
+      std::vector<double> moonstate = ephem.getState(target2,epoch);
       std::string sunvec = vec2prettystring(sunstate);
       std::string moonvec = vec2prettystring(moonstate);
       std::cout << to_string(epoch)+"s: Sun @ "+sunvec+" Moon @ " + moonvec + "\n";

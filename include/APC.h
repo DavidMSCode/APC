@@ -23,7 +23,7 @@
  * @param tf 
  * @return EmphemerisManager 
  */
-class EphemerisManager cacheEphemeris(double t0, double tf);
+EphemerisManager cacheEphemeris(double t0, double tf);
 
 /**
  * @brief Returns propagated orbit solution given initial conditions.
