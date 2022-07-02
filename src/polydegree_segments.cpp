@@ -29,7 +29,6 @@
 */
 
 #include <math.h>
-
 #include <vector>
 
 #include "polydegree_segments.h"

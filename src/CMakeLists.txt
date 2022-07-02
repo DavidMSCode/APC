@@ -1,5 +1,4 @@
 include_directories(${APC_SOURCE_DIR}/include ${APC_SOURCE_DIR}/extern/cspice/include) #add header file locations for APC and CSPICE
-SET(CMAKE_OSX_ARCHITECTURES x86_64) #architechture for Mac OS
 find_package(OpenMP REQUIRED)
 
 # Source files must be listed here to be compiled into the APC library
@@ -32,5 +31,9 @@ radial_gravity.cpp
 reosc_perigee.cpp
 rv2elm.cpp)
 
-target_link_libraries(APC ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.*) #link cspice library
+if (WIN32)
+    target_link_libraries(APC ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.lib) #link cspice library
+else ()
+    target_link_libraries(APC ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.a) #link cspice library
+endif()
 target_link_libraries(APC OpenMP::OpenMP_CXX)   #link openmp library

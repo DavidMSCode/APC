@@ -2,14 +2,12 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2022-06-02 21:31:55
+ * @ Modified time: 2022-07-01 19:43:45
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
 */
-#include <windows.h>
 #include <string>
-#include <limits.h>
 #include <iostream>
 
 #include <vector>
@@ -27,16 +25,9 @@
 
 using namespace std;
 
-string getCurrentDir() {
-    char buff[MAX_PATH];
-    GetModuleFileName( NULL, buff, MAX_PATH );
-    string::size_type position = string( buff ).find_last_of( "\\/" );
-    return string( buff ).substr( 0, position);
-}
 
 int main(){
-  //print cwd
-  cout << "Current working directory : " << getCurrentDir() << "\n";
+
   //satellite properties
   double mass = 1000;                               //sat mass (kg)
   double area = 10;                                 //sat wetted area (m^2)
