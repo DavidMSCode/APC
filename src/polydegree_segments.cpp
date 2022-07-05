@@ -30,6 +30,7 @@
 
 #include <math.h>
 #include <vector>
+#include <cstring>
 
 #include "polydegree_segments.h"
 #include "const.h"

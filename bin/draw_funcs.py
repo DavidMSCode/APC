@@ -1,5 +1,6 @@
 
 import plotly.graph_objects as go
+from matplotlib import colors
 import numpy as np
 
 def spheres(size,pos=[0,0,0],res=100):
@@ -29,7 +30,10 @@ def plot_sphere(size,color='blue',opacity=0.3,pos=[0,0,0],res=100):
 
 def plot_circle(size,color='green',opacity=0.3,pos=[0,0,0],res=100):
     x,y = circles(size,pos,res)
-    trace = go.Scatter(x=x,y=y,line=dict(color=color),fill='toself')
+    cc = np.array(colors.to_rgba(color))*255
+    cc[-1]=opacity
+    cc=tuple(cc)
+    trace = go.Scatter(x=x,y=y,line=dict(color='rgba'+str(cc)),fill='toself')
     return trace
 
 def traceOrbit(orbit):

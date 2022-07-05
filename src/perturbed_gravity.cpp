@@ -26,6 +26,7 @@
 *    Modelling in Engineering & Sciences, Vol. 111, pp, 29-64, 2016.
 */
 #include <math.h>
+#include <cstdio>
 
 #include "perturbed_gravity.h"
 #include "const.h"
