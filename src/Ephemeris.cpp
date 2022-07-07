@@ -155,7 +155,9 @@ void ChebyshevEphemeris::getState(double* state, double epoch)
     }
 
     // Compute state
-    state = &matmul(T, coefficients[idx], 1, N+1, 6, 1, N+1)[0];
+    std::vector<double> state_v = matmul(T, coefficients[idx], 1, N+1, 6, 1, N+1);
+    //store vector data in 6 size double array
+    copy(state_v.begin(), state_v.end(), state);
 }
 
 void ChebyshevEphemeris::fitChebyshevPolynomials(double s, int N, int M, std::vector<double> &T, std::vector<double> &A)

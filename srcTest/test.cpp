@@ -80,24 +80,24 @@ int main(){
   // double t0    = 0.0;                                            // Initial Times (s)
   // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s
   
-  //EphemerisManager ephem(spk,lsk,t0,tf,bodies,center,frame);
-  //MPGetTest(ephem, t0, tf);
-  std::cout << "Parallel Ephemeris Fetching Test Complete" << std::endl << "================================================" << std::endl;
+  // EphemerisManager ephem(spk,lsk,t0,tf,bodies,center,frame);
+  // MPGetTest(ephem, t0, tf);
+  // std::cout << "Parallel Ephemeris Fetching Test Complete" << std::endl << "================================================" << std::endl;
   Orbit orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;
   std::vector<SatState> sigma13 = GenSigma13(r0,v0,10,.1);
 
-  // int j = 0;
-  // std::vector<SatState> largelist;
-  // for (int i=0;i<100;i++){
-  //   if (j>12){
-  //     j=0;
-  //   }
-  //   largelist.push_back(sigma13[j]);
-  //   j++;
-  // }
-  // std::vector<Orbit> orbits = ParallelPropagate(largelist, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
-  // std::cout << "Parallel Propagation Test Complete" << std::endl << "=================" << std::endl;
+  int j = 0;
+  std::vector<SatState> largelist;
+  for (int i=0;i<100;i++){
+    if (j>12){
+      j=0;
+    }
+    largelist.push_back(sigma13[j]);
+    j++;
+  }
+  std::vector<Orbit> orbits = ParallelPropagate(largelist, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
+  std::cout << "Parallel Propagation Test Complete" << std::endl << "=================" << std::endl;
 
   std::pair<int,double> bench = Benchmark1000(8);
   std::cout << "Benchmark with " << bench.first << " threads finished in " << bench.second << " seconds.\n";
