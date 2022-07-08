@@ -1,12 +1,14 @@
-from pybind11.setup_helpers import Pybind11Extension
+
 from distutils.command.build_ext import build_ext
 from glob import glob
 import platform
 from setuptools import setup
 import os
 import sys
+
 DIR = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(DIR, "extern", "pybind11"))
+from pybind11.setup_helpers import Pybind11Extension        #gets setup helpers from manually copied PyBind11 or from Pip installed
 del sys.path[-1]
 
 __version__ = "0.0.2"
