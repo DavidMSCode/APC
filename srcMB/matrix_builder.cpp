@@ -18,8 +18,6 @@
 int N, M;
 
 // Initialize Storage Arrays
-double MAT_T2[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
-double MAT_P2[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
 double MAT_T1[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
 double MAT_P1[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
 double MAT_Ta[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
@@ -35,69 +33,44 @@ int main(){
     printf("N = %i\n",N);
 
     // Compute Clenshaw-Curtis Quadrature Constant Matrices
-    std::vector<double> T2((M+1)*(N+1),0.0);
+    std::vector<double> T1((M+1)*(N+1),0.0);
     //memset( T2, 0.0, ((M+1)*(N+1)*sizeof(double)));
-    std::vector<double> P2((N+1)*N,0.0);
-    //memset( P2, 0.0, ((N+1)*N*sizeof(double)));
-    std::vector<double> T1((M+1)*N,0.0);
-    //memset( T1, 0.0, ((M+1)*N*sizeof(double)));
-    std::vector<double> P1(N*(N-1),0.0);
-    //memset( P1, 0.0, (N*(N-1)*sizeof(double)));
-    std::vector<double> Ta((M+1)*(N-1),0.0);
-    //memset( Ta, 0.0, ((M+1)*(N-1)*sizeof(double)));
-    std::vector<double> A((N-1)*(M+1),0.0);
-    //memset( A, 0.0, ((N-1)*(M+1)*sizeof(double)));
-    clenshaw_curtis_ivpII(N,M,T2,P2,T1,P1,Ta,A);
+    std::vector<double> P1((N+1)*N,0.0);
+    std::vector<double> Ta((M+1)*N,0.0);
+    std::vector<double> A(N*(M+1),0.0);
+    clenshaw_curtis_ivpI(N,M,T1,P1,Ta,A);
 
     // Build & Store Arrays
     for (int j=1; j<=M+1; j++){
       for (int k=1; k<=N+1; k++){
-        MAT_T2[i-Nmin][ID2(j,k,Nmax+1)] = T2[ID2(j,k,M+1)];
+        MAT_T1[i-Nmin][ID2(j,k,Nmax+1)] = T1[ID2(j,k,M+1)];
       }
     }
     for (int j=1; j<=N+1; j++){
       for (int k=1; k<=N; k++){
-        MAT_P2[i-Nmin][ID2(j,k,Nmax+1)] = P2[ID2(j,k,N+1)];
+        MAT_P1[i-Nmin][ID2(j,k,Nmax+1)] = P1[ID2(j,k,N+1)];
       }
     }
     for (int j=1; j<=M+1; j++){
       for (int k=1; k<=N; k++){
-        MAT_T1[i-Nmin][ID2(j,k,Nmax+1)] = T1[ID2(j,k,M+1)];
-      }
-    }
-    for (int j=1; j<=N; j++){
-      for (int k=1; k<=N-1; k++){
-        MAT_P1[i-Nmin][ID2(j,k,Nmax+1)] = P1[ID2(j,k,N)];
-      }
-    }
-    for (int j=1; j<=M+1; j++){
-      for (int k=1; k<=N-1; k++){
         MAT_Ta[i-Nmin][ID2(j,k,Nmax+1)] = Ta[ID2(j,k,M+1)];
       }
     }
-    for (int j=1; j<=N-1; j++){
+    for (int j=1; j<=N; j++){
       for (int k=1; k<=M+1; k++){
-        MAT_A[i-Nmin][ID2(j,k,Nmax+1)] = A[ID2(j,k,N-1)];
+        MAT_A[i-Nmin][ID2(j,k,Nmax+1)] = A[ID2(j,k,N)];
       }
     }
 
   }
 
   // Open Files
-  FILE* fT2 = fopen("matrices/T2_matrices.bin","wb");
-  FILE* fP2 = fopen("matrices/P2_matrices.bin","wb");
-  FILE* fT1 = fopen("matrices/T1_matrices.bin","wb");
-  FILE* fP1 = fopen("matrices/P1_matrices.bin","wb");
-  FILE* fTa = fopen("matrices/Ta_matrices.bin","wb");
-  FILE* fA  = fopen("matrices/A_matrices.bin","wb");
+  FILE* fT1 = fopen("../matrices/T1_matrices.bin","wb");
+  FILE* fP1 = fopen("../matrices/P1_matrices.bin","wb");
+  FILE* fTa = fopen("../matrices/Ta_matrices.bin","wb");
+  FILE* fA  = fopen("../matrices/A_matrices.bin","wb");
 
   // Confirm Opening
-  if ( !fT2 ){
-    printf("Failure to open fT2 for binary write: CHECK PATH\n");
-  }
-  if ( !fP2 ){
-    printf("Failure to open fP2 for binary write: CHECK PATH\n");
-  }
   if ( !fT1 ){
     printf("Failure to open fT1 for binary write: CHECK PATH\n");
   }
@@ -114,16 +87,12 @@ int main(){
   printf("Saving constant matrices... ");
 
   // Write Binary Data
-  fwrite( MAT_T2, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fT2 );
-  fwrite( MAT_P2, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fP2 );
   fwrite( MAT_T1, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fT1 );
   fwrite( MAT_P1, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fP1 );
   fwrite( MAT_Ta, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fTa );
   fwrite( MAT_A, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fA );
 
   // Close Files
-  fclose( fT2 );
-  fclose( fP2 );
   fclose( fT1 );
   fclose( fP1 );
   fclose( fTa );

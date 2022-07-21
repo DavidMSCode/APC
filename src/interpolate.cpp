@@ -32,11 +32,10 @@
 #include "c_functions.h"
 
 
-std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> BETA, int soln_size, int coeff_size, int N, std::vector<double> seg_times,
-  std::vector<double> W1, std::vector<double> W2, double t0, double tf, double dt, int total_segs){
-  
+std::vector<double> interpolate(std::vector<double>  ALPHA, int soln_size, int coeff_size, int N, std::vector<double> seg_times, std::vector<double> W1, std::vector<double> W2, double t0, double tf, double dt, int total_segs, std::vector<double> SolnMEE, std:vector<double> Soln){
+          
   int prev_cnt = 0;
-  std::vector<double> Soln(soln_size*6,0.0);
+//   std::vector<double> Soln(soln_size*6,0.0);
   // User specified output times
   int len;
   len = int(ceil(tf/dt));
@@ -51,8 +50,7 @@ std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> 
   for (int i=1; i<=total_segs; i++){
     int sz = int(ceil((seg_times[i]-seg_times[i-1])/dt));
     // Initialization
-    std::vector<double> Beta(N*3);
-    std::vector<double> Alpha((N+1)*3);
+    std::vector<double> Alpha((N+1)*6);
     std::vector<double> tt(sz);
     std::vector<double> tau(sz);
 
@@ -81,29 +79,15 @@ std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> 
       }
     }
   
-    // Chebyshev Velocity & Position Matrices
-    std::vector<double> Tv(cnt*N);
+    // Chebyshev MEE Matrices
     std::vector<double> Tp(cnt*(N+1));
 
     for (int t=1; t<=cnt; t++){
-      for (int kk=0; kk<=N-1; kk++){
-        // Velocity
-        Tv[ID2(t,kk+1,cnt)] = cos(kk*acos(tau[t-1]));
-      }
       for (int kk=0; kk<=N; kk++){
         // Position
         Tp[ID2(t,kk+1,cnt)] = cos(kk*acos(tau[t-1]));
       }
     }
-
-    // Velocity Coefficients for a Segment
-    for (int p=1; p<=N; p++){
-      Beta[ID2(p,1,N)] = BETA[ID2(p+((i-1)*N),1,coeff_size)];
-      Beta[ID2(p,2,N)] = BETA[ID2(p+((i-1)*N),2,coeff_size)];
-      Beta[ID2(p,3,N)] = BETA[ID2(p+((i-1)*N),3,coeff_size)];
-    }
-    std::vector<double> v_interp;
-    v_interp = matmul(Tv,Beta,cnt,N,3,cnt,N);
 
     //sanity check
     int check = ID2(cnt+prev_cnt,6,soln_size);
@@ -111,26 +95,33 @@ std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> 
         std::cout << "exceeding soln size\n";
     }
 
-    // Velocity
-    for (int p=1; p<=cnt; p++){
-      Soln[ID2(p+prev_cnt,4,soln_size)] = v_interp[ID2(p,1,cnt)];
-      Soln[ID2(p+prev_cnt,5,soln_size)] = v_interp[ID2(p,2,cnt)];
-      Soln[ID2(p+prev_cnt,6,soln_size)] = v_interp[ID2(p,3,cnt)];
-    }
-
     // Position Coefficients for a Segment
     for (int p=1; p<=N+1; p++){
       Alpha[ID2(p,1,N+1)] = ALPHA[ID2(p+((i-1)*(N+1)),1,coeff_size)];
       Alpha[ID2(p,2,N+1)] = ALPHA[ID2(p+((i-1)*(N+1)),2,coeff_size)];
       Alpha[ID2(p,3,N+1)] = ALPHA[ID2(p+((i-1)*(N+1)),3,coeff_size)];
+      Alpha[ID2(p,4,N+1)] = ALPHA[ID2(p+((i-1)*(N+1)),4,coeff_size)];
+      Alpha[ID2(p,5,N+1)] = ALPHA[ID2(p+((i-1)*(N+1)),5,coeff_size)];
+      Alpha[ID2(p,6,N+1)] = ALPHA[ID2(p+((i-1)*(N+1)),6,coeff_size)];
     }
-    std::vector<double> x_interp;
-    x_interp = matmul(Tp,Alpha,cnt,N+1,3,cnt,N+1);
+      
+    double r_eci[3] = {0.0};
+    double v_eci[3] = {0.0};
+    double mee[6] = {0.0};
+    std::vector<double> mee_interp;
+    mee_interp = matmul(Tp,Alpha,cnt,N+1,6,cnt,N+1);
     // Position
     for (int p=1; p<=cnt; p++){
-      Soln[ID2(p+prev_cnt,1,soln_size)] = x_interp[ID2(p,1,cnt)];
-      Soln[ID2(p+prev_cnt,2,soln_size)] = x_interp[ID2(p,2,cnt)];
-      Soln[ID2(p+prev_cnt,3,soln_size)] = x_interp[ID2(p,3,cnt)];
+      for (int j=1; j<=6; j++){
+            SolnMEE[ID2(p+prev_cnt,j,soln_size)] = mee_interp[ID2(p,j,cnt)];
+            mee[j-1] = mee_interp[ID2(p,j,cnt)];
+      }
+      mee2rv(mee,r_eci,v_eci);
+      for (int j=1; j<=3; j++){
+          Soln[ID2(p+prev_cnt,j,soln_size)] = r_eci[j-1];
+          Soln[ID2(p+prev_cnt,j+3,soln_size)] = v_eci[j-1];
+      }
+
       // printf("Soln %f\t%f\t%f\n",Soln[ID2(p+prev_cnt,1,soln_size)],Soln[ID2(p+prev_cnt,2,soln_size)],Soln[ID2(p+prev_cnt,3,soln_size)]);
     }
     // printf("tfdt %f\t%f\n",tf,dt);

@@ -16,9 +16,7 @@
 *    hot     -- Hot start on/off switch condition
 *    tol     -- Tolerance
 *    P1      -- First integration operator (Acceleration to Velocity)
-*    P2      -- Second integration operator (Velocity to Position)
 *    T1      -- First Chebyshev matrix
-*    T2      -- Second Chebyshev matrix
 *    A       -- Least squares operator
 *    Feval   -- Function evaluation counter
 *
@@ -26,7 +24,6 @@
 *    X       -- Position solution for current segment (km)
 *    V       -- Velocity solution for current segment (km/s)
 *    Alpha   -- Position coefficients for current segment
-*    Beta    -- Velocity coefficients for current segment
 *
 * REFERENCES:
 * 1. Junkins, J.L., and Woollands, R., "Nonlinear Differential Equations Solvers via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics",
@@ -51,10 +48,10 @@
 #include "EGM2008.h"
 #include "matrix_loader.h"
 #include "Ephemeris.hpp"
+#include "mee_dot.h"
+#include "mee2rv.h"
 
-
-void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, int N, int M, double deg, int hot, double tol,
-  std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, double* Feval, std::vector<double> &Alpha, std::vector<double> &Beta, Orbit &orb, EphemerisManager ephem){
+void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vector<double> &MEE, mee0, std::vector<double> &times, int N, int M, double deg, int hot, double tol, std::vector<double> &P1, std::vector<double> &T1, std::vector<double> &A, double* Feval, std::vector<double> &Alpha, Orbit &orb, EphemerisManager ephem){
   
   // Initialization
   bool suborbital = false;
@@ -65,28 +62,25 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
   double vECEF[3]     = {0.0};
   double aECEF[3]     = {0.0};
   double aECI[3]      = {0.0};
-  double del_X[3]     = {0.0};
-  double del_aECEF[3] = {0.0};
-  double del_aECI[3]  = {0.0};
   double drag_aECEF[3] = {0.0};
   double SRP_aECI[3] = {0.0};
   double third_body_aECI[3] = {0.0};
 
-  std::vector<double> G((M+1)*3,0.0);
-  std::vector<double> beta(N*3,0.0);
-  std::vector<double> gamma(N*3,0.0);
-  std::vector<double> alpha((N+1)*3,0.0);
-  std::vector<double> kappa((N+1)*3,0.0);
-  std::vector<double> Xorig;
-  std::vector<double> Vorig;
-  std::vector<double> Xnew;
-  std::vector<double> Vnew;
-  std::vector<double> xECEFp((M+1)*3,0.0);
-  std::vector<double> xECIp((M+1)*3,0.0);
-  std::vector<double> del_a((M+1)*3,0.0);
+  std::vector<double> MEEnew((M+1)*6,0.0);
+  std::vector<double> MEE_dot((M+1)*6,0.0);
+  std::vector<double> a_lvlh((M+1)*3,0.0);
+
+  double TB[3] = {0.0};
+  double ad_eci[3] = {0.0}; 
+  double xrdl[3] = {0.0};
+  double yrdl[3] = {0.0};
+  double zrdl[3] = {0.0};
+  double r_eci[3] = {0.0};
+  double v_eci[3] = {0.0};
+  double mee[6] = {0.0};
+    
   //Perturbed Gravity iteration storage
   IterCounters ITRs;
-  double del_G[3*(Nmax+1)];
 
   int itr, MaxIt;
   double err, w2;
@@ -117,7 +111,7 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
       // Convert from ECI to ECEF
       eci2ecef(times[i-1],xI,vI,xECEF,vECEF);
       // Compute Variable Fidelity Gravity
-      perturbed_gravity(times[i-1],xECEF,err,i,M,deg,hot,aECEF,tol,&itr,Feval,ITRs,del_G);
+      perturbed_gravity(times[i-1],xECEF,err,i,M,deg,hot,aECEF,tol,&itr,Feval,ITRs);
       //Calculate acceleration from drag
       Perturbed_Drag(xECEF, vECEF, orb, drag_aECEF);
 
@@ -128,113 +122,63 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
 
       // Convert from ECEF to ECI
       ecef2eci(times[i-1],aECEF,aECI);
+        
+      // Compute Two-Body Acceleration
+      for (int j=0; j<=2; j++){
+          TB[j] = -C_MU*xI[j]/pow(sqrt(pow(xI[0],2)+pow(xI[1],2)+pow(xI[2],2)),3);
+      }
+      // Compute Perturbed Acceleration
+      for (int j=0; j<=2; j++){
+          ad_eci[j] = aECI[j] - TB[j];
+      }
+        
       //calculate SRP and Third Body
       Perturbed_SRP(times[i-1], xI, orb, ephem, SRP_aECI);
       Perturbed_three_body(times[i-1], xI, orb, ephem, third_body_aECI);
       //Add perturbations to acceleration.
       for(int k=0;k<3;k++){
-        aECI[k] = aECI[k] + SRP_aECI[k] + third_body_aECI[k];
+        ad_eci[k] = ad_eci[k] + SRP_aECI[k] + third_body_aECI[k];
       }
-      for (int j=1; j<=3; j++){
-        G[ID2(i,j,M+1)]      = aECI[j-1];
-        xECIp[ID2(i,j,M+1)] = xI[j-1];
-      }
+        
+      // Inertial to Radial
+      inertial2radial(xI,vI,xrdl,yrdl,zrdl);
+        
+      // Acceleration Components
+      a_lvlh[ID2(i,1,M+1)] = ad_eci[0]*xrdl[0]+ad_eci[1]*xrdl[1]+ad_eci[2]*xrdl[2];
+      a_lvlh[ID2(i,2,M+1)] = ad_eci[0]*yrdl[0]+ad_eci[1]*yrdl[1]+ad_eci[2]*yrdl[2];
+      a_lvlh[ID2(i,3,M+1)] = ad_eci[0]*zrdl[0]+ad_eci[1]*zrdl[1]+ad_eci[2]*zrdl[2];
+        
     }
+      
+    // MEE Dynamics
+    mee_dot(MEE,a_lvlh,MEE_dot,M);
     
-    // Velocity
+    // Integrate
     std::vector<double> tmp1;
-    std::vector<double> tmp2;
-    tmp1 = matmul(A,G,N-1,M+1,3,N-1,M+1);
-    tmp2 = matmul(P1,tmp1,N,N-1,3,N,N-1);
-    for (int i=1; i<=N; i++){
-      for (int j=1; j<=3; j++){
-        beta[ID2(i,j,N)] = w2*tmp2[ID2(i,j,N)];
-        if (i == 1){
-          beta[ID2(i,j,N)] = beta[ID2(i,j,N)] + Vint[j-1];
-        }
-      }
-    }
-    Vorig = matmul(T1,beta,M+1,N,3,M+1,N);
-
-    // Position
-    std::vector<double> tmp3;
-    tmp3 = matmul(P2,beta,N+1,N,3,N+1,N);
-    for (int i=1; i<=N+1; i++){
-      for (int j=1; j<=3; j++){
-        alpha[ID2(i,j,N+1)] = w2*tmp3[ID2(i,j,N+1)];
-        if (i == 1){
-          alpha[ID2(i,j,N+1)] = alpha[ID2(i,j,N+1)] + Xint[j-1];
-        }
-      }
-    }
-    Xorig = matmul(T2,alpha,M+1,N+1,3,M+1,N+1);
-
+    tmp1 = matmul(A,MEE_dot,N+1,N,6,N+1,N);   // LSQ Coefficients
+    Alpha = matmul(P1,tmp1,N+1,N,6,N+1,N);    // Integration Operator
     for (int i=1; i<=M+1; i++){
-      for (int j=1; j<=3; j++){
-        xI[j-1] = Xorig[ID2(i,j,M+1)];
-        vI[j-1] = Vorig[ID2(i,j,M+1)];
-      }
-      // Linear Error Correction Position
-      for (int j=1; j<=3; j++){
-        del_X[j-1] = xI[j-1] - xECIp[ID2(i,j,M+1)];
-      }
-      // Convert from ECI to ECEF
-      eci2ecef(times[i-1],xI,vI,xECEF,vECEF);
-      // Linear Error Correction Acceleration
-      picard_error_feedback(xECEF,del_X,del_aECEF);
-      // Convert from ECEF to ECI
-      ecef2eci(times[i-1],del_aECEF,del_aECI);
-      for (int j=1; j<=3; j++){
-        del_a[ID2(i,j,M+1)] = del_aECI[j-1];
-      }
-    }
-
-    // Linear Error Correction Velocity Coefficients
-    std::vector<double> tmp4;
-    std::vector<double> tmp5;
-    tmp4 = matmul(A,del_a,N-1,M+1,3,N-1,M+1);
-    tmp5 = matmul(P1,tmp4,N,N-1,3,N,N-1);
-    for (int i=1; i<=N; i++){
-      for (int j=1; j<=3; j++){
-        gamma[ID2(i,j,N)] = w2*tmp5[ID2(i,j,N)];
-      }
-    }
-
-    // Corrected Velocity
-    for (int i=1; i<=N; i++){
-      for (int j=1; j<=3; j++){
-        Beta[ID2(i,j,N)] = beta[ID2(i,j,N)];
-        if (err < 1e-13){
-          Beta[ID2(i,j,N)] = beta[ID2(i,j,N)] + gamma[ID2(i,j,N)];
+        for (int j=1; j<=6; j++){
+          Alpha[ID2(i,j,M+1)] = w2*Alpha[ID2(i,j,M+1)];
+            if (i==1){
+                Alpha[ID2(i,j,M+1)] = Alpha[ID2(i,j,M+1)] + mee0[j-1]; 
+            }
         }
-      }
     }
-    Vnew = matmul(T1,Beta,M+1,N,3,M+1,N);
 
-    // Corrected Position
-    std::vector<double> tmp6;
-    tmp6 = matmul(P2,gamma,N+1,N,3,N+1,N);
-    for (int i=1; i<=N+1; i++){
-      for (int j=1; j<=3; j++){
-        kappa[ID2(i,j,N+1)] = w2*tmp6[ID2(i,j,N+1)];
-        Alpha[ID2(i,j,N+1)] = alpha[ID2(i,j,N+1)];
-        if (err < 1e-13){
-          Alpha[ID2(i,j,N+1)] = alpha[ID2(i,j,N+1)] + kappa[ID2(i,j,N+1)];
-        }
-      }
-    }
-    Xnew = matmul(T2,Alpha,M+1,N+1,3,M+1,N+1);
+    MEEnew = matmul(T1,Alpha,M+1,N+1,6,M+1,N+1);
 
     // Non-dimensional Error
     double tmp = 0.0;
     double curr_err = 0.0;
     for (int i=1; i<=M+1; i++){
       for (int j=1; j<=6; j++){
-        if (j<=3){
-          tmp = fabs(Xnew[ID2(i,j,M+1)] - X[ID2(i,j,M+1)])/DU;
+        if (j==1){
+          // Nondimensionalize p
+          tmp = fabs(MEEnew[ID2(i,j,M+1)] - MEE[ID2(i,j,M+1)])/DU;
         }
-        if (j>3){
-          tmp = fabs(Vnew[ID2(i,j-3,M+1)] - V[ID2(i,j-3,M+1)])/DU*TU;
+        if (j>1){
+          tmp = fabs(MEEnew[ID2(i,j,M+1)] - MEE[ID2(i,j,M+1)]);
         }
         if (tmp > curr_err){
           curr_err = tmp;
@@ -244,8 +188,19 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
     err = curr_err;
 
     // Update
-    X = Xnew;
-    V = Vnew;
+    MEE = MEEnew;
+      
+    // MEE to RV
+   for (int i=1; i<=M+1; i++){
+       for (int j=1; j<=6; j++){
+           mee[j-1] = MEE[ID2(i,j,M+1)];
+       }
+       mee2rv(mee,r_eci,v_eci);
+       for (int j=0; j<=2; j++){
+           X[ID2(i,j+1,M+1)] = r_eci[j];
+           V[ID2(i,j+1,M+1)] = v_eci[j];
+       }
+   }
 
     // Iteration Counter
     if (itr == MaxIt){

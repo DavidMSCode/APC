@@ -22,9 +22,7 @@
 *    coeff_size    -- Length of coefficient array
 *    soln_size     -- Size of solution array
 *    P1            -- First integration operator
-*    P2            -- Second integration operator
 *    T1            -- Chebyshev position matrix
-*    T2            -- Chebyshev velocity matrix
 *    A             -- Least squares operator
 *    Ta            -- Chebyshev acceleration matrix
 *    W1            -- Time scale factor 1
@@ -34,7 +32,6 @@
 * OUTPUTS:
 *    total_seg     -- Total segments
 *    ALPHA         -- Position coefficients
-*    BETA          -- Velocity coefficients
 *    segment_times -- Array of segment start and end times
 */
 
@@ -51,11 +48,12 @@
 #include "c_functions.h"
 #include "Orbit.h"
 #include "Ephemeris.hpp"
+#include "rv2elm.h"
+#include "classical2mee.h"
 
 std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double* v0, double t0, double t_final,double deg, double tol, double Period,
    std::vector<double> &tvec, std::vector<double> &t_orig, int seg, int N, int M, int* prep_HS, int coeff_size, int soln_size, int* total_seg,
-   std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, std::vector<double> &Ta, std::vector<double> &W1, std::vector<double> &W2, double* Feval,
-   std::vector<double> &ALPHA, std::vector<double> &BETA, std::vector<double> &segment_times, Orbit &orb, EphemerisManager ephem){
+   std::vector<double> &P1, std::vector<double> &T1, std::vector<double> &A, std::vector<double> &Ta, std::vector<double> &W1, std::vector<double> &W2, double* Feval, std::vector<double> &ALPHA, std::vector<double> &segment_times, Orbit &orb, EphemerisManager ephem){
   int loop    = 0;      // Break loop condition
   int k       = 0;      // Counter: segments per orbit
   int hot     = 0;      // Hot start switch
@@ -63,22 +61,22 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
   //int sz      = int(ceil(1.1*t_final/Period)*seg);
   double w1, w2, tf;
   //store original initial conditions
-  double r0_orig[3];
-  double v0_orig[3];
-  for (int i=0;i<3;i++){
-    r0_orig[i] = r0[i];
-    v0_orig[i] = v0[i];
-   }
+//   double r0_orig[3];
+//   double v0_orig[3];
+//   for (int i=0;i<3;i++){
+//     r0_orig[i] = r0[i];
+//     v0_orig[i] = v0[i];
+//    }
+  double mee0[6] = {0.0};
 
-
-  std::vector<double> HotX(seg*(M+1)*3,0.0);
-  //memset( HotX, 0.0, (seg*(M+1)*3*sizeof(double)));
-  std::vector<double> HotV(seg*(M+1)*3,0.0);
-  //memset( HotV, 0.0, (seg*(M+1)*3*sizeof(double)));
-  std::vector<double> Xpoints(coeff_size*3,0.0);
-  //memset( Beta, 0.0, (N*3*sizeof(double)));
-  std::vector<double> Vpoints(coeff_size*3,0.0);
-  //memset( Alpha, 0.0, ((N+1)*3*sizeof(double)));
+//   std::vector<double> HotX(seg*(M+1)*3,0.0);
+//   //memset( HotX, 0.0, (seg*(M+1)*3*sizeof(double)));
+//   std::vector<double> HotV(seg*(M+1)*3,0.0);
+//   //memset( HotV, 0.0, (seg*(M+1)*3*sizeof(double)));
+//   std::vector<double> Xpoints(coeff_size*3,0.0);
+//   //memset( Beta, 0.0, (N*3*sizeof(double)));
+//   std::vector<double> Vpoints(coeff_size*3,0.0);
+//   //memset( Alpha, 0.0, ((N+1)*3*sizeof(double)));
 
   // PROPAGATION
   // #pragma omp critical(PI)
@@ -114,7 +112,7 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     //memset( X, 0.0, ((M+1)*3*sizeof(double)));
     std::vector<double> V((M+1)*3,0.0);
     //memset( V, 0.0, ((M+1)*3*sizeof(double)));
-    std::vector<double> Beta(N*3,0.0);
+//     std::vector<double> Beta(N*3,0.0);
     //memset( Beta, 0.0, (N*3*sizeof(double)));
     std::vector<double> Alpha((N+1)*3,0.0);
     //memset( Alpha, 0.0, ((N+1)*3*sizeof(double)));
@@ -132,30 +130,49 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
       V[ID2(cnt+1,2,M+1)] = z[4];
       V[ID2(cnt+1,3,M+1)] = z[5];
     }
-    // Warm Start
-    std::vector<double> WSX((M+1)*3,0.0);
-    //memset( WSX, 0.0, ((M+1)*3*sizeof(double)));
-    std::vector<double> WSV((M+1)*3,0.0);
-    //memset( WSV, 0.0, ((M+1)*3*sizeof(double)));
-    WSX = X;
-    //memcpy(WSX,X,(M+1)*3*sizeof(double));
-    WSV = V;
-    //memcpy(WSV,V,(M+1)*3*sizeof(double));
+//     // Warm Start
+//     std::vector<double> WSX((M+1)*3,0.0);
+//     //memset( WSX, 0.0, ((M+1)*3*sizeof(double)));
+//     std::vector<double> WSV((M+1)*3,0.0);
+//     //memset( WSV, 0.0, ((M+1)*3*sizeof(double)));
+//     WSX = X;
+//     //memcpy(WSX,X,(M+1)*3*sizeof(double));
+//     WSV = V;
+//     //memcpy(WSV,V,(M+1)*3*sizeof(double));
+     // MEEs
+//     double MEE[(M+1)*6];
+//     memset( MEE, 0.0, ((M+1)*6*sizeof(double)));
+    std::vector<double> MEE((M+1)*6,0.0);
+    double rr[3] = {0.0};
+    double vv[3] = {0.0};
+    double mee[6] = {0.0};
+    double coe[10] = {0.0};
+    double coe2[6] = {0.0};
 
-    // HOT START (after 1+ orbits)
-    // if (hot == 1){
-    //   for (int i = 1; i<=M+1; i++){
-    //     X[ID2(i,1,M+1)] = X[ID2(i,1,M+1)] + HotX[ID2(i+(k*(M+1)),1,seg*(M+1))];
-    //     X[ID2(i,2,M+1)] = X[ID2(i,2,M+1)] + HotX[ID2(i+(k*(M+1)),2,seg*(M+1))];
-    //     X[ID2(i,3,M+1)] = X[ID2(i,3,M+1)] + HotX[ID2(i+(k*(M+1)),3,seg*(M+1))];
-    //     V[ID2(i,1,M+1)] = V[ID2(i,1,M+1)] + HotV[ID2(i+(k*(M+1)),1,seg*(M+1))];
-    //     V[ID2(i,2,M+1)] = V[ID2(i,2,M+1)] + HotV[ID2(i+(k*(M+1)),2,seg*(M+1))];
-    //     V[ID2(i,3,M+1)] = V[ID2(i,3,M+1)] + HotV[ID2(i+(k*(M+1)),3,seg*(M+1))];
-    //   }
-    // }
-
+    for (int i=1; i<=M+1; i++){
+        for (int j=0; j<=2; j++){
+            rr[j] = X[ID2(i,j+1,M+1)];
+            vv[j] = V[ID2(i,j+1,M+1)];
+        }
+        rv2elm(rr,vv,tol,coe);
+        for (int j=0; j<=5; j++){
+            coe2[j] = coe[j+1];
+        }
+        classical2mee(coe2,mee);
+        for (int j=0; j<=5; j++){
+            MEE[ID2(i,j+1,M+1)] = mee[j];
+        }    
+    }
+     
+    if (seg_cnt == 0){
+        for (int j=1; j<=6; j++){
+            mee0[j-1] = MEE[ID2(1,j,M+1)];
+        }
+    }
+      
     // PICARD ITERATION
-    picard_iteration(r0,v0,X,V,times,N,M,deg,hot,tol,P1,P2,T1,T2,A,Feval,Alpha,Beta,orb,ephem);
+      picard_iteration(X,V,mee0,times,N,M,deg,hot,tol,P1,T1,A,Feval,Alpha,orb,ephem);
+      
     // Loop exit condition
     if (fabs(tf - t_final)/tf < 1e-12){
       loop = 1;
@@ -185,6 +202,10 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
       v0[j-1] = V[ID2(M+1,j,M+1)];
     }
 
+    for (int j=1; j<=6; j++){
+        mee0[j-1] = MEE[ID2(M+1,j,M+1)];
+    }
+      
     /* REOSCULATE PERIGEE
     Reosculate Keplerian perigee after each orbit propagation. If this is not
     done then the precomputed segment times no longer align with true segment
@@ -193,29 +214,32 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     increases with increasing eccentricity. */
     
     double orb_end = 0.0;
-    reosc_perigee(X,V,times,Alpha,Beta,tf,t_final,t_orig,N,M,&k,seg,prep_HS,tol,&orb_end,tvec,r0,v0);
+    reosc_perigee(X,V,times,Alpha,tf,t_final,t_orig,N,M,&k,seg,prep_HS,tol,&orb_end,tvec,r0,v0,mee0);
     // Segments per orbit counter
     k = k+1;
 
     // STORE TRAJECTORY COEFFICIENTS
-    for (int i=1; i<=N; i++){
-      BETA[ID2(i+(seg_cnt*N),1,coeff_size)] = Beta[ID2(i,1,N)];
-      BETA[ID2(i+(seg_cnt*N),2,coeff_size)] = Beta[ID2(i,2,N)];
-      BETA[ID2(i+(seg_cnt*N),3,coeff_size)] = Beta[ID2(i,3,N)];
-    }
+//     for (int i=1; i<=N; i++){
+//       BETA[ID2(i+(seg_cnt*N),1,coeff_size)] = Beta[ID2(i,1,N)];
+//       BETA[ID2(i+(seg_cnt*N),2,coeff_size)] = Beta[ID2(i,2,N)];
+//       BETA[ID2(i+(seg_cnt*N),3,coeff_size)] = Beta[ID2(i,3,N)];
+//     }
     for (int i=1; i<=N+1; i++){
       //Store X and V points
-      Xpoints[ID2(i+seg_cnt*(N+1),1,coeff_size)] = X[ID2(i,1,N+1)];
-      Xpoints[ID2(i+seg_cnt*(N+1),2,coeff_size)] = X[ID2(i,2,N+1)];
-      Xpoints[ID2(i+seg_cnt*(N+1),3,coeff_size)] = X[ID2(i,3,N+1)];
+//       Xpoints[ID2(i+seg_cnt*(N+1),1,coeff_size)] = X[ID2(i,1,N+1)];
+//       Xpoints[ID2(i+seg_cnt*(N+1),2,coeff_size)] = X[ID2(i,2,N+1)];
+//       Xpoints[ID2(i+seg_cnt*(N+1),3,coeff_size)] = X[ID2(i,3,N+1)];
 
-      Vpoints[ID2(i+seg_cnt*(N+1),1,coeff_size)] = V[ID2(i,1,N+1)];
-      Vpoints[ID2(i+seg_cnt*(N+1),2,coeff_size)] = V[ID2(i,2,N+1)];
-      Vpoints[ID2(i+seg_cnt*(N+1),3,coeff_size)] = V[ID2(i,3,N+1)];
+//       Vpoints[ID2(i+seg_cnt*(N+1),1,coeff_size)] = V[ID2(i,1,N+1)];
+//       Vpoints[ID2(i+seg_cnt*(N+1),2,coeff_size)] = V[ID2(i,2,N+1)];
+//       Vpoints[ID2(i+seg_cnt*(N+1),3,coeff_size)] = V[ID2(i,3,N+1)];
 
       ALPHA[ID2(i+seg_cnt*(N+1),1,coeff_size)] = Alpha[ID2(i,1,N+1)];
       ALPHA[ID2(i+seg_cnt*(N+1),2,coeff_size)] = Alpha[ID2(i,2,N+1)];
       ALPHA[ID2(i+seg_cnt*(N+1),3,coeff_size)] = Alpha[ID2(i,3,N+1)];
+      ALPHA[ID2(i+seg_cnt*(N+1),4,coeff_size)] = Alpha[ID2(i,4,N+1)];
+      ALPHA[ID2(i+seg_cnt*(N+1),5,coeff_size)] = Alpha[ID2(i,5,N+1)];
+      ALPHA[ID2(i+seg_cnt*(N+1),6,coeff_size)] = Alpha[ID2(i,6,N+1)];
     }
 
     segment_times[seg_cnt+1] = tf;
@@ -229,13 +253,13 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
   }
   // }
 //Restore initial conditions
-for (int i=0;i<3;i++){
-    r0[i] = r0_orig[i];
-    v0[i] = v0_orig[i];
-   }
+// for (int i=0;i<3;i++){
+//     r0[i] = r0_orig[i];
+//     v0[i] = v0_orig[i];
+//    }
    
   *total_seg = seg_cnt;
-  std::vector<std::vector<double> > states = {Xpoints,Vpoints};
-  return states;
+//   std::vector<std::vector<double> > states = {Xpoints,Vpoints};
+//   return states;
   // std::cout << "finished propagating";
 }

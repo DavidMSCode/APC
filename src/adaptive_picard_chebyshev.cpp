@@ -43,7 +43,7 @@
 #include "Orbit.h"
 #include "Ephemeris.hpp"
 
-std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, double dt, double deg, double tol, int soln_size, double* Feval, std::vector<double> &Soln, Orbit &orb, EphemerisManager ephem){
+std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, double dt, double deg, double tol, int soln_size, double* Feval, std::vector<double> &SolnMEE, std::vector<double> &Soln, Orbit &orb, EphemerisManager ephem){
 
   /* 1. DETERMINE DEGREE/SEGMENTATION SCHEME
   Compute the polynomial degree and number of segments per orbit that will
@@ -64,29 +64,19 @@ std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v
   // Initialize Arrays
   int M = N;                // # sample points = polynomial degree
   int prep_HS = -1;         // Hot start switch condition
-  std::vector<double> T2((M+1)*(N+1),0.0);   // [(M+1)x(N+1)]
-  //memset( T2, 0.0, ((M+1)*(N+1)*sizeof(double)));
-  std::vector<double> P2((N+1)*N,0.0);       // [(N+1)xN]
-  //memset( P2, 0.0, ((N+1)*N*sizeof(double)));
-  std::vector<double> T1((M+1)*N,0.0);       // [(M+1)xN]
-  //memset( T1, 0.0, ((M+1)*N*sizeof(double)));
-  std::vector<double> P1(N*(N-1),0.0);       // [Nx(N-1)]
-  //memset( P1, 0.0, (N*(N-1)*sizeof(double)));
-  std::vector<double> Ta((M+1)*(N-1),0.0);   // [(M+1)x(N-1)]
-  //memset( Ta, 0.0, ((M+1)*(N-1)*sizeof(double)));
-  std::vector<double> A((N-1)*(M+1),0.0);    // [(N-1)x(M+1)]
-  //memset( A, 0.0, ((N-1)*(M+1)*sizeof(double)));
+  std::vector<double> T1((M+1)*(N+1),0.0);   // [(M+1)x(N+1)]
+  std::vector<double> P1((N+1)*N,0.0);       // [(N+1)xN]
+  std::vector<double> Ta((M+1)*N,0.0);   // [(M+1)x(N-1)]
+  std::vector<double> A(N*(M+1),0.0);    // [(N-1)x(M+1)]
   std::vector<double> t_orig(seg+1,0.0);
-  //memset( t_orig, 0.0, ((seg+1)*sizeof(double)));
   std::vector<double> tvec(seg+1,0.0);
-  //memset( tvec, 0.0, ((seg+1)*sizeof(double)));
-  prepare_propagator(r0,v0,t0,tf,dt,tp,tol,N,M,seg,&prep_HS,t_orig,tvec,P1,P2,T1,T2,A,Ta);
+  prepare_propagator(r0,v0,t0,tf,dt,tp,tol,N,M,seg,&prep_HS,t_orig,tvec,P1,T1,A,Ta);
   /* 3. PICARD-CHEBYSHEV PROPAGATOR
   Propagate from t0 to tf, iterating on each segment (Picard Iteration), until
   completion. */
   std::vector<double>  ALPHA((coeff_size*3),0.0);
   //ALPHA = static_cast<double*>(calloc((coeff_size*3),sizeof(double)));
-  std::vector<double>  BETA((coeff_size*3),0.0);
+//   std::vector<double>  BETA((coeff_size*3),0.0);
   //BETA = static_cast<double*>(calloc((coeff_size*3),sizeof(double)));
   int total_seg = 0;
   int sz = int(ceil(1.2*tf/Period)*seg);
@@ -99,13 +89,13 @@ std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v
   std::vector<std::vector<double> > states;
 
   states = picard_chebyshev_propagator(r0,v0,t0,tf,deg,tol,Period,tvec,t_orig,seg,N,M,&prep_HS,coeff_size,soln_size,&total_seg,
-    P1,P2,T1,T2,A,Ta,W1,W2,Feval,ALPHA,BETA,segment_times, orb, ephem);
+    P1,T1,A,Ta,W1,W2,Feval,ALPHA,segment_times, orb, ephem);
   // /* 4. INTERPOLATE SOLUTION
   // The Chebyshev coefficients from each of the orbit segments are used to compute
   // the solution (position & velocity) at the user specified times. */
-  Soln = interpolate(ALPHA,BETA,soln_size,coeff_size,N,segment_times,W1,W2,t0,tf,dt,total_seg);
+  Soln = interpolate(ALPHA,soln_size,coeff_size,N,segment_times,W1,W2,t0,tf,dt,total_seg,SolnMEE,Soln);
 
   //free(ALPHA);
   //free(BETA);
-  return states;
+  return Soln;
 }

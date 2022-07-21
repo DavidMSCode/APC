@@ -11,7 +11,7 @@
 
 #include <vector>
 
-std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> BETA, int soln_size, int coeff_size, int N, std::vector<double> seg_times,
-  std::vector<double> W1, std::vector<double> W2, double t0, double tf, double dt, int total_segs);
+std::vector<double> interpolate(std::vector<double>  ALPHA, int soln_size, int coeff_size, int N, std::vector<double> seg_times,
+  std::vector<double> W1, std::vector<double> W2, double t0, double tf, double dt, int total_segs, std::vector<double> SolnMEE, std::vector<double> Soln);
 
 #endif

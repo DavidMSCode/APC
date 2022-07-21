@@ -12,8 +12,6 @@
 
 
 // Initialize Arrays
-double arr_T2[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
-double arr_P2[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
 double arr_T1[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
 double arr_P1[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
 double arr_Ta[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
@@ -22,8 +20,6 @@ double arr_A[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
 void matrix_loader(){
 
   // Open Files
-  FILE* fT2 = fopen("matrices/T2_matrices.bin","rb");
-  FILE* fP2 = fopen("matrices/P2_matrices.bin","rb");
   FILE* fT1 = fopen("matrices/T1_matrices.bin","rb");
   FILE* fP1 = fopen("matrices/P1_matrices.bin","rb");
   FILE* fTa = fopen("matrices/Ta_matrices.bin","rb");
@@ -50,24 +46,19 @@ void matrix_loader(){
   }
 
   // Read Binary Data
-  int c1, c2, c3, c4, c5, c6;
-  c1 = fread( arr_T2, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fT2 );
-  c2 = fread( arr_P2, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fP2 );
-  c3 = fread( arr_T1, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fT1 );
-  c4 = fread( arr_P1, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fP1 );
-  c5 = fread( arr_Ta, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fTa );
-  c6 = fread( arr_A, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fA );
+  int c1, c2, c3, c4;
+  c1 = fread( arr_T1, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fT1 );
+  c2 = fread( arr_P1, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fP1 );
+  c3 = fread( arr_Ta, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fTa );
+  c4 = fread( arr_A, sizeof(double), (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1), fA );
 
   // Check that correct amount of data was read
-  if ( c1 != (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1) || c2 != (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1) || c3 != (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1) || \
-  c4 != (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1) || c5 != (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1) || c6 != (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1)){
+  if ( c1 != (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1) || c2 != (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1) || c3 != (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1) || c4 != (Nmax-Nmin+1)*(Nmax+1)*(Nmax+1)){
 
     printf("Files contained incorrect data. :-(\n");
   }
 
   // Close Files
-  fclose( fT2 );
-  fclose( fP2 );
   fclose( fT1 );
   fclose( fP1 );
   fclose( fTa );

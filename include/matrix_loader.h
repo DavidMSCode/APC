@@ -12,8 +12,6 @@
 # define Nmin 10
 # define Nmax 80
 
-extern double arr_T2[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
-extern double arr_P2[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
 extern double arr_T1[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
 extern double arr_P1[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
 extern double arr_Ta[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
