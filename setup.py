@@ -13,7 +13,7 @@ from pybind11.setup_helpers import Pybind11Extension        #gets setup helpers 
 del sys.path[-1]
 
 __version__ = "0.0.2"
-cwd = os.path.curdir()
+cwd = os.path.curdir
 cspice_lib_dir = "extern/cspice/lib/"
 # Compiler args
 cpp_extra_args = []
@@ -47,7 +47,7 @@ else:
     raise Exception("Attempting to build APC python package with unsupported OS.")
 
 """Check if a static cspice library is located in extern or if a shared library should be built"""
-if Path(os.path.join(cwd,cspice_lib_dir,cspice_lib_name)).is_file():
+if Path(os.path.join(cspice_lib_name,cspice_lib_name)).is_file():
     print("User provided static CSPICE library")
 else:
     if platform.system()=="Darwin" or platform.system()=="Linux":
@@ -55,7 +55,7 @@ else:
     else:
         cspice_lib_name = "libcspice.dll"
     #build library if get_cspice has not already built cspice library
-    if not Path(os.path.join(cwd,cspice_lib_dir,cspice_lib_name)).is_file():
+    if not Path(os.path.join(cspice_lib_name,cspice_lib_name)).is_file():
         print("Trying to build CSPICE library")
         from get_spice import main
         main()
@@ -63,7 +63,7 @@ else:
         print("Shared CSPICE library already built")
         pass
 
-cspice_lib_path = os.path.join(cwd,cspice_lib_dir,cspice_lib_name)
+cspice_lib_path = os.path.join(cspice_lib_dir,cspice_lib_name)
 
 
 # Get all necessary C++ source files
