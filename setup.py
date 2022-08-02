@@ -54,11 +54,10 @@ if Path(os.path.join(cspice_lib_dir,cspice_lib_name)).is_file():
 else:
     #build library if get_cspice has not already built cspice library
     if not Path(os.path.join(cspice_lib_dir,cspice_lib_name)).is_file():
-        print("Trying to build CSPICE library")
-        from get_spice import main
-        main()
+        print("Trying to download CSPICE library")
+        exec(open("get_spice.py").read())
     else:
-        print("Shared CSPICE library already built")
+        print("Static CSPICE library already downloaded")
         pass
 cspice_lib_path = os.path.join(cspice_lib_dir,cspice_lib_name)
 

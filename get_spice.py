@@ -447,7 +447,7 @@ def main() -> None:
         "extern",
         "cspice",
         "lib",
-        "libcspice.a" if is_unix else "libcspice.lib",
+        "cspice.a" if is_unix else "cspice.lib",
     )
     include_destination = os.path.join(
         root_dir,
