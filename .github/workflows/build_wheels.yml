@@ -10,6 +10,10 @@ jobs:
       matrix:
         os: [ubuntu-20.04, macos-10.15, windows-latest]
       fail-fast: false
+    env:
+      # Use delvewheel on windows for repairing wheel with shared libraries
+      CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
+      CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
 
     steps:
       - uses: actions/checkout@v2
