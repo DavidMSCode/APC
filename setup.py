@@ -47,7 +47,7 @@ else:
     raise Exception("Attempting to build APC python package with unsupported OS.")
 
 """Check if a static cspice library is located in extern or if a shared library should be built"""
-if Path(os.path.join(cspice_lib_name,cspice_lib_name)).is_file():
+if Path(os.path.join(cspice_lib_dir,cspice_lib_name)).is_file():
     print("User provided static CSPICE library")
 else:
     if platform.system()=="Darwin" or platform.system()=="Linux":
@@ -55,7 +55,7 @@ else:
     else:
         cspice_lib_name = "libcspice.dll"
     #build library if get_cspice has not already built cspice library
-    if not Path(os.path.join(cspice_lib_name,cspice_lib_name)).is_file():
+    if not Path(os.path.join(cspice_lib_dir,cspice_lib_name)).is_file():
         print("Trying to build CSPICE library")
         from get_spice import main
         main()
