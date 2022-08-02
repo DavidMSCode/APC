@@ -376,8 +376,10 @@ def build_cspice():
     :return: absolute path to new compiled shared library and obsolute path to header files
     """
     cwd = os.getcwd()
+    
     global cspice_dir, host_OS
     if is_unix:
+        minv_flag = ""
         libname = f"libcspice.so"
         target = "-target arm64-apple-macos11" if is_macos_arm else ""
         if host_OS == "Darwin":
