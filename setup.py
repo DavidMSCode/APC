@@ -50,13 +50,18 @@ else:
 if Path(os.path.join(cspice_lib_name,cspice_lib_name)).is_file():
     print("User provided static CSPICE library")
 else:
-    print("Trying to build CSPICE library")
-    from get_spice import main
-    main()
     if platform.system()=="Darwin" or platform.system()=="Linux":
         cspice_lib_name = "libcspice.so"
     else:
         cspice_lib_name = "libcspice.dll"
+    #build library if get_cspice has not already built cspice library
+    if not Path(os.path.join(cspice_lib_name,cspice_lib_name)).is_file():
+        print("Trying to build CSPICE library")
+        from get_spice import main
+        main()
+    else:
+        print("Shared CSPICE library already built")
+        pass
 
 cspice_lib_path = os.path.join(cspice_lib_dir,cspice_lib_name)
 
