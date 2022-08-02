@@ -380,13 +380,14 @@ def build_cspice():
     global cspice_dir, host_OS
     if is_unix:
         minv_flag = ""
-        libname = f"libcspice.so"
+        libname = f"libcspice.a"
         target = "-target arm64-apple-macos11" if is_macos_arm else ""
         if host_OS == "Darwin":
-            extra_flags = f"-dynamiclib -install_name @rpath/{libname}"
+            # extra_flags = f"-install_name @rpath/{libname}"
+            extra_flags = "-dynamiclib"
             minv_flag = f"-mmacosx-version-min=10.15"
         else:
-            extra_flags = f"-shared -Wl,-soname,{libname}"
+            extra_flags = f"-Wl,{libname}"
         destination = cspice_dir
         os.chdir(destination)
         cmds = [
@@ -406,16 +407,16 @@ def build_cspice():
     except subprocess.CalledProcessError as cpe:
         os.chdir(cwd)
         pass
-    # get the built shared library
+    # get the built  library
     shared_lib_path = [
         str(p.absolute())
         for p in Path(destination).glob("*.*")
-        if p.suffix in (".dll", ".66", ".dylib", ".so")
+        if p.suffix in (".lib", ".a")
     ]
     if len(shared_lib_path) != 1:
         os.chdir(cwd)
         raise RuntimeError(
-            f'Could not find built shared library of SpiceyPy in {list(Path(destination).glob("*.*"))}'
+            f'Could not find built static library of SpiceyPy in {list(Path(destination).glob("*.*"))}'
         )
     else:
         shared_lib_path = shared_lib_path[0]
@@ -446,7 +447,7 @@ def main() -> None:
         "extern",
         "cspice",
         "lib",
-        "libcspice.so" if is_unix else "libcspice.dll",
+        "libcspice.a" if is_unix else "libcspice.lib",
     )
     include_destination = os.path.join(
         root_dir,
@@ -471,30 +472,37 @@ def main() -> None:
         # okay, now we either are given a src dir, have already downloaded it, or don't have it
         print("Preparing cspice", flush=True)
         prepare_cspice()
-        # add the patches
-        print("Copying supplements", flush=True)
-        copy_supplements()
-        # okay now that we have the source in a writeable directory we can apply patches
-        if CSPICE_NO_PATCH not in os.environ:
-            print("Apply patches", flush=True)
-            apply_patches()
+        # # add the patches
+        # print("Copying supplements", flush=True)
+        # copy_supplements()
+        # # okay now that we have the source in a writeable directory we can apply patches
+        # if CSPICE_NO_PATCH not in os.environ:
+        #     print("Apply patches", flush=True)
+        #     apply_patches()
         # now build
-        print("Building cspice", flush=True)
-        shared_library_path,shared_include_path = build_cspice()
+        # print("Building cspice", flush=True)
+        # shared_library_path,shared_include_path = build_cspice()
+    global cspice_dir, host_OS
+    if host_OS in ("Linux", "Darwin", "FreeBSD"):
+        libname = "cspice.a"
+    else:
+        libname = "cspice.lib"
+    lib_include_path = os.path.join(cspice_dir,"cspice","include")
+    static_library_path=os.path.join(cspice_dir,"cspice","lib",libname)
     print(f"Copying built cspice: {shared_library_path} to {destination}", flush=True)
     # first make the directory for the destination if it doesn't exist
     Path(destination).parent.mkdir(parents=True, exist_ok=True)
     # okay now move shared library to dst dir
-    shutil.copyfile(shared_library_path, destination)
-    print(f"Copying cspice include folder: {shared_include_path} to {include_destination}", flush=True)
+    shutil.copyfile(static_library_path, destination)
+    print(f"Copying cspice include folder: {lib_include_path} to {include_destination}", flush=True)
     #make include directory if it does not exist
     os.makedirs(include_destination,exist_ok=True)
     #get each header file
-    header_files = os.listdir(shared_include_path)
+    header_files = os.listdir(lib_include_path)
     #copy each header file to include directory
     for file in header_files:
         # print(file)
-        shutil.copy2(os.path.join(shared_include_path,file),include_destination)
+        shutil.copy2(os.path.join(lib_include_path,file),include_destination)
 
 
     # cleanup tmp dir, windows seems to fail with this:
