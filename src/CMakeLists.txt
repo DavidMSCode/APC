@@ -19,6 +19,7 @@ interpolate.cpp
 linktest.cpp
 lsq_chebyshev_fit.cpp
 matrix_loader.cpp
+offset_gravity.cpp
 perigee_approx.cpp
 perturbations.cpp
 perturbed_gravity.cpp

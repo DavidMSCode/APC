@@ -79,7 +79,7 @@ void printStateList(std::vector<SatState> statelist){
     }
 }
 
-std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit orb, EphemerisManager ephem){
+std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orb, EphemerisManager ephem){
   //Convert vectors to array since pybind wants vectors but the functions are coded for arrays
   double* r0 = &r[0];
   double* v0 = &v[0];
@@ -148,7 +148,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
 }
 
 
-class Orbit PropagateOrbit(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit orbit, EphemerisManager ephem){
+class Orbit PropagateOrbit(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager ephem){
   //Generates 13 orbits with slight perturbations in state +/- on each coordinate
   std::vector<std::vector<double> > solution;
   solution = PropagateICs(r, v, t0 , tf, orbit, ephem);

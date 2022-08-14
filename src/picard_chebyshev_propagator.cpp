@@ -51,11 +51,12 @@
 #include "c_functions.h"
 #include "Orbit.h"
 #include "Ephemeris.hpp"
+#include "matrix_loader.h"
 
 std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double* v0, double t0, double t_final,double deg, double tol, double Period,
    std::vector<double> &tvec, std::vector<double> &t_orig, int seg, int N, int M, int* prep_HS, int coeff_size, int soln_size, int* total_seg,
    std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, std::vector<double> &Ta, std::vector<double> &W1, std::vector<double> &W2, double* Feval,
-   std::vector<double> &ALPHA, std::vector<double> &BETA, std::vector<double> &segment_times, Orbit &orb, EphemerisManager ephem){
+   std::vector<double> &ALPHA, std::vector<double> &BETA, std::vector<double> &segment_times, Orbit &orbit, EphemerisManager ephem){
   int loop    = 0;      // Break loop condition
   int k       = 0;      // Counter: segments per orbit
   int hot     = 0;      // Hot start switch
@@ -69,6 +70,9 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     r0_orig[i] = r0[i];
     v0_orig[i] = v0[i];
    }
+  //del_G storage
+  std::vector<std::vector<double>> DELG;
+
 
 
   std::vector<double> HotX(seg*(M+1)*3,0.0);
@@ -80,9 +84,6 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
   std::vector<double> Vpoints(coeff_size*3,0.0);
   //memset( Alpha, 0.0, ((N+1)*3*sizeof(double)));
 
-  // PROPAGATION
-  // #pragma omp critical(PI)
-  // {
   while (loop == 0){
 
     // Compute cosine time vector for a given segment
@@ -154,14 +155,28 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     //   }
     // }
 
+    double* del_G;
+    double empty_G[3*(Nmax+1)]{0.0};
+    //get del_G for current segment
+    if(orbit.offsetGravity)
+    {
+      std::vector<double> curr_del_G = orbit.delta_G[seg_cnt];
+      del_G = &curr_del_G[0];
+    }
+    else
+    {
+      //gravity delta between high and low fidelity solution
+      del_G = empty_G;
+    }
+
     // PICARD ITERATION
-    picard_iteration(r0,v0,X,V,times,N,M,deg,hot,tol,P1,P2,T1,T2,A,Feval,Alpha,Beta,orb,ephem);
+    std::vector<double> del_G_vec = picard_iteration(r0,v0,X,V,times,N,M,deg,hot,tol,P1,P2,T1,T2,A,Feval,Alpha,Beta,orbit,ephem,del_G);
     // Loop exit condition
     if (fabs(tf - t_final)/tf < 1e-12){
       loop = 1;
     }
-    if(orb.suborbital){
-      loop=1;
+    if(orbit.suborbital){
+      loop = 1;
     }
     // Prepare Hot Start
     // if (*prep_HS == -1){
@@ -218,6 +233,19 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
       ALPHA[ID2(i+seg_cnt*(N+1),3,coeff_size)] = Alpha[ID2(i,3,N+1)];
     }
 
+    // STORE del_G values
+    if (seg_cnt+1>DELG.size())
+    {
+      //add vector to end if new segment
+      DELG.push_back(del_G_vec);
+    }
+    else
+    {
+      //overwrite del_G if segment reiterated
+      DELG[seg_cnt]=del_G_vec;
+    }
+
+
     segment_times[seg_cnt+1] = tf;
     if (orb_end != 0.0){
       segment_times[seg_cnt+1] = orb_end;
@@ -228,6 +256,9 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
 
   }
   // }
+
+//store DELG in orbit object
+orbit.delta_G = DELG;
 //Restore initial conditions
 for (int i=0;i<3;i++){
     r0[i] = r0_orig[i];

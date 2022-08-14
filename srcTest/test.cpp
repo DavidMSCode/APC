@@ -96,6 +96,7 @@ int main(){
     largelist.push_back(sigma13[j]);
     j++;
   }
+  
   std::vector<Orbit> orbits = ParallelPropagate(largelist, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   std::cout << "Parallel Propagation Test Complete" << std::endl << "=================" << std::endl;
 

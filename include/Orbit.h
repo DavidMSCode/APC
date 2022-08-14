@@ -23,8 +23,7 @@ class Orbit
             double Area;
             double Reflectance;
             double Mass;
-            double Cd;
-            
+            double Cd; 
         };
         
     public:
@@ -32,13 +31,16 @@ class Orbit
         bool Compute_SRP;
         bool Compute_Third_Body;
         bool suborbital;
+        bool offsetGravity;
         int ID;
+        std::vector<std::vector<double> > delta_G;
         //Constructors
         Orbit();
         Orbit(std::vector<std::vector<double > > Solution);
         Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id);
-        //Copy Constructor
-        Orbit(const Orbit &O);
+        Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, bool offset_Gravity, int id);
+        // //Copy Constructor
+        // Orbit(const Orbit &O);
         //Setters
         void SetSolution(std::vector<std::vector<double > > Solution);
         void SetProperties(double area, double reflectance, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id);

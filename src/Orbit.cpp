@@ -21,26 +21,38 @@ Orbit::Orbit(){
 Orbit::Orbit(std::vector<std::vector<double > > Solution){
     SetSolution(Solution);
 }
-Orbit::Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id){
+Orbit::Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id)
+{
+    //set satellite properties, propagator options and id
     SetProperties(area, reflectivity, mass, Cd, compute_drag, compute_SRP, compute_third_body, id);
+    //set suborbital flag to false
     suborbital = false;
+    //set offset gravity to false
+    offsetGravity = false;
+}
+//set offset gravity in constructor with constructor delegation
+Orbit::Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, bool offset_Gravity, int id) : Orbit::Orbit(area, reflectivity,  mass,  Cd,  compute_drag,  compute_SRP,  compute_third_body,  id)
+{
+    offsetGravity=offset_Gravity;
 }
 
-//Copy constructor
-Orbit::Orbit(const Orbit &O){
-    //Sat properties
-    satproperties = O.satproperties;
-    //Perturbation flags
-    Compute_Drag = O.Compute_Drag;
-    Compute_SRP = O.Compute_SRP;
-    Compute_Third_Body = O.Compute_Third_Body;
-    //
-    ID = O.ID;
-    //Solution
-    Soln = O.Soln;
-    //suborbital flag
-    suborbital = O.suborbital;
-}
+// //Copy constructor
+// Orbit::Orbit(const Orbit &O){
+//     //Sat properties
+//     satproperties = O.satproperties;
+//     //Perturbation flags
+//     Compute_Drag = O.Compute_Drag;
+//     Compute_SRP = O.Compute_SRP;
+//     Compute_Third_Body = O.Compute_Third_Body;
+//     //
+//     ID = O.ID;
+//     //Solution
+//     Soln = O.Soln;
+//     //suborbital flag
+//     suborbital = O.suborbital;
+//     //offsetGravity flag
+//     offsetGravity = O.offsetGravity;
+// }
 //Getter Functions
 std::vector<std::vector<double> > Orbit::getPosition(){
     std::vector<std::vector<double> >::const_iterator first = Soln.begin() + 1;
