@@ -47,17 +47,17 @@ int main(){
 
   // Initialize Input Variables
   // LEO
-  // vector<double> r0 = {7000, 0.0, 0.0};         // Initial Position (km)
-  // vector<double> v0 = {0.0,  7.54604911, 0.};   // Initial Velocity (km/s)
-  // double t0    = 0.0;                                // Initial Times (s)
-  // double tf    = 10*5059.648765;                     // Final Time (s)
+  vector<double> r0 = {7000, 0.0, 0.0};         // Initial Position (km)
+  vector<double> v0 = {0.0, 8.003798178945150, 0.};   // Initial Velocity (km/s)
+  double t0    = 0.0;                                // Initial Times (s)
+  double tf    = 7.121081577578024e+03;//10*5059.648765;                     // Final Time (s)
 
   //SSO
-  vector<double> r0 = {6678,  0,  0};                  // Initial Position (km)
-  vector<double> v0 = {0,  0,  7.7451257}; // Initial Velocity (km/s)
-  double T = 5431.013011331035;                               //Orbital period (s)
-  double t0 = 0;                                              //initial time (s)
-  double tf = 10*T;                                              //final time (s)
+  // vector<double> r0 = {6678,  0,  0};                  // Initial Position (km)
+  // vector<double> v0 = {0,  0,  7.7451257}; // Initial Velocity (km/s)
+  // double T = 5431.013011331035;                               //Orbital period (s)
+  // double t0 = 0;                                              //initial time (s)
+  // double tf = 10*T;                                              //final time (s)
        
   // MEO
   //std::vector<double> r0 = {9000.0, 0.0, 0.0};                                // Initial Position (km)
@@ -85,20 +85,20 @@ int main(){
   // std::cout << "Parallel Ephemeris Fetching Test Complete" << std::endl << "================================================" << std::endl;
   Orbit orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;
-  std::vector<SatState> sigma13 = GenSigma13(r0,v0,10,.1);
+  // std::vector<SatState> sigma13 = GenSigma13(r0,v0,10,.1);
 
-  int j = 0;
-  std::vector<SatState> largelist;
-  for (int i=0;i<100;i++){
-    if (j>12){
-      j=0;
-    }
-    largelist.push_back(sigma13[j]);
-    j++;
-  }
-  std::vector<Orbit> orbits = ParallelPropagate(largelist, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
-  std::cout << "Parallel Propagation Test Complete" << std::endl << "=================" << std::endl;
+  // int j = 0;
+  // std::vector<SatState> largelist;
+  // for (int i=0;i<100;i++){
+  //   if (j>12){
+  //     j=0;
+  //   }
+  //   largelist.push_back(sigma13[j]);
+  //   j++;
+  // }
+  // std::vector<Orbit> orbits = ParallelPropagate(largelist, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
+  // std::cout << "Parallel Propagation Test Complete" << std::endl << "=================" << std::endl;
 
-  std::pair<int,double> bench = Benchmark1000(8);
-  std::cout << "Benchmark with " << bench.first << " threads finished in " << bench.second << " seconds.\n";
+  // std::pair<int,double> bench = Benchmark1000(8);
+  // std::cout << "Benchmark with " << bench.first << " threads finished in " << bench.second << " seconds.\n";
 }
