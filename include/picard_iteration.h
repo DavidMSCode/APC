@@ -13,7 +13,7 @@
 #include "Orbit.h"
 #include "Ephemeris.hpp"
 
-void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, int N, int M, double deg, int hot, double tol,
+void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vector<double> &MEE, double* mee0, std::vector<double> &times, int N, int M, double deg, int hot, double tol,
   std::vector<double> &P1, std::vector<double> &T1, std::vector<double> &A, double* Feval, std::vector<double> &Alpha, Orbit &orb, EphemerisManager ephem);
 
 #endif

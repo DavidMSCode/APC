@@ -41,6 +41,7 @@
 #include "FandG.h"
 #include "eci2ecef.h"
 #include "ecef2eci.h"
+#include "inertial2radial.h"
 #include "perturbed_gravity.h"
 #include "picard_error_feedback.h"
 #include "perturbations.h"
@@ -51,7 +52,7 @@
 #include "mee_dot.h"
 #include "mee2rv.h"
 
-void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vector<double> &MEE, mee0, std::vector<double> &times, int N, int M, double deg, int hot, double tol, std::vector<double> &P1, std::vector<double> &T1, std::vector<double> &A, double* Feval, std::vector<double> &Alpha, Orbit &orb, EphemerisManager ephem){
+void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vector<double> &MEE, double* mee0, std::vector<double> &times, int N, int M, double deg, int hot, double tol, std::vector<double> &P1, std::vector<double> &T1, std::vector<double> &A, double* Feval, std::vector<double> &Alpha, Orbit &orb, EphemerisManager ephem){
   
   // Initialization
   bool suborbital = false;
@@ -81,6 +82,7 @@ void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vecto
     
   //Perturbed Gravity iteration storage
   IterCounters ITRs;
+  double del_G[3*(Nmax+1)];
 
   int itr, MaxIt;
   double err, w2;
@@ -111,7 +113,8 @@ void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vecto
       // Convert from ECI to ECEF
       eci2ecef(times[i-1],xI,vI,xECEF,vECEF);
       // Compute Variable Fidelity Gravity
-      perturbed_gravity(times[i-1],xECEF,err,i,M,deg,hot,aECEF,tol,&itr,Feval,ITRs);
+      perturbed_gravity(times[i-1],xECEF,err,i,M,deg,hot,aECEF,tol,&itr,Feval,ITRs,del_G);
+      
       //Calculate acceleration from drag
       Perturbed_Drag(xECEF, vECEF, orb, drag_aECEF);
 

@@ -26,12 +26,6 @@ void matrix_loader(){
   FILE* fA  = fopen("matrices/A_matrices.bin","rb");
 
   // Confirm Opening
-  if ( !fT2 ){
-    printf("Failure to open fT2 for binary write: CHECK PATH\n");
-  }
-  if ( !fP2 ){
-    printf("Failure to open fP2 for binary write: CHECK PATH\n");
-  }
   if ( !fT1 ){
     printf("Failure to open fT1 for binary write: CHECK PATH\n");
   }

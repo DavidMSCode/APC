@@ -77,10 +77,17 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "cstdarg": "cpp",
+        "cwctype": "cpp",
+        "*.tcc": "cpp",
+        "cinttypes": "cpp",
+        "memory_resource": "cpp",
+        "string_view": "cpp"
     },
     "cmake.debugConfig": {
             "cwd": "${workspaceFolder}/bin"
-          },
+        },
+        "cmake.cmakePath": "cmake3",
     }
 

@@ -17,9 +17,11 @@
 #include "const.h"
 #include "mee_dot.h"
 #include "c_functions.h"
+#include <math.h>
+#include <vector>
 
-void mee_dot(std::vector<double> &MEE, double* a_lvlh, std::vector<double> &MEE_dot, int M){
-    
+void mee_dot(std::vector<double> &MEE, std::vector<double> &a_lvlh, std::vector<double> &MEE_dot, int M){
+
     double cosL = 0.0;
     double sinL = 0.0;
     double sqpm = 0.0;

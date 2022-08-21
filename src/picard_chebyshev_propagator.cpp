@@ -171,8 +171,8 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     }
       
     // PICARD ITERATION
-      picard_iteration(X,V,mee0,times,N,M,deg,hot,tol,P1,T1,A,Feval,Alpha,orb,ephem);
-      
+      picard_iteration(X,V,MEE,mee0,times,N,M,deg,hot,tol,P1,T1,A,Feval,Alpha,orb,ephem);
+  
     // Loop exit condition
     if (fabs(tf - t_final)/tf < 1e-12){
       loop = 1;

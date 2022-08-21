@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "clenshaw_curtis_ivpII.h"
+#include "clenshaw_curtis_ivpI.h"
 #include "c_functions.h"
 #include "matrix_loader.h"
 #include <vector>

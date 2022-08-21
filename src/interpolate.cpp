@@ -28,11 +28,12 @@
 #include <vector>
 #include <iostream>
 
+#include "mee2rv.h"
 #include "interpolate.h"
 #include "c_functions.h"
 
 
-std::vector<double> interpolate(std::vector<double>  ALPHA, int soln_size, int coeff_size, int N, std::vector<double> seg_times, std::vector<double> W1, std::vector<double> W2, double t0, double tf, double dt, int total_segs, std::vector<double> SolnMEE, std:vector<double> Soln){
+std::vector<double> interpolate(std::vector<double>  ALPHA, int soln_size, int coeff_size, int N, std::vector<double> seg_times, std::vector<double> W1, std::vector<double> W2, double t0, double tf, double dt, int total_segs, std::vector<double> SolnMEE, std::vector<double> Soln){
           
   int prev_cnt = 0;
 //   std::vector<double> Soln(soln_size*6,0.0);

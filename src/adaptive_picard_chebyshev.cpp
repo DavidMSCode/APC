@@ -43,7 +43,8 @@
 #include "Orbit.h"
 #include "Ephemeris.hpp"
 
-std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, double dt, double deg, double tol, int soln_size, double* Feval, std::vector<double> &SolnMEE, std::vector<double> &Soln, Orbit &orb, EphemerisManager ephem){
+std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, double dt, double deg, 
+double tol, int soln_size, double* Feval, std::vector<double> &SolnMEE, std::vector<double> &Soln, Orbit &orb, EphemerisManager ephem){
 
   /* 1. DETERMINE DEGREE/SEGMENTATION SCHEME
   Compute the polynomial degree and number of segments per orbit that will
@@ -97,5 +98,5 @@ std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v
 
   //free(ALPHA);
   //free(BETA);
-  return Soln;
+  return states;
 }
