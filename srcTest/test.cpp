@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2022-07-01 19:43:45
+ * @ Modified time: 2022-08-16 18:24:28
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -58,7 +58,7 @@ int main(){
   double T = 5431.013011331035;                               //Orbital period (s)
   double t0 = 0;                                              //initial time (s)
   double tf = 10*T;                                              //final time (s)
-       
+
   // MEO
   //std::vector<double> r0 = {9000.0, 0.0, 0.0};                                // Initial Position (km)
   //std::vector<double> v0 = {0.0, 6.7419845635570, 1.806509319188210};         // Initial Velocity (km/s)
@@ -79,27 +79,37 @@ int main(){
   // double v0[3] = {0.0, 4.299654205302486, 8.586211043023614};    // Initial Velocity (km/s)
   // double t0    = 0.0;                                            // Initial Times (s)
   // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s
-  
+
   // EphemerisManager ephem(spk,lsk,t0,tf,bodies,center,frame);
   // MPGetTest(ephem, t0, tf);
   // std::cout << "Parallel Ephemeris Fetching Test Complete" << std::endl << "================================================" << std::endl;
+  auto start = std::chrono::steady_clock::now();
   Orbit orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
-  std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;
-  std::vector<SatState> sigma13 = GenSigma13(r0,v0,10,.1);
+  auto end = std::chrono::steady_clock::now();
+  std::chrono::duration<double> diff = end-start;
+  std::cout << "Single Propagation Test Complete in "<<diff.count()<<" seconds."<< std::endl << "====================================" << std::endl;
 
-  int j = 0;
-  std::vector<SatState> largelist;
-  for (int i=0;i<100;i++){
-    if (j>12){
-      j=0;
-    }
-    largelist.push_back(sigma13[j]);
-    j++;
-  }
-  
-  std::vector<Orbit> orbits = ParallelPropagate(largelist, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
-  std::cout << "Parallel Propagation Test Complete" << std::endl << "=================" << std::endl;
+  auto start2 = std::chrono::steady_clock::now();
+  Orbit orb_offset = OffsetPropagate(r0,v0,t0,tf, area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body, orb);
+  auto end2 = std::chrono::steady_clock::now();
+  std::chrono::duration<double> diff2 = end2-start2;
+  std::cout << "Offset Propagation Test Complete in "<<diff2.count()<<" seconds."<< std::endl << "====================================" << std::endl;
 
-  std::pair<int,double> bench = Benchmark1000(8);
-  std::cout << "Benchmark with " << bench.first << " threads finished in " << bench.second << " seconds.\n";
+  // std::vector<SatState> sigma13 = GenSigma13(r0,v0,10,.1);
+
+  // int j = 0;
+  // std::vector<SatState> largelist;
+  // for (int i=0;i<100;i++){
+  //   if (j>12){
+  //     j=0;
+  //   }
+  //   largelist.push_back(sigma13[j]);
+  //   j++;
+  // }
+
+  // std::vector<Orbit> orbits = ParallelPropagate(largelist, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
+  // std::cout << "Parallel Propagation Test Complete" << std::endl << "=================" << std::endl;
+
+  // std::pair<int,double> bench = Benchmark1000(8);
+  // std::cout << "Benchmark with " << bench.first << " threads finished in " << bench.second << " seconds.\n";
 }

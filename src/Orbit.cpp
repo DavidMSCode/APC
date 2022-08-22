@@ -31,9 +31,12 @@ Orbit::Orbit(double area, double reflectivity, double mass, double Cd, bool comp
     offsetGravity = false;
 }
 //set offset gravity in constructor with constructor delegation
-Orbit::Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, bool offset_Gravity, int id) : Orbit::Orbit(area, reflectivity,  mass,  Cd,  compute_drag,  compute_SRP,  compute_third_body,  id)
+Orbit::Orbit(double area, double reflectivity, double mass, double Cd, std::vector<std::map<int, std::vector<double> > > del_G_offset, bool compute_drag, bool compute_SRP, bool compute_third_body, int id) : Orbit::Orbit(area, reflectivity,  mass,  Cd,  compute_drag,  compute_SRP,  compute_third_body,  id)
 {
-    offsetGravity=offset_Gravity;
+    //turn on offset gravity flag
+    offsetGravity=true;
+    //store offset gravity vectors
+    delta_G = del_G_offset;
 }
 
 // //Copy constructor

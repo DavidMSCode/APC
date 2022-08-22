@@ -13,6 +13,7 @@
 #define ORBIT_H
 
 #include <vector>
+#include <map>
 
 
 class Orbit
@@ -33,12 +34,12 @@ class Orbit
         bool suborbital;
         bool offsetGravity;
         int ID;
-        std::vector<std::vector<double> > delta_G;
+        std::vector<std::map<int, std::vector<double> > > delta_G;
         //Constructors
         Orbit();
         Orbit(std::vector<std::vector<double > > Solution);
         Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id);
-        Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, bool offset_Gravity, int id);
+        Orbit(double area, double reflectivity, double mass, double Cd, std::vector<std::map<int, std::vector<double> > > del_G_offset, bool compute_drag, bool compute_SRP, bool compute_third_body, int id);
         // //Copy Constructor
         // Orbit(const Orbit &O);
         //Setters

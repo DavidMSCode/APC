@@ -1,3 +1,4 @@
+
 include_directories(${APC_SOURCE_DIR}/include ${APC_SOURCE_DIR}/extern/cspice/include) #add header file locations for APC and CSPICE
 find_package(OpenMP REQUIRED)
 

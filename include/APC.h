@@ -148,6 +148,25 @@ std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0,
 class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body);
 
 /**
+ * @brief 
+ * 
+ * @param r 
+ * @param v 
+ * @param t0 
+ * @param tf 
+ * @param area 
+ * @param reflectance 
+ * @param mass 
+ * @param drag_C 
+ * @param compute_drag 
+ * @param compute_SRP 
+ * @param compute_third_body 
+ * @param offset_orbit 
+ * @return Orbit 
+ */
+class Orbit OffsetPropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body, Orbit offset_orbit);
+
+/**
  * @brief Tests the thread safety of the ephemeris manager by reading data from the EphemerisManager and writing to stdout in parallel
  * 
  * @param ephem EphemerisManager object containing ephermeris data for solar system objects over a given interval

@@ -71,7 +71,7 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     v0_orig[i] = v0[i];
    }
   //del_G storage
-  std::vector<std::vector<double>> DELG;
+  std::vector<std::map<int,std::vector<double>>> DELG;
 
 
 
@@ -154,23 +154,20 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     //     V[ID2(i,3,M+1)] = V[ID2(i,3,M+1)] + HotV[ID2(i+(k*(M+1)),3,seg*(M+1))];
     //   }
     // }
-
-    double* del_G;
-    double empty_G[3*(Nmax+1)]{0.0};
+     std::map<int,std::vector<double> > prev_del_G_map;
+     std::vector<double> empty_G(3*(Nmax+1),0.0);
     //get del_G for current segment
     if(orbit.offsetGravity)
     {
-      std::vector<double> curr_del_G = orbit.delta_G[seg_cnt];
-      del_G = &curr_del_G[0];
+      prev_del_G_map = orbit.delta_G[seg_cnt];
     }
     else
     {
-      //gravity delta between high and low fidelity solution
-      del_G = empty_G;
+      prev_del_G_map[0] = empty_G;
     }
 
     // PICARD ITERATION
-    std::vector<double> del_G_vec = picard_iteration(r0,v0,X,V,times,N,M,deg,hot,tol,P1,P2,T1,T2,A,Feval,Alpha,Beta,orbit,ephem,del_G);
+    std::map<int,std::vector<double> > del_G_map = picard_iteration(r0,v0,X,V,times,N,M,deg,hot,tol,P1,P2,T1,T2,A,Feval,Alpha,Beta,orbit,ephem,seg_cnt);
     // Loop exit condition
     if (fabs(tf - t_final)/tf < 1e-12){
       loop = 1;
@@ -237,12 +234,12 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     if (seg_cnt+1>DELG.size())
     {
       //add vector to end if new segment
-      DELG.push_back(del_G_vec);
+      DELG.push_back(del_G_map);
     }
     else
     {
       //overwrite del_G if segment reiterated
-      DELG[seg_cnt]=del_G_vec;
+      DELG[seg_cnt]=del_G_map;
     }
 
 
@@ -257,7 +254,7 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
   }
   // }
 
-//store DELG in orbit object
+//store DELG segment and iteration map in orbit object
 orbit.delta_G = DELG;
 //Restore initial conditions
 for (int i=0;i<3;i++){

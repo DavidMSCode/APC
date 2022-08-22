@@ -37,6 +37,7 @@
 #include <math.h>
 
 #include <vector>
+#include <map>
 
 #include "picard_iteration.h"
 #include "const.h"
@@ -54,8 +55,8 @@
 #include "Ephemeris.hpp"
 
 
-std::vector<double> picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, int N, int M, double deg, int hot, double tol,
-  std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, double* Feval, std::vector<double> &Alpha, std::vector<double> &Beta, Orbit &orbit, EphemerisManager ephem, double* del_G){
+std::map<int, std::vector<double> > picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, int N, int M, double deg, int hot, double tol,
+  std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, double* Feval, std::vector<double> &Alpha, std::vector<double> &Beta, Orbit &orbit, EphemerisManager ephem, int seg_cnt){
   
   // Initialization
   bool suborbital = false;
@@ -72,7 +73,9 @@ std::vector<double> picard_iteration(double* Xint, double* Vint, std::vector<dou
   double drag_aECEF[3] = {0.0};
   double SRP_aECI[3] = {0.0};
   double third_body_aECI[3] = {0.0};
-
+  std::map<int, std::vector<double> > del_G_iter_map;
+  double* del_G;
+  double new_G [3*(Nmax+1)]{0.0};
   std::vector<double> G((M+1)*3,0.0);
   std::vector<double> beta(N*3,0.0);
   std::vector<double> gamma(N*3,0.0);
@@ -108,23 +111,25 @@ std::vector<double> picard_iteration(double* Xint, double* Vint, std::vector<dou
         vI[j-1] = V[ID2(i,j,M+1)];
       }
       // Exit loop early if orbit has crashed
-      if (!suborbital){
-        alt = sqrt(pow(xI[0],2)+pow(xI[1],2)+pow(xI[2],2))-C_Req;
-        if (alt<0){
-          suborbital=true;
-        }
-      }
+    alt = sqrt(pow(xI[0],2)+pow(xI[1],2)+pow(xI[2],2))-C_Req;
+    if (alt<0){
+      suborbital=true;
+    }
       // Convert position and velocity from ECI to ECEF
       eci2ecef(times[i-1],xI,vI,xECEF,vECEF);
 
       //Get gravity acceleration
       if (!orbit.offsetGravity)
       {
+        //point del_G to the new del_G vector
+        del_G = new_G;
         // Compute Variable Fidelity Gravity
         perturbed_gravity(times[i-1],xECEF,err,i,M,deg,hot,aECEF,tol,&itr,Feval,ITRs,del_G);
       }
       else
       {
+        //point del_G to the pre computed delta G for current segment and iteration
+        del_G = &orbit.delta_G[seg_cnt][itr][0];
         // Approximate high fidelity gravity with precomputed del_G
         offset_gravity(times[i-1],xECEF,err,i,M,deg,hot,aECEF,tol,&itr,Feval,ITRs,del_G);
       }
@@ -258,11 +263,17 @@ std::vector<double> picard_iteration(double* Xint, double* Vint, std::vector<dou
     X = Xnew;
     V = Vnew;
 
+    //store del_G in a map for each iteration
+    int n = 3*(Nmax+1);
+    std::vector<double> del_G_vec(del_G,del_G+n);
+    del_G_iter_map[itr-1] = del_G_vec;
+    
     // Iteration Counter
     if (itr == MaxIt){
       itr = itr - 1;
       break;
     }
+
   }
 
   if(suborbital){
@@ -270,7 +281,6 @@ std::vector<double> picard_iteration(double* Xint, double* Vint, std::vector<dou
     orbit.SetSubOrbital();
     }
 
-int n = 3*(Nmax+1);
-std::vector<double> del_G_vec(del_G,del_G+n);
-return del_G_vec;
+
+return del_G_iter_map;
 }

@@ -85,7 +85,13 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   double* v0 = &v[0];
   double dt    = 30.0;                             // Soution Output Time Interval (s)
   double deg   = 70.0;                             // Gravity Degree (max 100)
-  double tol   = 1.0e-15;                          // Tolerance
+  double tol;
+  if(orb.offsetGravity){
+    tol = 1.0e-8;
+  }
+  else{
+    tol = 1.0e-15;                          // Tolerance
+  }
   // Initialize Output Variables
   int soln_size = int(1.2*(tf/dt));
   if (soln_size == 1){
@@ -149,13 +155,13 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
 
 
 class Orbit PropagateOrbit(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager ephem){
-  //Generates 13 orbits with slight perturbations in state +/- on each coordinate
   std::vector<std::vector<double> > solution;
   solution = PropagateICs(r, v, t0 , tf, orbit, ephem);
   orbit.SetSolution(solution);
   return orbit;
 }
 
+//Generates 13 orbits with slight perturbations in state +/- on each coordinate
 std::vector<SatState> GenSigma13(std::vector<double> r, std::vector<double> v, double pos_error, double vel_error){
   std::vector<SatState> Sigma13(13);
   std::vector<double> plusR(3);
@@ -266,6 +272,13 @@ return orbits;
 class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body){
   EphemerisManager ephem = cacheEphemeris(t0,tf+3600);
   Orbit orbit(area,reflectance,mass,drag_C,compute_drag,compute_SRP,compute_third_body,1);
+  Orbit orbit2 = PropagateOrbit(r, v,  t0,  tf,  orbit, ephem);
+  return orbit2;
+}
+
+class Orbit OffsetPropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body, Orbit offset_orbit){
+  EphemerisManager ephem = cacheEphemeris(t0,tf+3600);
+  Orbit orbit(area,reflectance,mass,drag_C,offset_orbit.delta_G,compute_drag,compute_SRP,compute_third_body,1);
   Orbit orbit2 = PropagateOrbit(r, v,  t0,  tf,  orbit, ephem);
   return orbit2;
 }

@@ -41,7 +41,6 @@
 #define debug_offset_itr 0
 
  void offset_gravity(double t, double* Xo, double err, int i, int M, double deg, int hot, double* G, double tol, int* itr, double* Feval, IterCounters& ITRs, double* del_G){
-
   double Gapprox[3] = {0.0};
   //retrieve iteration counter values
   int ITR1=ITRs.ITR1;
@@ -67,25 +66,24 @@
      MODEL    = 0;
    }
 
-  // Approximate Gravity with precomputed del_G
-  if (debug_offset == 1){
-    if (i==1){
-    printf("Offset Gravity 1\n");
+if (err>tol)
+{
+    // Approximate Gravity with precomputed del_G
+    if (debug_offset == 1){
+      if (i==1){
+      printf("Offset Gravity\n");
+      }
     }
-  }
-  Grav_Approx(t,Xo,Gapprox,Feval);
-  for (int j=0; j<=2; j++){
-    G[j] = Gapprox[j] + del_G[ID2(i,j+1,Nmax+1)];
-  }
-  
-  if (i==M+1){
-    ITR2 = *itr;
-    if (debug_offset_itr == 1){
-      printf("ITR2 %i\n",ITR2);
+    Grav_Approx(t,Xo,Gapprox,Feval);
+    for (int j=0; j<=2; j++){
+      G[j] = Gapprox[j] + del_G[ID2(i,j+1,Nmax+1)];
     }
-  }
-
-//store iteration coutners in struct
+    
+}
+if (i==M+1){
+  *itr = *itr + 1;
+}
+//store iteration counters in struct
  ITRs.ITR1=ITR1;
  ITRs.ITR2=ITR2;
  ITRs.ITR3=ITR3;
