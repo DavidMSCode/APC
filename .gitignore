@@ -17,6 +17,7 @@ bin/*
 !bin/*.ipynb
 bin/de440.bsp
 !bin/*.py
+bin/sam-test.py
 
 #external libraries
 extern/cspice*
