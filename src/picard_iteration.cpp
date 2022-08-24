@@ -112,16 +112,17 @@ void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vecto
       }
       // Convert from ECI to ECEF
       eci2ecef(times[i-1],xI,vI,xECEF,vECEF);
+
       // Compute Variable Fidelity Gravity
       perturbed_gravity(times[i-1],xECEF,err,i,M,deg,hot,aECEF,tol,&itr,Feval,ITRs,del_G);
       
       //Calculate acceleration from drag
-      Perturbed_Drag(xECEF, vECEF, orb, drag_aECEF);
+      // Perturbed_Drag(xECEF, vECEF, orb, drag_aECEF);
 
       //sum pertubed gravity and drag accelerations
-      for(int k=0;k<3;k++){
-        aECEF[k] = aECEF[k]+drag_aECEF[k];
-      }
+      // for(int k=0;k<3;k++){
+      //   aECEF[k] = aECEF[k]+drag_aECEF[k];
+      // }
 
       // Convert from ECEF to ECI
       ecef2eci(times[i-1],aECEF,aECI);
@@ -133,15 +134,17 @@ void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vecto
       // Compute Perturbed Acceleration
       for (int j=0; j<=2; j++){
           ad_eci[j] = aECI[j] - TB[j];
+          // printf("%15.15f\t",ad_eci[j]);
       }
-        
+      // printf("\n");
+
       //calculate SRP and Third Body
-      Perturbed_SRP(times[i-1], xI, orb, ephem, SRP_aECI);
-      Perturbed_three_body(times[i-1], xI, orb, ephem, third_body_aECI);
+      // Perturbed_SRP(times[i-1], xI, orb, ephem, SRP_aECI);
+      // Perturbed_three_body(times[i-1], xI, orb, ephem, third_body_aECI);
       //Add perturbations to acceleration.
-      for(int k=0;k<3;k++){
-        ad_eci[k] = ad_eci[k] + SRP_aECI[k] + third_body_aECI[k];
-      }
+      // for(int k=0;k<3;k++){
+      //   ad_eci[k] = ad_eci[k] + SRP_aECI[k] + third_body_aECI[k];
+      // }
         
       // Inertial to Radial
       inertial2radial(xI,vI,xrdl,yrdl,zrdl);
@@ -150,13 +153,20 @@ void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vecto
       a_lvlh[ID2(i,1,M+1)] = ad_eci[0]*xrdl[0]+ad_eci[1]*xrdl[1]+ad_eci[2]*xrdl[2];
       a_lvlh[ID2(i,2,M+1)] = ad_eci[0]*yrdl[0]+ad_eci[1]*yrdl[1]+ad_eci[2]*yrdl[2];
       a_lvlh[ID2(i,3,M+1)] = ad_eci[0]*zrdl[0]+ad_eci[1]*zrdl[1]+ad_eci[2]*zrdl[2];
+      // printf("%15.15f\t%15.15f\t%15.15f\n",a_lvlh[ID2(i,1,M+1)],a_lvlh[ID2(i,2,M+1)],a_lvlh[ID2(i,3,M+1)]);
         
     }
-      
+
     // MEE Dynamics
     mee_dot(MEE,a_lvlh,MEE_dot,M);
-    
-    // Integrate
+
+    for (int i=1; i<=M+1; i++){
+      for (int j=1; j<=6; j++){
+        printf("%15.15f\t",MEE_dot[ID2(i,j,M+1)]);
+      }
+      printf("\n");
+    }
+
     std::vector<double> tmp1;
     tmp1 = matmul(A,MEE_dot,N+1,N,6,N+1,N);   // LSQ Coefficients
     Alpha = matmul(P1,tmp1,N+1,N,6,N+1,N);    // Integration Operator
@@ -165,11 +175,28 @@ void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vecto
           Alpha[ID2(i,j,M+1)] = w2*Alpha[ID2(i,j,M+1)];
             if (i==1){
                 Alpha[ID2(i,j,M+1)] = Alpha[ID2(i,j,M+1)] + mee0[j-1]; 
+                // printf("%f\t",mee0[j-1]);
             }
+            // printf("%15.15f\t",Alpha[ID2(i,j,M+1)]);
         }
+        // printf("\n");
+    }
+
+    for (int i=1; i<=N; i++){
+      for (int j=1; j<=6; j++){
+        printf("%15.15f\t",A[i,j,N]);
+      }
+      printf("\n");
     }
 
     MEEnew = matmul(T1,Alpha,M+1,N+1,6,M+1,N+1);
+
+    // for (int iii=1; iii<=M+1; iii++){
+    //   for (int jjj=1; jjj<=6; jjj++){
+    //     printf("%15.15f\t",MEEnew[ID2(iii,jjj,M+1)]);
+    //   }
+    //   printf("\n");
+    // }
 
     // Non-dimensional Error
     double tmp = 0.0;
@@ -189,7 +216,7 @@ void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vecto
       }
     }
     err = curr_err;
-
+  
     // Update
     MEE = MEEnew;
       

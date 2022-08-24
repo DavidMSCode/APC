@@ -52,8 +52,8 @@ double tol, int soln_size, double* Feval, std::vector<double> &SolnMEE, std::vec
   int seg, N;
   double tp, Period;
   polydegree_segments(r0,v0,deg,tol,Feval,&seg,&N,&tp,&Period);
-  // printf("N %i\t",N);
-  // printf("seg %i\n",seg);
+  printf("N %i\t",N);
+  printf("seg %i\n",seg);
 
   // Array size for coefficients and solution
   int coeff_size;

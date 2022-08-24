@@ -48,7 +48,7 @@ int main(){
   // Initialize Input Variables
   // LEO
   vector<double> r0 = {7000, 0.0, 0.0};         // Initial Position (km)
-  vector<double> v0 = {0.0, 8.003798178945150, 0.};   // Initial Velocity (km/s)
+  vector<double> v0 = {0.0, 8.003798178945150, 0.0};   // Initial Velocity (km/s)
   double t0    = 0.0;                                // Initial Times (s)
   double tf    = 7.121081577578024e+03;//10*5059.648765;                     // Final Time (s)
 
