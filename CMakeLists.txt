@@ -1,12 +1,13 @@
 #documentation tutorial from https://github.com/smrfeld/cpp_doxygen_sphinx/blob/master/README_doxygen.md
 
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.13.0)
 #SET(CMAKE_OSX_ARCHITECTURES x86_64)
 cmake_policy(SET CMP0091 NEW) #allow setting MSVC runtime library instead of using cmake cache
 project(APC VERSION 0.1.0)
 
 add_subdirectory(src)
-add_subdirectory(srcTest)
+add_subdirectory(srcTest) 
+add_subdirectory(srcMB) 
 #Compile Flags
 set_property(TARGET test APC PROPERTY CXX_STANDARD 11) #sets C++ standard to c++11 (ignored on Windows)
 
