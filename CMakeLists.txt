@@ -9,7 +9,7 @@ add_subdirectory(src)
 add_subdirectory(srcTest)
 add_subdirectory(srcMB)
 #Compile Flags
-set_property(TARGET test APC PROPERTY CXX_STANDARD 11) #sets C++ standard to c++11 (ignored on Windows)
+set_property(TARGET test APC PROPERTY CXX_STANDARD 17) #sets C++ standard to c++11 (ignored on Windows)
 
 #[[choose runtime library (only Windows). CSPICE is statically linked with the release runtime flags /MT (libcmt.lib) (no debug)
 When compiling for debug on Windows LNK4098 warning will occur but it will still be possible to run the resulting code.]]

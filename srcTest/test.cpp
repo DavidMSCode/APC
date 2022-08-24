@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2022-08-22 10:02:02
+ * @ Modified time: 2022-08-24 14:15:17
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -21,6 +21,7 @@
 #include <Orbit.h>
 #include <EGM2008.h>
 #include <Ephemeris.hpp>
+#include <preferences.h>
 
 
 using namespace std;
@@ -109,4 +110,8 @@ int main(){
 
   // std::pair<int,double> bench = Benchmark1000(8);
   // std::cout << "Benchmark with " << bench.first << " threads finished in " << bench.second << " seconds.\n";
+
+  //Testing user keyboard input
+  testStdInput();
+
 }

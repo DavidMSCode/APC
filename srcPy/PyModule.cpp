@@ -10,9 +10,10 @@
 
 #include <pybind11/pybind11.h>      //Pybind11 headers must be first include
 #include <pybind11/stl.h>
-#include <Orbit.h>
-#include <linktest.h>
-#include <APC.h>
+#include "Orbit.h"
+#include "linktest.h"
+#include "APC.h"
+#include "preferences.h"
 
 namespace py = pybind11;
 
@@ -40,4 +41,6 @@ PYBIND11_MODULE(APC, m) {
   py::class_<SatState>(m, "SatState")
         .def_readwrite("r", &SatState::r)
         .def_readwrite("v", &SatState::v);
+  //Test functions
+  m.def("testStdInput",&testStdInput,"Queries user for input and returns the input in stdout");
 }

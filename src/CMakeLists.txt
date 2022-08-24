@@ -22,6 +22,7 @@ matrix_loader.cpp
 perigee_approx.cpp
 perturbations.cpp
 perturbed_gravity.cpp
+preferences.cpp
 picard_chebyshev_propagator.cpp
 picard_error_feedback.cpp
 picard_iteration.cpp
