@@ -1,4 +1,4 @@
-include_directories(${APC_SOURCE_DIR}/include ${APC_SOURCE_DIR}/extern/cspice/include) #add header file locations for APC and CSPICE
+include_directories(${APC_SOURCE_DIR}/include ${APC_SOURCE_DIR}/extern/cspice/include ${APC_SOURCE_DIR}/extern/pugixml) #add header file locations for APC, CSPICE, and pugixml
 find_package(OpenMP REQUIRED)
 
 # Source files must be listed here to be compiled into the APC library
@@ -29,7 +29,8 @@ polydegree_segments.cpp
 prepare_propagator.cpp
 radial_gravity.cpp
 reosc_perigee.cpp
-rv2elm.cpp)
+rv2elm.cpp
+../extern/pugixml/pugixml.cpp)
 
 if (WIN32)
     target_link_libraries(APC ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.lib) #link cspice library
