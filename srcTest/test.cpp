@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2022-08-24 14:15:17
+ * @ Modified time: 2022-08-24 16:08:44
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -111,7 +111,10 @@ int main(){
   // std::pair<int,double> bench = Benchmark1000(8);
   // std::cout << "Benchmark with " << bench.first << " threads finished in " << bench.second << " seconds.\n";
 
-  //Testing user keyboard input
-  testStdInput();
+
+if (userPreferenceExists()){
+  std::cout << "The user preference file exists at: " << preferenceFilePath();
+}
+
 
 }
