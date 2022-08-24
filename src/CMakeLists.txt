@@ -13,7 +13,7 @@ c_functions.cpp
 chebyshev.cpp
 Ephemeris.cpp
 classical2mee.cpp
-clenshaw_curtis_ivpII.cpp
+clenshaw_curtis_ivpI.cpp
 ecef2eci.cpp
 eci2ecef.cpp
 interpolate.cpp

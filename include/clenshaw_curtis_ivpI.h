@@ -11,6 +11,6 @@
 
 #include <vector>
 
-void clenshaw_curtis_ivpII( int N, int M, std::vector<double> &T1, std::vector<double> &P1, std::vector<double> &Ta, std::vector<double> &A );
+void clenshaw_curtis_ivpI( int N, int M, std::vector<double> &T1, std::vector<double> &P1, std::vector<double> &Ta, std::vector<double> &A );
 
 #endif
