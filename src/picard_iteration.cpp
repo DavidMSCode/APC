@@ -182,9 +182,10 @@ void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vecto
         // printf("\n");
     }
 
+    printf("\n");
     for (int i=1; i<=N; i++){
-      for (int j=1; j<=6; j++){
-        printf("%15.15f\t",A[i,j,N]);
+      for (int j=1; j<=N+1; j++){
+        printf("%15.15f\t",P1[i,j,N]);
       }
       printf("\n");
     }
