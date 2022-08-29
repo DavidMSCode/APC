@@ -45,6 +45,17 @@
 
 std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, double dt, double deg, double tol, int soln_size, double* Feval, std::vector<double> &Soln, Orbit &orb, EphemerisManager ephem){
 
+// Back Propagation
+double t_start = t0;
+double t_end   = tf;
+double tmp     = 0.0;
+int back_prop = 0;
+if (t0 > tf){
+  back_prop = 1;
+  tmp = tf;
+  t0 = tf;
+}
+
   /* 1. DETERMINE DEGREE/SEGMENTATION SCHEME
   Compute the polynomial degree and number of segments per orbit that will
   result in a solution that satisfies the user specified tolerance. */
@@ -80,7 +91,7 @@ std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v
   //memset( t_orig, 0.0, ((seg+1)*sizeof(double)));
   std::vector<double> tvec(seg+1,0.0);
   //memset( tvec, 0.0, ((seg+1)*sizeof(double)));
-  prepare_propagator(r0,v0,t0,tf,dt,tp,tol,N,M,seg,&prep_HS,t_orig,tvec,P1,P2,T1,T2,A,Ta);
+  prepare_propagator(r0,v0,t0,tf,dt,tp,tol,N,M,seg,&prep_HS,t_orig,tvec,P1,P2,T1,T2,A,Ta,t_start,back_prop);
   /* 3. PICARD-CHEBYSHEV PROPAGATOR
   Propagate from t0 to tf, iterating on each segment (Picard Iteration), until
   completion. */
@@ -98,12 +109,14 @@ std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v
   //memset( W2, 0.0, (sz*sizeof(double)));
   std::vector<std::vector<double> > states;
 
+  t0 = t_start;
+  tf = t_end;
   states = picard_chebyshev_propagator(r0,v0,t0,tf,deg,tol,Period,tvec,t_orig,seg,N,M,&prep_HS,coeff_size,soln_size,&total_seg,
-    P1,P2,T1,T2,A,Ta,W1,W2,Feval,ALPHA,BETA,segment_times, orb, ephem);
+    P1,P2,T1,T2,A,Ta,W1,W2,Feval,ALPHA,BETA,segment_times,orb,ephem,t_end,back_prop);
   // /* 4. INTERPOLATE SOLUTION
   // The Chebyshev coefficients from each of the orbit segments are used to compute
   // the solution (position & velocity) at the user specified times. */
-  Soln = interpolate(ALPHA,BETA,soln_size,coeff_size,N,segment_times,W1,W2,t0,tf,dt,total_seg);
+  Soln = interpolate(ALPHA,BETA,soln_size,coeff_size,N,segment_times,W1,W2,t0,tf,dt,total_seg,back_prop);
 
   //free(ALPHA);
   //free(BETA);

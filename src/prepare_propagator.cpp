@@ -48,7 +48,8 @@
 
 void prepare_propagator(double* r0, double* v0, double t0, double t_final, double dt, double tp, double tol,
   int N, int M, int seg, int* prep_HS, std::vector<double> &t_orig, std::vector<double> &tvec,
-  std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, std::vector<double> &Ta){
+  std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, 
+  std::vector<double> &A, std::vector<double> &Ta, double t_start, int back_prop){
 
   // Compute Keplerian Orbit Period
   double a, e, Period, n;
@@ -78,17 +79,36 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
     tvec[i]   = MA/n;
   }
 
+  if (back_prop == 1){
+    for (int i=1; i<=seg; i++){
+      tvec[i] = t_final-tvec[seg]+tvec[seg-i];
+    }
+  }
+
   // Short first segment if user specified IC's do not coincide with segment break
   double ts;
   ts = Period - tp;
 
+  double tmp;
   if (fabs(tp) > 1.0e-5){
     for (int i=0; i<=seg; i++){
-      if (t_orig[i] < ts){
-        tvec[i] = 0.0;
+      if (back_prop == 0){
+        if (t_orig[i] < ts){
+          tvec[i] = 0.0;
+        }
+        if (t_orig[i] >= ts){
+          tvec[i] = t_orig[i]-ts;
+        }
       }
-      if (t_orig[i] >= ts){
-        tvec[i] = t_orig[i]-ts;
+      if (back_prop == 1){
+        ts = ts - t_start;
+        if (t_orig[i] >= ts){
+          tmp = t_orig[i]-ts;
+          if (tmp < t_start){
+            tvec[seg-i] = tmp;
+          }
+        }
+        tvec[0] = t_start;
       }
     }
     *prep_HS = 0;

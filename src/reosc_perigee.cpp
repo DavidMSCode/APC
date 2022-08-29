@@ -39,7 +39,7 @@
 
 void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, std::vector<double> &Alpha, std::vector<double> &Beta,
   double tf, double t_final, std::vector<double> &t_orig, int N, int M, int* k, int seg, int* prep_HS,
-  double tol, double* orb_end, std::vector<double> &tvec, double* r0, double* v0){
+  double tol, double* orb_end, std::vector<double> &tvec, double* r0, double* v0, double t_end, int back_prop){
 
   // Initialization
   int peri_check = 0;
@@ -66,11 +66,12 @@ void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<d
     e = elm[2];
   }
 
-  if (*k == seg-1 || (*k == *prep_HS && fabs(tf - t_final)/tf > tol)){
+  // if (*k == seg-1 || (*k == *prep_HS && fabs(tf - t_final)/tf > tol)){
+  if (*k == seg-1 && tf < t_end && back_prop == 0 || *k == seg-1 && tf > t_end && back_prop == 1 ){
     if (fabs(e) > 1e-15){    // Skip for zero eccentricity (no need to re-osculate as perigee is undefined)
       for (int i=1; i<=M+1; i++){
         // If passing through perigee
-        if ((i > 2) && (fvec[i-1] < fvec[i-2])){
+        if ((i > 2) && (fvec[i-1] < fvec[i-2]) && back_prop == 0|| (i > 2) && (fvec[i-1] > fvec[i-2]) && back_prop == 1){
           // Prepare for secant method
           t1        = times[i-2];
           t2        = times[i-1];
@@ -140,7 +141,12 @@ void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<d
 
           // Compute time vector for next orbit
           for (int j=0; j<=seg; j++){
-            tvec[j] = t_orig[j] + tf;
+            if (back_prop == 0){
+              tvec[j] = t_orig[j] + tf;
+            }
+            if (back_prop == 1){
+              tvec[j] = t_orig[seg-j] - t_orig[seg] + tf;
+            }
           }
           *k    = -1;
           *orb_end    = tvec[0];
@@ -149,18 +155,24 @@ void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<d
         }
       }
     }
-
-    // Compute time vector for next orbit
-    if (peri_check == 0){
-      for (int j=0; j<=seg; j++){
-        tvec[j] = t_orig[j] + tf;
-      }
-    }
     *orb_end = tvec[0];
 
     // Reset counters
-    *prep_HS = -1;
-    *k       = -1;
+    // *prep_HS = -1;
+    // *k       = -1;
+  }
+
+  // Compute time vector for next orbit
+  if (*k == seg-1 && peri_check == 0 || fabs(tvec[*k]-tf)<1.0e-3 && peri_check == 0){
+    for (int j=0; j<=seg; j++){
+      if (back_prop == 0){
+        tvec[j] = t_orig[j] + tf;
+      }
+      if (back_prop == 1){
+        tvec[j] = t_orig[seg-j] - t_orig[seg] + tf;
+      }
+    }
+    *k = -1;
   }
 
 }

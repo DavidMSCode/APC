@@ -33,7 +33,7 @@
 
 
 std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> BETA, int soln_size, int coeff_size, int N, std::vector<double> seg_times,
-  std::vector<double> W1, std::vector<double> W2, double t0, double tf, double dt, int total_segs){
+  std::vector<double> W1, std::vector<double> W2, double t0, double tf, double dt, int total_segs, int back_prop){
   
   int prev_cnt = 0;
   std::vector<double> Soln(soln_size*6,0.0);
@@ -43,9 +43,17 @@ std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> 
   std::vector<double> time_out(len+1,0.0);
   //memset( time_out, 0.0, (len*sizeof(double)));
   time_out[0] = t0;
-  for (int ii=1; ii<=len; ii++){
-    time_out[ii] = time_out[ii-1] + dt;
+  if (back_prop == 0){
+    for (int ii=1; ii<=len; ii++){
+      time_out[ii] = time_out[ii-1] + dt;
+    }
   }
+  if (back_prop == 1){
+    for (int ii=1; ii<=len; ii++){
+      time_out[ii] = time_out[ii-1] - dt;
+    }
+  }
+  
   double test_time = 0.0;
   // Loop through all segments
   for (int i=1; i<=total_segs; i++){
@@ -74,10 +82,19 @@ std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> 
         tau[cnt] = 1.0;
         cnt = cnt + 1;
       }
-      if (time_out[j] > seg_times[i-1] && time_out[j] < seg_times[i]){
-        tt[cnt]  = time_out[j];
-        tau[cnt] = (tt[cnt] - w1)/w2;
-        cnt      = cnt + 1;   // Number of times steps per segment
+      if (back_prop == 0){
+        if (time_out[j] > seg_times[i-1] && time_out[j] < seg_times[i]){
+          tt[cnt]  = time_out[j];
+          tau[cnt] = (tt[cnt] - w1)/w2;
+          cnt      = cnt + 1;   // Number of times steps per segment
+        }
+      }
+      if (back_prop == 1){
+        if (time_out[j] < seg_times[i-1] && time_out[j] > seg_times[i]){
+          tt[cnt]  = time_out[j];
+          tau[cnt] = (tt[cnt] - w1)/w2;
+          cnt      = cnt + 1;   // Number of times steps per segment
+        }
       }
     }
   
