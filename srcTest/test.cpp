@@ -64,6 +64,19 @@ int main(){
   //std::vector<double> v0 = {0.0, 6.7419845635570, 1.806509319188210};         // Initial Velocity (km/s)
   // double t0    = 0.0;                                               // Initial Times (s)
   // double tf    = 3.0*9.952014050491189e+03;                         // Final Time (s)
+
+  // MEO (Forward)
+  // std::vector<double> r0 = {7200.0, 0.0, 0.0};                         // Initial Position (km)
+  // std::vector<double> v0 = {0.0, 8.150669111592414, 0.0};              // Initial Velocity (km/s)
+  // double t0    = 0.0;                                                  // Initial Times (s)
+  // double tf    = 0.6*8.497178560498531e+03;                            // Final Time (s)
+
+  // MEO (Backward)
+  std::vector<double> r0 = {-9.513592427741681e3, -4.507545018322040e3, -0.000024249637330e3};                         // Initial Position (km)
+  std::vector<double> v0 = {2.906236061769882, -4.791541208986317, -0.000000654899048};              // Initial Velocity (km/s)
+  double t0    = 0.6*8.497178560498531e+03;                            // Initial Times (s)
+  double tf    = 0.0;                            // Final Time (s)
+
   // GEO
   // double r0[3] = {42000, 0.0, 0.0};                              // Initial Position (km)
   // double v0[3] = {0.0, 3.080663355435613, 0.0};                  // Initial Velocity (km/s)
@@ -80,11 +93,11 @@ int main(){
   // double t0    = 0.0;                                            // Initial Times (s)
   // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s
   // Nan Orbit
-  vector<double> r0 = {-1.349132899528602138e+03,4.215320721541976673e+04,7.357122636629583212e+00};                  // Initial Position (km)
-  vector<double> v0 = {-3.846924021176684860e+00,-1.551078510857197612e+00,2.182952938120036879e-01}; // Initial Velocity (km/s)
-  double T = 5431.013011331035;                               //Orbital period (s)
-  double t0 = 0;                                              //initial time (s)
-  double tf = 7260;     
+  // vector<double> r0 = {-1.349132899528602138e+03,4.215320721541976673e+04,7.357122636629583212e+00};                  // Initial Position (km)
+  // vector<double> v0 = {-3.846924021176684860e+00,-1.551078510857197612e+00,2.182952938120036879e-01}; // Initial Velocity (km/s)
+  // double T = 5431.013011331035;                               //Orbital period (s)
+  // double t0 = 0;                                              //initial time (s)
+  // double tf = 7260;     
 
   
   // EphemerisManager ephem(spk,lsk,t0,tf,bodies,center,frame);

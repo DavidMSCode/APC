@@ -77,19 +77,28 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
     MA        = E - e*sin(E);
     t_orig[i] = MA/n;
     tvec[i]   = MA/n;
+    // printf("%f\n",tvec[i]);
   }
 
   if (back_prop == 1){
-    for (int i=1; i<=seg; i++){
-      tvec[i] = t_final-tvec[seg]+tvec[seg-i];
+    double tmp[seg] = {0.0};
+    for (int i=0; i<=seg; i++){
+      // tmp[i] = t_final-tvec[seg]+tvec[seg-i];
+      tmp[i] = t_final-tvec[seg]+tvec[seg-i]; 
+      // printf("%f\t%f\t%f\n",t_final,tvec[seg],tvec[seg-i]);
     }
+    for (int i=0; i<=seg; i++){
+      tvec[i] = tmp[i];
+      // printf("%f\t",tvec[i]);
+    }
+    // printf("\n");
   }
 
   // Short first segment if user specified IC's do not coincide with segment break
   double ts;
   ts = Period - tp;
 
-  double tmp;
+  double tmp = 0.0;
   if (fabs(tp) > 1.0e-5){
     for (int i=0; i<=seg; i++){
       if (back_prop == 0){
@@ -100,18 +109,19 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
           tvec[i] = t_orig[i]-ts;
         }
       }
-      if (back_prop == 1){
-        ts = ts - t_start;
-        if (t_orig[i] >= ts){
-          tmp = t_orig[i]-ts;
-          if (tmp < t_start){
-            tvec[seg-i] = tmp;
-          }
-        }
-        tvec[0] = t_start;
-      }
+      // if (back_prop == 1){
+      //   ts = ts - t_start;
+      //   if (t_orig[i] >= ts){
+      //     tmp = t_orig[i]-ts;
+      //     if (tmp < t_start){
+      //       tvec[seg-i] = tmp;
+      //     }
+      //   }
+      //   tvec[0] = t_start;
+      // }
     }
     *prep_HS = 0;
+    // printf("%f\t",tvec[i]);
   }
 
   // User specified time vector for output
@@ -119,9 +129,14 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
   len = ceil(t_final/dt);
   std::vector<double> time_out(len,0.0);
   //memset( time_out, 0.0, (len*sizeof(double)));
-  time_out[0] = t0;
+  time_out[0] = t_start;
   for (int i=1; i<len; i++){
-    time_out[i] = time_out[i-1] + dt;
+    if (back_prop == 0){
+      time_out[i] = time_out[i-1] + dt;  
+    }
+    if (back_prop == 1){
+      time_out[i] = time_out[i-1] - dt;  
+    }
   }
 
   // LOAD PRECOMPUTED MATRICES

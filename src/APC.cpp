@@ -86,6 +86,17 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   double dt    = 30.0;                             // Soution Output Time Interval (s)
   double deg   = 70.0;                             // Gravity Degree (max 100)
   double tol   = 1.0e-15;                          // Tolerance
+
+  // Back Propagation
+  double t_start = t0;
+  double t_end   = tf;
+  int back_prop = 0;
+  if (t0 > tf){
+    back_prop = 1;
+    t0 = t_end;
+    tf = t_start;
+  }
+
   // Initialize Output Variables
   int soln_size = int(1.2*(tf/dt));
   if (soln_size == 1){
@@ -96,7 +107,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
 
   double Feval[2] = {0.0};
   std::vector<std::vector<double> > states;
-  states = adaptive_picard_chebyshev(r0,v0,t0,tf,dt,deg,tol,soln_size,Feval,Soln,orb,ephem);
+  states = adaptive_picard_chebyshev(r0,v0,t0,tf,dt,deg,tol,soln_size,Feval,Soln,orb,ephem,t_start,t_end,back_prop);
   int total;
   total = int(ceil(Feval[0] + Feval[1]*pow(6.0,2)/pow(deg,2)));
 

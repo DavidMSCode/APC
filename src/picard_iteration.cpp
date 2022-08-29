@@ -129,11 +129,11 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
       // Convert from ECEF to ECI
       ecef2eci(times[i-1],aECEF,aECI);
       //calculate SRP and Third Body
-      Perturbed_SRP(times[i-1], xI, orb, ephem, SRP_aECI);
-      Perturbed_three_body(times[i-1], xI, orb, ephem, third_body_aECI);
+      // Perturbed_SRP(times[i-1], xI, orb, ephem, SRP_aECI);
+      // Perturbed_three_body(times[i-1], xI, orb, ephem, third_body_aECI);
       //Add perturbations to acceleration.
       for(int k=0;k<3;k++){
-        aECI[k] = aECI[k] + SRP_aECI[k] + third_body_aECI[k];
+        aECI[k] = aECI[k];// + SRP_aECI[k] + third_body_aECI[k];
       }
       for (int j=1; j<=3; j++){
         G[ID2(i,j,M+1)]      = aECI[j-1];

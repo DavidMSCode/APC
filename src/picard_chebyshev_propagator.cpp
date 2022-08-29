@@ -83,6 +83,10 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
   // PROPAGATION
   // #pragma omp critical(PI)
   // {
+    for (int i=0; i<=seg; i++){
+      // printf("%f\t",tvec[i]);
+    }
+    // printf("\n\n");
   while (loop == 0){
 
     // Compute cosine time vector for a given segment
@@ -93,12 +97,13 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
       t0 = tvec[k];
       tf = tvec[k+1];
     }
-    if (tf > t_final && back_prop == 0 || t_final-tf < 120 && back_prop == 0){
+    if (tf > t_final && back_prop == 0 || fabs(t_final-tf) < 120 && back_prop == 0){
       tf = t_final;
     }
-    if (tf < t_end && back_prop == 1 || tf-t_end < 120 && back_prop == 1){
+    if (tf < t_end && back_prop == 1 || fabs(tf-t_end) < 120 && back_prop == 1){
       tf = t_end;
     }
+    // printf("%f\t%f\t%i\t%i\n",t0,tf,seg_cnt,k);
     w1 = (tf + t0)/2.0;
     w2 = (tf - t0)/2.0;
     W1[seg_cnt] = w1;
@@ -163,12 +168,16 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     if (back_prop == 0 && fabs(tf - t_final)/tf < 1e-12){
       loop = 1;
     }
-    if (back_prop == 1 && fabs(tf) < 1e-12){
+    printf("tf%f\n",fabs(tf));
+
+    if (back_prop == 1 && fabs(tf) < 1.0e-12){
+      printf("check 8 \n");
       loop = 1;
     }
     if(orb.suborbital){
       loop=1;
     }
+    printf("loop %i\n",loop);
     // Prepare Hot Start
     // if (*prep_HS == -1){
     //   for (int i=1; i<=M+1; i++){
@@ -200,6 +209,9 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     
     double orb_end = 0.0;
     reosc_perigee(X,V,times,Alpha,Beta,tf,t_final,t_orig,N,M,&k,seg,prep_HS,tol,&orb_end,tvec,r0,v0,t_end,back_prop);
+
+    printf("check 6 \n");
+
     // Segments per orbit counter
     k = k+1;
 
@@ -232,16 +244,23 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     // Total segments counter
     seg_cnt = seg_cnt + 1;
 
+    printf("check 7 \n");
   }
-  // }
-//Restore initial conditions
-for (int i=0;i<3;i++){
+
+  //Restore initial conditions
+  for (int i=0;i<3;i++){
     r0[i] = r0_orig[i];
     v0[i] = v0_orig[i];
-   }
+  }
    
+  printf("check 8 \n");
   *total_seg = seg_cnt;
+  printf("check 8a \n");
   std::vector<std::vector<double> > states = {Xpoints,Vpoints};
+  printf("check 8b \n");
   return states;
+  printf("check 8c \n");
   // std::cout << "finished propagating";
+
+  printf("check 9 \n");
 }

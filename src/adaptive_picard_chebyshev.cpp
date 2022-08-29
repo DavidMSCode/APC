@@ -43,18 +43,8 @@
 #include "Orbit.h"
 #include "Ephemeris.hpp"
 
-std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, double dt, double deg, double tol, int soln_size, double* Feval, std::vector<double> &Soln, Orbit &orb, EphemerisManager ephem){
-
-// Back Propagation
-double t_start = t0;
-double t_end   = tf;
-double tmp     = 0.0;
-int back_prop = 0;
-if (t0 > tf){
-  back_prop = 1;
-  tmp = tf;
-  t0 = tf;
-}
+std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, double dt, double deg, 
+double tol, int soln_size, double* Feval, std::vector<double> &Soln, Orbit &orb, EphemerisManager ephem, double t_start, double t_end, int back_prop){
 
   /* 1. DETERMINE DEGREE/SEGMENTATION SCHEME
   Compute the polynomial degree and number of segments per orbit that will
@@ -64,6 +54,8 @@ if (t0 > tf){
   polydegree_segments(r0,v0,deg,tol,Feval,&seg,&N,&tp,&Period);
   // printf("N %i\t",N);
   // printf("seg %i\n",seg);
+  N = 38;
+  seg = 9;
 
   // Array size for coefficients and solution
   int coeff_size;
