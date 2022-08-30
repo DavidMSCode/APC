@@ -42,8 +42,7 @@
 #include "c_functions.h"
 #include "Orbit.h"
 #include "Ephemeris.hpp"
-
-std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, double dt, double deg, 
+void adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, double dt, double deg, 
 double tol, int soln_size, double* Feval, std::vector<double> &SolnMEE, std::vector<double> &Soln, Orbit &orb, EphemerisManager ephem){
 
   /* 1. DETERMINE DEGREE/SEGMENTATION SCHEME
@@ -75,7 +74,7 @@ double tol, int soln_size, double* Feval, std::vector<double> &SolnMEE, std::vec
   /* 3. PICARD-CHEBYSHEV PROPAGATOR
   Propagate from t0 to tf, iterating on each segment (Picard Iteration), until
   completion. */
-  std::vector<double>  ALPHA((coeff_size*3),0.0);
+  std::vector<double>  ALPHA((coeff_size*6),0.0);
   //ALPHA = static_cast<double*>(calloc((coeff_size*3),sizeof(double)));
 //   std::vector<double>  BETA((coeff_size*3),0.0);
   //BETA = static_cast<double*>(calloc((coeff_size*3),sizeof(double)));
@@ -89,7 +88,7 @@ double tol, int soln_size, double* Feval, std::vector<double> &SolnMEE, std::vec
   //memset( W2, 0.0, (sz*sizeof(double)));
   std::vector<std::vector<double> > states;
 
-  states = picard_chebyshev_propagator(r0,v0,t0,tf,deg,tol,Period,tvec,t_orig,seg,N,M,&prep_HS,coeff_size,soln_size,&total_seg,
+  picard_chebyshev_propagator(r0,v0,t0,tf,deg,tol,Period,tvec,t_orig,seg,N,M,&prep_HS,coeff_size,soln_size,total_seg,
     P1,T1,A,Ta,W1,W2,Feval,ALPHA,segment_times, orb, ephem);
   // /* 4. INTERPOLATE SOLUTION
   // The Chebyshev coefficients from each of the orbit segments are used to compute
@@ -98,5 +97,5 @@ double tol, int soln_size, double* Feval, std::vector<double> &SolnMEE, std::vec
 
   //free(ALPHA);
   //free(BETA);
-  return states;
+  //return states;
 }

@@ -18,7 +18,9 @@ set_property(TARGET APC test PROPERTY
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
-
+# add_compile_options(-fsanitize=address)
+# add_link_options(-fsanitize=address)
+# add_compile_options(-g)
 # Doxygen (Ignored if doxygen is not installed)
 # look for Doxygen package
 find_package(Doxygen)

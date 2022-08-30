@@ -88,6 +88,6 @@
     "cmake.debugConfig": {
             "cwd": "${workspaceFolder}/bin"
         },
-        "cmake.cmakePath": "cmake3",
+        "cmake.cmakePath": "cmake",
     }
 

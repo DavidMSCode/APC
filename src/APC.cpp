@@ -97,7 +97,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
 
   double Feval[2] = {0.0};
   std::vector<std::vector<double> > states;
-  states = adaptive_picard_chebyshev(r0,v0,t0,tf,dt,deg,tol,soln_size,Feval,SolnMEE,Soln,orb,ephem);
+  adaptive_picard_chebyshev(r0,v0,t0,tf,dt,deg,tol,soln_size,Feval,SolnMEE,Soln,orb,ephem);
   
   int total;
   total = int(ceil(Feval[0] + Feval[1]*pow(6.0,2)/pow(deg,2)));

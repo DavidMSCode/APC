@@ -51,8 +51,8 @@
 #include "rv2elm.h"
 #include "classical2mee.h"
 
-std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double* v0, double t0, double t_final,double deg, double tol, double Period,
-   std::vector<double> &tvec, std::vector<double> &t_orig, int seg, int N, int M, int* prep_HS, int coeff_size, int soln_size, int* total_seg,
+void picard_chebyshev_propagator(double* r0, double* v0, double t0, double t_final,double deg, double tol, double Period,
+   std::vector<double> &tvec, std::vector<double> &t_orig, int seg, int N, int M, int* prep_HS, int coeff_size, int soln_size, int &total_seg,
    std::vector<double> &P1, std::vector<double> &T1, std::vector<double> &A, std::vector<double> &Ta, std::vector<double> &W1, std::vector<double> &W2, double* Feval, std::vector<double> &ALPHA, std::vector<double> &segment_times, Orbit &orb, EphemerisManager ephem){
   int loop    = 0;      // Break loop condition
   int k       = 0;      // Counter: segments per orbit
@@ -244,7 +244,7 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
 //     v0[i] = v0_orig[i];
 //    }
    
-  *total_seg = seg_cnt;
+total_seg = seg_cnt;
 //   std::vector<std::vector<double> > states = {Xpoints,Vpoints};
 //   return states;
   // std::cout << "finished propagating";
