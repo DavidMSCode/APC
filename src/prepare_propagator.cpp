@@ -54,6 +54,7 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
   // Compute Keplerian Orbit Period
   double a, e, Period, n;
   double elm[10] = {0.0};
+  std::vector<double> tmp(seg+1,0.0);
   rv2elm(r0,v0,tol,elm);
   a      = elm[1];
   e      = elm[2];
@@ -80,8 +81,8 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
     // printf("%f\n",tvec[i]);
   }
 
+
   if (back_prop == 1){
-    double tmp[seg] = {0.0};
     for (int i=0; i<=seg; i++){
       // tmp[i] = t_final-tvec[seg]+tvec[seg-i];
       tmp[i] = t_final-tvec[seg]+tvec[seg-i]; 
@@ -98,7 +99,7 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
   double ts;
   ts = Period - tp;
 
-  double tmp = 0.0;
+  // double tmp = 0.0;
   if (fabs(tp) > 1.0e-5){
     for (int i=0; i<=seg; i++){
       if (back_prop == 0){

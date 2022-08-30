@@ -57,7 +57,7 @@ std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> 
   double test_time = 0.0;
   // Loop through all segments
   for (int i=1; i<=total_segs; i++){
-    int sz = int(ceil((seg_times[i]-seg_times[i-1])/dt));
+    int sz = int(ceil((abs(seg_times[i]-seg_times[i-1]))/dt));
     // Initialization
     std::vector<double> Beta(N*3);
     std::vector<double> Alpha((N+1)*3);
