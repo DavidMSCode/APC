@@ -83,9 +83,12 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
   // {
   while (loop == 0){
 
+    printf("check 0 \n");
     // Compute cosine time vector for a given segment
     t0 = tvec[k];
     tf = tvec[k+1];
+    printf("t0 %f\n",t0);
+    printf("tf %f\n",tf);
     while (tf == 0.0){
       k = k+1;
       t0 = tvec[k];
@@ -112,7 +115,7 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     //memset( X, 0.0, ((M+1)*3*sizeof(double)));
     std::vector<double> V((M+1)*3,0.0);
     //memset( V, 0.0, ((M+1)*3*sizeof(double)));
-//     std::vector<double> Beta(N*3,0.0);
+    // std::vector<double> Beta(N*3,0.0);
     //memset( Beta, 0.0, (N*3*sizeof(double)));
     std::vector<double> Alpha((N+1)*3,0.0);
     //memset( Alpha, 0.0, ((N+1)*3*sizeof(double)));
@@ -130,18 +133,7 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
       V[ID2(cnt+1,2,M+1)] = z[4];
       V[ID2(cnt+1,3,M+1)] = z[5];
     }
-//     // Warm Start
-//     std::vector<double> WSX((M+1)*3,0.0);
-//     //memset( WSX, 0.0, ((M+1)*3*sizeof(double)));
-//     std::vector<double> WSV((M+1)*3,0.0);
-//     //memset( WSV, 0.0, ((M+1)*3*sizeof(double)));
-//     WSX = X;
-//     //memcpy(WSX,X,(M+1)*3*sizeof(double));
-//     WSV = V;
-//     //memcpy(WSV,V,(M+1)*3*sizeof(double));
-     // MEEs
-//     double MEE[(M+1)*6];
-//     memset( MEE, 0.0, ((M+1)*6*sizeof(double)));
+
     std::vector<double> MEE((M+1)*6,0.0);
     double rr[3] = {0.0};
     double vv[3] = {0.0};
@@ -171,8 +163,9 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     }
       
     // PICARD ITERATION
-      picard_iteration(X,V,MEE,mee0,times,N,M,deg,hot,tol,P1,T1,A,Feval,Alpha,orb,ephem);
+    picard_iteration(X,V,MEE,mee0,times,N,M,deg,hot,tol,P1,T1,A,Feval,Alpha,orb,ephem);
   
+    printf("check 1 \n");
     // Loop exit condition
     if (fabs(tf - t_final)/tf < 1e-12){
       loop = 1;
@@ -217,23 +210,10 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     reosc_perigee(X,V,times,Alpha,tf,t_final,t_orig,N,M,&k,seg,prep_HS,tol,&orb_end,tvec,r0,v0,mee0);
     // Segments per orbit counter
     k = k+1;
+    printf("check 2 \n");
 
     // STORE TRAJECTORY COEFFICIENTS
-//     for (int i=1; i<=N; i++){
-//       BETA[ID2(i+(seg_cnt*N),1,coeff_size)] = Beta[ID2(i,1,N)];
-//       BETA[ID2(i+(seg_cnt*N),2,coeff_size)] = Beta[ID2(i,2,N)];
-//       BETA[ID2(i+(seg_cnt*N),3,coeff_size)] = Beta[ID2(i,3,N)];
-//     }
     for (int i=1; i<=N+1; i++){
-      //Store X and V points
-//       Xpoints[ID2(i+seg_cnt*(N+1),1,coeff_size)] = X[ID2(i,1,N+1)];
-//       Xpoints[ID2(i+seg_cnt*(N+1),2,coeff_size)] = X[ID2(i,2,N+1)];
-//       Xpoints[ID2(i+seg_cnt*(N+1),3,coeff_size)] = X[ID2(i,3,N+1)];
-
-//       Vpoints[ID2(i+seg_cnt*(N+1),1,coeff_size)] = V[ID2(i,1,N+1)];
-//       Vpoints[ID2(i+seg_cnt*(N+1),2,coeff_size)] = V[ID2(i,2,N+1)];
-//       Vpoints[ID2(i+seg_cnt*(N+1),3,coeff_size)] = V[ID2(i,3,N+1)];
-
       ALPHA[ID2(i+seg_cnt*(N+1),1,coeff_size)] = Alpha[ID2(i,1,N+1)];
       ALPHA[ID2(i+seg_cnt*(N+1),2,coeff_size)] = Alpha[ID2(i,2,N+1)];
       ALPHA[ID2(i+seg_cnt*(N+1),3,coeff_size)] = Alpha[ID2(i,3,N+1)];
@@ -241,6 +221,8 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
       ALPHA[ID2(i+seg_cnt*(N+1),5,coeff_size)] = Alpha[ID2(i,5,N+1)];
       ALPHA[ID2(i+seg_cnt*(N+1),6,coeff_size)] = Alpha[ID2(i,6,N+1)];
     }
+
+    printf("check 3 \n");
 
     segment_times[seg_cnt+1] = tf;
     if (orb_end != 0.0){
@@ -250,7 +232,11 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     // Total segments counter
     seg_cnt = seg_cnt + 1;
 
+    printf("check 4 \n");
+    printf("loop %i\n",loop);
   }
+
+  
   // }
 //Restore initial conditions
 // for (int i=0;i<3;i++){

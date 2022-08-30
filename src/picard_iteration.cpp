@@ -32,9 +32,10 @@
 *    JGCD, submitted 2017.
 */
 #include <math.h>
-
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include <vector>
-
 #include "picard_iteration.h"
 #include "const.h"
 #include "c_functions.h"
@@ -160,15 +161,15 @@ void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vecto
     // MEE Dynamics
     mee_dot(MEE,a_lvlh,MEE_dot,M);
 
-    for (int i=1; i<=M+1; i++){
-      for (int j=1; j<=6; j++){
-        printf("%15.15f\t",MEE_dot[ID2(i,j,M+1)]);
-      }
-      printf("\n");
-    }
+    // for (int i=1; i<=M+1; i++){
+    //   for (int j=1; j<=6; j++){
+    //     printf("%15.15f\t",MEE_dot[ID2(i,j,M+1)]);
+    //   }
+    //   printf("\n");
+    // }
 
     std::vector<double> tmp1;
-    tmp1 = matmul(A,MEE_dot,N+1,N,6,N+1,N);   // LSQ Coefficients
+    tmp1 = matmul(A,MEE_dot,N,N+1,6,N,N+1);   // LSQ Coefficients
     Alpha = matmul(P1,tmp1,N+1,N,6,N+1,N);    // Integration Operator
     for (int i=1; i<=M+1; i++){
         for (int j=1; j<=6; j++){
@@ -182,19 +183,11 @@ void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vecto
         // printf("\n");
     }
 
-    printf("\n");
-    for (int i=1; i<=N; i++){
-      for (int j=1; j<=N+1; j++){
-        printf("%15.15f\t",P1[i,j,N]);
-      }
-      printf("\n");
-    }
+    MEEnew = matmul(T1,Alpha,N+1,N+1,6,N+1,N+1);
 
-    MEEnew = matmul(T1,Alpha,M+1,N+1,6,M+1,N+1);
-
-    // for (int iii=1; iii<=M+1; iii++){
+    // for (int iii=1; iii<=N+1; iii++){
     //   for (int jjj=1; jjj<=6; jjj++){
-    //     printf("%15.15f\t",MEEnew[ID2(iii,jjj,M+1)]);
+    //     printf("%15.15f\t",MEEnew[ID2(iii,jjj,N+1)]);
     //   }
     //   printf("\n");
     // }
@@ -217,6 +210,7 @@ void picard_iteration(std::vector<double> &X, std::vector<double> &V, std::vecto
       }
     }
     err = curr_err;
+    printf("err %15.15f\n",err);
   
     // Update
     MEE = MEEnew;

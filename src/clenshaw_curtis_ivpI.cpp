@@ -31,6 +31,13 @@ void clenshaw_curtis_ivpI( int N, int M, std::vector<double> &T1, std::vector<do
   // Least Squares Operator (A) [(N-1)x(M+1)]
   lsq_chebyshev_fit(-1.0,N-1,M,Ta,A);
 
+  // for (int i=0; i<=N-1; i++){
+  //   for (int j=0; j<=M; j++){
+  //     printf("%f\t",A[ID2(i+1,j+1,N)]);
+  //   }
+  //   printf("\n");
+  // }
+
   // // Compute Constants of Integration (i.e. evaluated T at tau = -1).
   std::vector<double> Lconst((N+1)*(N+1),0.0);
   for (int k=0; k<=N; k++){
@@ -59,7 +66,7 @@ void clenshaw_curtis_ivpI( int N, int M, std::vector<double> &T1, std::vector<do
 
   // for (int i=0; i<=N; i++){
   //   for (int j=0; j<=N; j++){
-  //     printf("temp1 %f\t",temp1[ID2(i+1,j+1,N+1)]);
+  //     printf("%f\t",temp1[ID2(i+1,j+1,N+1)]);
   //   }
   //   printf("\n");
   // }
@@ -75,7 +82,7 @@ void clenshaw_curtis_ivpI( int N, int M, std::vector<double> &T1, std::vector<do
 
   // for (int i=1; i<=N; i++){
   //   for (int j=1; j<=N; j++){
-  //     printf("temp2 %f\t",temp2[ID2(i,j,N)]);
+  //     printf("%f\t",temp2[ID2(i,j,N)]);
   //   }
   //   printf("\n");
   // }
@@ -83,7 +90,7 @@ void clenshaw_curtis_ivpI( int N, int M, std::vector<double> &T1, std::vector<do
   std::vector<double> temp3(N*N,0.0);
   for (int i=1; i<=N; i++){
     for (int j=3; j<=N; j++){
-      if (i == j){
+      if (i == j-2){
         temp3[ID2(i,j,N)] = -1.0;
       }
     }
@@ -91,24 +98,21 @@ void clenshaw_curtis_ivpI( int N, int M, std::vector<double> &T1, std::vector<do
 
   // for (int i=1; i<=N; i++){
   //   for (int j=1; j<=N; j++){
-  //     printf("temp3 %f\t",temp3[ID2(i,j,N)]);
+  //     printf("%f\t",temp3[ID2(i,j,N)]);
   //   }
   //   printf("\n");
   // }
 
   std::vector<double> temp4((N+1)*N,0.0);
-  for (int i=1; i<=N+1; i++){
+  for (int i=2; i<=N+1; i++){
     for (int j=1; j<=N; j++){
-      if (i == j){
-        temp4[ID2(i,j,N+1)] = temp2[ID2(i-1,j,N)] + temp3[ID2(i-1,j,N)];
-      }
+      temp4[ID2(i,j,N+1)] = temp2[ID2(i-1,j,N)] + temp3[ID2(i-1,j,N)];
     }
   }
 
-  //
   // for (int i=1; i<=N+1; i++){
   //   for (int j=1; j<=N; j++){
-  //     printf("temp4 %f\t",temp4[ID2(i,j,N+1)]);
+  //     printf("%f\t",temp4[ID2(i,j,N+1)]);
   //   }
   //   printf("\n");
   // }
@@ -139,7 +143,7 @@ void clenshaw_curtis_ivpI( int N, int M, std::vector<double> &T1, std::vector<do
 
   // for (int i=1; i<=N+1; i++){
   //   for (int j=1; j<=N+1; j++){
-  //     printf("temp5 %f\t",temp5[ID2(i,j,N+1)]);
+  //     printf("%f\t",temp5[ID2(i,j,N+1)]);
   //   }
   //   printf("\n");
   // }
@@ -156,11 +160,11 @@ void clenshaw_curtis_ivpI( int N, int M, std::vector<double> &T1, std::vector<do
   // // Chebyshev Matrix (interpolate "position" coefficients)
   chebyshev(-1.0,N,M,2,T1);    // arg4 = 2 -> Trig Cheby Poly
 
-  for (int i=1; i<=M+1; i++){
-    for (int j=1; j<=N+1; j++){
-      printf("T1 %f\t",T1[ID2(i,j,M+1)]);
-    }
-    printf("\n");
-  }
+  // for (int i=1; i<=M+1; i++){
+  //   for (int j=1; j<=N+1; j++){
+  //     printf("T1 %f\t",T1[ID2(i,j,M+1)]);
+  //   }
+  //   printf("\n");
+  // }
 
 }

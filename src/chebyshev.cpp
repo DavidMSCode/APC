@@ -16,9 +16,10 @@
 */
 
 #include <math.h>
-
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include <vector>
-
 #include "lsq_chebyshev_fit.h"
 #include "c_functions.h"
 #include "const.h"
@@ -58,5 +59,12 @@ void chebyshev(double s, int N, int M, int arg, std::vector<double> &T){
       }
     }
   }
+
+  // for (int i=0; i<=M; i++){
+  //   for (int j=0; j<=N; j++){
+  //     printf("%f\t",T[ID2(i+1,j+1,M+1)]);
+  //   }
+  //   printf("\n");
+  // }
 
 }

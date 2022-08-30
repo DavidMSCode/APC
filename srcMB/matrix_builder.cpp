@@ -27,13 +27,9 @@ int main(){
 
   printf("Building constant matrices...\n");
 
-  // for (int i=Nmin; i<=Nmax; i++){
-    // for (int i=10; i<=10; i++){
-      int i = 10;
+  for (int i=Nmin; i<=Nmax; i++){
     N = i;
     M = N;
-    // N = 10;
-    // M = 10;
     printf("N = %i\n",N);
 
     // Compute Clenshaw-Curtis Quadrature Constant Matrices
@@ -63,18 +59,11 @@ int main(){
     for (int j=1; j<=N; j++){
       for (int k=1; k<=M+1; k++){
         MAT_A[i-Nmin][ID2(j,k,Nmax+1)] = A[ID2(j,k,N)];
-        // if (N == 38){
-        //   printf("%15.15f\t",A[ID2(j,k,N)]);
-        // }
-        
       }
-      // if (N == 38){
-      //   printf("\n");
-      // }
       
     }
 
-  // }
+  }
 
   // Open Files
   FILE* fT1 = fopen("matrices/T1_matrices.bin","wb");

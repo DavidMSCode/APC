@@ -17,7 +17,9 @@
 
 
 #include <vector>
-
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "lsq_chebyshev_fit.h"
 #include "const.h"
 #include "chebyshev.h"
@@ -27,6 +29,14 @@ void lsq_chebyshev_fit(double s, int N, int M, std::vector<double> &T, std::vect
 
   // Generate Chebyshev Polyniomials
   chebyshev(s,N,M,2,T);
+
+  // for (int i=1; i<=M+1; i++){
+  //   for (int j=1; j<=N+1; j++){
+  //     printf("T %f\t",T[ID2(i,j,M+1)]);
+  //   }
+  //   printf("\n");
+  // }
+  // printf("\n");
 
   // Weight Matrix
   std::vector<double> W((M+1)*(M+1),0.0);
@@ -40,6 +50,14 @@ void lsq_chebyshev_fit(double s, int N, int M, std::vector<double> &T, std::vect
   }
   W[ID2(1,1,M+1)] = 0.5;
   W[ID2(M+1,M+1,M+1)] = 0.5;
+
+  // for (int i=1; i<=M+1; i++){
+  //   for (int j=1; j<=M+1; j++){
+  //     printf("W %f\t",W[ID2(i,j,M+1)]);
+  //   }
+  //   printf("\n");
+  // }
+  // printf("\n");
 
   // V Matrix
   std::vector<double> V((N+1)*(N+1),0.0);
@@ -59,14 +77,30 @@ void lsq_chebyshev_fit(double s, int N, int M, std::vector<double> &T, std::vect
     V[ID2(1,1,N+1)] = 1.0/M;
   }
 
+  // for (int i=1; i<=N+1; i++){
+  //   for (int j=1; j<=N+1; j++){
+  //     printf("V %f\t",V[ID2(i,j,N+1)]);
+  //   }
+  //   printf("\n");
+  // }
+  // printf("\n");
+
   // T Transpose
   std::vector<double> TT((N+1)*(M+1),0.0);
   //memset( TT, 0.0, ((N+1)*(M+1)*sizeof(double)));
-  for (int i=1; i<=N+1; i++){
-    for (int j=1; j<=M+1; j++){
-      TT[ID2(i,j,N+1)] = T[ID2(j,i,M+1)];
+  for (int i=1; i<=M+1; i++){
+    for (int j=1; j<=N+1; j++){
+      TT[ID2(j,i,N+1)] = T[ID2(i,j,M+1)];
     }
   }
+
+  // for (int i=1; i<=N+1; i++){
+  //   for (int j=1; j<=M+1; j++){
+  //     printf("TT %f\t",TT[ID2(i,j,N+1)]);
+  //   }
+  //   printf("\n");
+  // }
+  // printf("\n");
 
   // Least Squares Operator
   std::vector<double> TTW((M+1)*(M+1),0.0);
@@ -74,4 +108,17 @@ void lsq_chebyshev_fit(double s, int N, int M, std::vector<double> &T, std::vect
   TTW =matmul(TT,W,N+1,M+1,M+1,N+1,M+1);
   A = matmul(V,TTW,N+1,N+1,M+1,N+1,N+1);
 
+  // for (int i=0; i<=N; i++){
+  //   for (int j=0; j<=M; j++){
+  //     printf("%f\t",TTW[ID2(i+1,j+1,N+1)]);
+  //   }
+  //   printf("\n");
+  // }
+
+//   for (int i=0; i<=N; i++){
+//     for (int j=0; j<=M; j++){
+//       printf("%f\t",A[ID2(i+1,j+1,N+1)]);
+//     }
+//     printf("\n");
+//   }
 }
