@@ -43,6 +43,7 @@
 #include "matrix_loader.h"
 #include "rv2elm.h"
 #include "c_functions.h"
+#include "flags.h"
 
 
 
@@ -113,7 +114,11 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
     double* temp6;
   // #pragma omp critical(matrixloader)
   // {
-    matrix_loader();
+    if (!g_MATRICES_LOADED){
+      //matrices aren't loaded so load them now
+      matrix_loader();
+      std::cout<< "The matrices are being loaded\n";
+    }
     int idN;
     idN = (N-10);
 

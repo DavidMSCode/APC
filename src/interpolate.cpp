@@ -54,7 +54,7 @@ std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> 
     std::vector<double> Beta(N*3);
     std::vector<double> Alpha((N+1)*3);
     std::vector<double> tt(sz);
-    std::vector<double> tau(sz);
+    std::vector<double> tau(sz+1);
 
     double w1, w2;
     w1 = W1[i-1];
