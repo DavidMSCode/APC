@@ -13,6 +13,7 @@
 #include <Orbit.h>
 #include <linktest.h>
 #include <APC.h>
+#include "matrix_loader.h"
 
 namespace py = pybind11;
 
@@ -40,4 +41,7 @@ PYBIND11_MODULE(APC, m) {
   py::class_<SatState>(m, "SatState")
         .def_readwrite("r", &SatState::r)
         .def_readwrite("v", &SatState::v);
+  //Functions for debugging    
+  m.def("matrix_loader",&matrix_loader,"Loads EGM2008 matrices into memory.");
+  m.def("MatricesLoaded",&MatricesLoaded,"Returns true if EGM2008 matrices have been loaded.");
 }

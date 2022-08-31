@@ -344,3 +344,7 @@ void printMatrixState(){
     std::cout << "The matrices are not loaded.\n";
   }
 }
+
+bool MatricesLoaded(){
+  return g_MATRICES_LOADED;
+}

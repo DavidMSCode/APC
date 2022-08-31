@@ -112,16 +112,18 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
     double* temp4;
     double* temp5;
     double* temp6;
-  // #pragma omp critical(matrixloader)
-  // {
-    if (!g_MATRICES_LOADED){
+
+  #pragma omp critical(matrixloader)    //ensure only one thread loads the EGM2008 matrices
+  {
+    if (!g_MATRICES_LOADED)
+    {
       //matrices aren't loaded so load them now
       matrix_loader();
-      std::cout<< "The matrices are being loaded\n";
+      
     }
+  }
     int idN;
     idN = (N-10);
-
     // Retrive Data from Storage Arrays
 
     temp1 = &arr_T2[idN][0];
@@ -130,7 +132,7 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
     temp4 = &arr_P1[idN][0];
     temp5 = &arr_Ta[idN][0];
     temp6 = &arr_A[idN][0];
-  // }
+  
   // BUILD MATRICES
   for (int j=1; j<=M+1; j++){
     for (int k=1; k<=N+1; k++){

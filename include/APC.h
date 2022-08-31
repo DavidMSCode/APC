@@ -169,5 +169,10 @@ std::pair<int,double>  Benchmark1000(int max_threads);
  */
 void printMatrixState();
 
+/**
+ * @brief Returnes true if EGM2008 matrices have been loaded.
+ * 
+ */
+bool MatricesLoaded();
 #endif
 
