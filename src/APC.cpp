@@ -31,6 +31,7 @@
 #include "EGM2008.h"
 #include "Orbit.h"
 #include "Ephemeris.hpp"
+#include "flags.h"
 
 EphemerisManager cacheEphemeris(double t0, double tf){
   //Ephemeris
@@ -333,4 +334,17 @@ std::pair<int,double>  Benchmark1000(int max_threads){
     //return number of threads and the time to finish
     std::pair<int,double> out = {std::min(max_threads,procs), diff.count()};
     return out;
+}
+
+void printMatrixState(){
+  if(g_MATRICES_LOADED){
+    std::cout << "The matrices are loaded.\n";
+  }
+  else{
+    std::cout << "The matrices are not loaded.\n";
+  }
+}
+
+bool MatricesLoaded(){
+  return g_MATRICES_LOADED;
 }
