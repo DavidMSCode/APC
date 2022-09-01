@@ -11,7 +11,6 @@
 
 
 #include <vector>
-
 #include "Orbit.h"
 
 //Orbit Constructors
@@ -26,21 +25,23 @@ Orbit::Orbit(double area, double reflectivity, double mass, double Cd, bool comp
     suborbital = false;
 }
 
-//Copy constructor
-Orbit::Orbit(const Orbit &O){
-    //Sat properties
-    satproperties = O.satproperties;
-    //Perturbation flags
-    Compute_Drag = O.Compute_Drag;
-    Compute_SRP = O.Compute_SRP;
-    Compute_Third_Body = O.Compute_Third_Body;
-    //
-    ID = O.ID;
-    //Solution
-    Soln = O.Soln;
-    //suborbital flag
-    suborbital = O.suborbital;
-}
+// //Copy constructor
+// Orbit::Orbit(const Orbit &O){
+//     //Sat properties
+//     satproperties = O.satproperties;
+//     //Perturbation flags
+//     Compute_Drag = O.Compute_Drag;
+//     Compute_SRP = O.Compute_SRP;
+//     Compute_Third_Body = O.Compute_Third_Body;
+//     //
+//     ID = O.ID;
+//     //Solution
+//     Soln = O.Soln;
+//     //suborbital flag
+//     suborbital = O.suborbital;
+//     //User defineds time vector flag
+//     USER_TIME = false;
+// }
 //Getter Functions
 std::vector<std::vector<double> > Orbit::getPosition(){
     std::vector<std::vector<double> >::const_iterator first = Soln.begin() + 1;
@@ -57,11 +58,16 @@ std::vector<std::vector<double> > Orbit::getVelocity(){
     return Velocity;
 }
 
-
-
 //Setter Functions
 void Orbit::SetSolution(std::vector<std::vector<double > > Solution){
+    //store the solution
     Soln = Solution;
+}
+
+void Orbit::SetTimeVec(std::vector<double> time_vec){
+    //Store user time vector and raise flag indicating that a time vector was given
+    T = time_vec;
+    USER_TIME = true;
 }
 
 void Orbit::SetProperties(double area, double reflectance, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id){

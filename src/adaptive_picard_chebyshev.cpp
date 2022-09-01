@@ -89,7 +89,7 @@ std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v
   std::vector<double>  BETA((coeff_size*3),0.0);
   //BETA = static_cast<double*>(calloc((coeff_size*3),sizeof(double)));
   int total_seg = 0;
-  int sz = int(ceil(1.2*tf/Period)*seg);
+  int sz = int(ceil(1.0*tf/Period*seg))+2;
   std::vector<double> segment_times(sz,0.0);
   //memset( segment_times, 0.0, (sz*sizeof(double)));
   std::vector<double> W1(sz,0.0);
@@ -103,9 +103,15 @@ std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v
   // /* 4. INTERPOLATE SOLUTION
   // The Chebyshev coefficients from each of the orbit segments are used to compute
   // the solution (position & velocity) at the user specified times. */
-  Soln = interpolate(ALPHA,BETA,soln_size,coeff_size,N,segment_times,W1,W2,t0,tf,dt,total_seg);
-
-  //free(ALPHA);
-  //free(BETA);
+  if(orb.USER_TIME)
+  {
+    //Interpoalte with user defined time vec
+    Soln = interpolate(ALPHA,BETA,coeff_size,N,segment_times,W1,W2,total_seg,orb.T);
+  }
+  else
+  {
+    //Interpolate with default dt spacing
+    Soln = interpolate(ALPHA,BETA,soln_size,coeff_size,N,segment_times,W1,W2,t0,tf,dt,total_seg);
+  }
   return states;
 }

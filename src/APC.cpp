@@ -88,7 +88,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   double deg   = 70.0;                             // Gravity Degree (max 100)
   double tol   = 1.0e-15;                          // Tolerance
   // Initialize Output Variables
-  int soln_size = int(1.2*(tf/dt));
+  int soln_size = int(ceil((tf/dt)))+1;
   if (soln_size == 1){
     soln_size = 2;
   }
@@ -267,6 +267,16 @@ return orbits;
 class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body){
   EphemerisManager ephem = cacheEphemeris(t0,tf+3600);
   Orbit orbit(area,reflectance,mass,drag_C,compute_drag,compute_SRP,compute_third_body,1);
+  Orbit orbit2 = PropagateOrbit(r, v,  t0,  tf,  orbit, ephem);
+  return orbit2;
+}
+//overload using a user defined time vector
+class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, std::vector<double> time_vec, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body){
+  double t0 = time_vec[0];
+  double tf = time_vec.back();
+  EphemerisManager ephem = cacheEphemeris(t0,tf+3600);
+  Orbit orbit(area,reflectance,mass,drag_C,compute_drag,compute_SRP,compute_third_body,1);
+  orbit.SetTimeVec(time_vec);
   Orbit orbit2 = PropagateOrbit(r, v,  t0,  tf,  orbit, ephem);
   return orbit2;
 }

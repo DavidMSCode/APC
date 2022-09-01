@@ -12,7 +12,7 @@ print('finished')
 q = 8000
 e = .05
 a = q/(1-e)
-i = 63.435*np.pi/180
+i = 0
 r0,v0 = elms2rv(a,e,i,0,0,0,muEarth)
 T = 2*np.pi*np.sqrt(a**3/muEarth)
 t0 = 0.0

@@ -24,25 +24,37 @@ class Orbit
             double Reflectance;
             double Mass;
             double Cd;
-            
         };
-        
+        struct ChebyshevCoefficients{
+            std::vector<double> A;          //Position coefficients
+            std::vector<double> B;          //Velocity coefficients
+            std::vector<double> W1;         //Timescale factors 1 and 2
+            std::vector<double> W2; 
+            int N;                          //Polydegree
+            int coeff_size;                 //length of coefficients
+            std::vector<double> seg_times;  //t0 and tf for each segment
+            double TF;                      //latest calculated time
+            double T0;                      //earliest calcualted time
+            int total_segs;                 //Total number of segs
+        };
+
     public:
         bool Compute_Drag;
         bool Compute_SRP;
         bool Compute_Third_Body;
         bool suborbital;
         int ID;
+        std::vector<double> T;              //user defined time vector
+        bool USER_TIME = false;             //flag if user time is used
         //Constructors
         Orbit();
         Orbit(std::vector<std::vector<double > > Solution);
         Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id);
-        //Copy Constructor
-        Orbit(const Orbit &O);
         //Setters
         void SetSolution(std::vector<std::vector<double > > Solution);
         void SetProperties(double area, double reflectance, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id);
-        void SetSubOrbital();
+        void SetSubOrbital(); 
+        void SetTimeVec(std::vector<double> time_vec);
         //Getters
         std::vector<double> getTimes(){return Soln[0];};
         std::vector<double> getPositionX(){return Soln[1];};

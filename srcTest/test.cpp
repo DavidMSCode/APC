@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2022-08-30 18:54:55
+ * @ Modified time: 2022-09-01 17:41:37
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -79,19 +79,33 @@ int main(){
   // double t0    = 0.0;                                            // Initial Times (s)
   // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s
   // Nan Orbit
-  vector<double> r0 = {-1.349132899528602138e+03,4.215320721541976673e+04,7.357122636629583212e+00};                  // Initial Position (km)
-  vector<double> v0 = {-3.846924021176684860e+00,-1.551078510857197612e+00,2.182952938120036879e-01}; // Initial Velocity (km/s)
+  vector<double> r0 = {8000, 0, 0};                  // Initial Position (km)
+  vector<double> v0 = {0.0, 7.2329973040227244, 0.0}; // Initial Velocity (km/s)
   double T = 5431.013011331035;                               //Orbital period (s)
   double t0 = 0;                                              //initial time (s)
-  double tf = 7260;     
-
-  
+  double tf = 7261;     
+  double dt = 30;
+  int steps = tf/dt+1;
+  std::vector<double> time_vec;
+  for(int jj=0;jj<steps;jj++)
+  {
+    double time = jj*dt;
+    if(time>tf)
+    {
+      time=tf;
+    }
+    time_vec.push_back(time);
+  }
   // EphemerisManager ephem(spk,lsk,t0,tf,bodies,center,frame);
   // MPGetTest(ephem, t0, tf);
   // std::cout << "Parallel Ephemeris Fetching Test Complete" << std::endl << "================================================" << std::endl;
-  Orbit orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
-  orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
-  orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
+
+
+
+  Orbit orb = SinglePropagate(r0, v0, time_vec,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
+  Orbit orb2 = SinglePropagate(r0, v0, t0, tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
+  // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
+  // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;
   
   
@@ -106,7 +120,7 @@ int main(){
     j++;
   }
   std::vector<Orbit> orbits = ParallelPropagate(largelist, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
-  std::cout << "Parallel Propagation Test Complete" << std::endl << "=================" << std::endl;
+  std::cout << "Parallel Propagation Test Complete" << std::endl << "====================================" << std::endl;
 
   // std::pair<int,double> bench = Benchmark1000(8);
   // std::cout << "Benchmark with " << bench.first << " threads finished in " << bench.second << " seconds.\n";
