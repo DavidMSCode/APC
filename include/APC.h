@@ -49,7 +49,7 @@ EphemerisManager cacheEphemeris(double t0, double tf);
  * @param compute_third_body Boolean to toggle third body perturbation computation on or off
  * @return std::vector<std::vector<double> > The solutions stored in a vector of vectors {t,x,y,z,u,v,w,H}
  */
-std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit orbit, EphemerisManager ephem);
+std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager ephem);
 
 /**
  * @brief Returns propagated orbit solution as an Orbit object given initial conditions.
@@ -146,6 +146,24 @@ std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0,
  * @return std::vector<class Orbit> Returns an orbit object that describes the satellite properties and the propagation solution
  */
 class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body);
+
+/**
+ * @brief Propagates a single satellite orbit using a user defined time vector
+ * 
+* @param r Initial position of satellite (km)
+ * @param v Initial velocity of satellite (km/s)
+ * @param t0 Epoch start time of satellite (s)
+ * @param tf Epoch end time of satellite (s)
+ * @param area "Cannonball" area of satellite (m^2)
+ * @param reflectance Coefficient of relectance of satellite
+ * @param mass Mass of satellite (kg)
+ * @param drag_C Drag coefficient of satellite
+ * @param compute_drag Boolean to toggle drag computation on or off
+ * @param compute_SRP Boolean to toggle solar radiation pressure computation on or off
+ * @param compute_third_body Boolean to toggle third body perturbation computation on or off
+ * @return std::vector<class Orbit> Returns an orbit object that describes the satellite properties and the propagation solution
+ */
+class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, std::vector<double> time_vec, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body);
 
 /**
  * @brief Tests the thread safety of the ephemeris manager by reading data from the EphemerisManager and writing to stdout in parallel
