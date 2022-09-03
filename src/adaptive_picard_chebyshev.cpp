@@ -100,6 +100,9 @@ std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v
 
   states = picard_chebyshev_propagator(r0,v0,t0,tf,deg,tol,Period,tvec,t_orig,seg,N,M,&prep_HS,coeff_size,soln_size,&total_seg,
     P1,P2,T1,T2,A,Ta,W1,W2,Feval,ALPHA,BETA,segment_times, orb, ephem);
+
+  //store chebyshev in orbit object
+  orb.SetCC(ALPHA,BETA,W1,W2,N,coeff_size,segment_times,tf,t0,total_seg);
   // /* 4. INTERPOLATE SOLUTION
   // The Chebyshev coefficients from each of the orbit segments are used to compute
   // the solution (position & velocity) at the user specified times. */

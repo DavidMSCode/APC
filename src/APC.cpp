@@ -80,7 +80,7 @@ void printStateList(std::vector<SatState> statelist){
     }
 }
 
-std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit orb, EphemerisManager ephem){
+std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orb, EphemerisManager ephem){
   //Convert vectors to array since pybind wants vectors but the functions are coded for arrays
   double* r0 = &r[0];
   double* v0 = &v[0];

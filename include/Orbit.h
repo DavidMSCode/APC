@@ -13,19 +13,7 @@
 #define ORBIT_H
 
 #include <vector>
-
-
-class Orbit
-{
-    private:
-        std::vector<std::vector<double> > Soln;
-        struct SatProperties{
-            double Area;
-            double Reflectance;
-            double Mass;
-            double Cd;
-        };
-        struct ChebyshevCoefficients{
+struct ChebyshevCoefficients{
             std::vector<double> A;          //Position coefficients
             std::vector<double> B;          //Velocity coefficients
             std::vector<double> W1;         //Timescale factors 1 and 2
@@ -36,6 +24,17 @@ class Orbit
             double TF;                      //latest calculated time
             double T0;                      //earliest calcualted time
             int total_segs;                 //Total number of segs
+        };
+
+class Orbit
+{
+    private:
+        std::vector<std::vector<double> > Soln;
+        struct SatProperties{
+            double Area;
+            double Reflectance;
+            double Mass;
+            double Cd;
         };
 
     public:
@@ -55,6 +54,7 @@ class Orbit
         void SetProperties(double area, double reflectance, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id);
         void SetSubOrbital(); 
         void SetTimeVec(std::vector<double> time_vec);
+        void SetCC(std::vector<double> A, std::vector<double> B, std::vector<double> W1, std::vector<double> W2, int N, int coeff_size, std::vector<double> seg_times, double TF, double T0,int total_segs);
         //Getters
         std::vector<double> getTimes(){return Soln[0];};
         std::vector<double> getPositionX(){return Soln[1];};
@@ -73,6 +73,8 @@ class Orbit
         double GetReflectance(){return satproperties.Reflectance;};
         //Internal properties struct declaration
         struct SatProperties satproperties;
+        struct ChebyshevCoefficients CC;
+        
 };
 
 

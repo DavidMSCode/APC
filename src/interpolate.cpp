@@ -44,13 +44,21 @@ std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> 
   std::vector<double> time_out(len+1,0.0);
   //memset( time_out, 0.0, (len*sizeof(double)));
   time_out[0] = t0;
-  for (int ii=1; ii<=len-1; ii++){
-    time_out[ii] = time_out[ii-1] + dt;
+  for (int ii=1; ii<=len; ii++){
+    double time = time_out[ii-1] + dt;
+    if(time>tf)
+    {
+      time = tf;
+    }
+    time_out[ii] = time;
+
   }
+
   double test_time = 0.0;
   // Loop through all segments
   for (int i=1; i<=total_segs; i++){
-    int sz = int(ceil((seg_times[i]-seg_times[i-1])/dt));
+    // int sz = int(ceil((seg_times[i]-seg_times[i-1])/dt));
+    int sz = count_if(time_out.begin(),time_out.end(),[&](int timestep){return (timestep>=seg_times[i-1] && timestep<= seg_times[i]);});
     // Initialization
     std::vector<double> Beta(N*3);
     std::vector<double> Alpha((N+1)*3);

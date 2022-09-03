@@ -5,6 +5,8 @@ import sys, os
 import APC as APC
 from Kepler import elms2rv, muEarth
 import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
 # import faulthandler
 print('finished')
 
@@ -16,7 +18,7 @@ i = 0
 r0,v0 = elms2rv(a,e,i,0,0,0,muEarth)
 T = 2*np.pi*np.sqrt(a**3/muEarth)
 t0 = 0.0
-tf = 10*T
+tf = T
 #LEO
 # r0 = [6500, 0.0, 0.0];                                    # Initial Position (km)
 # v0 = (0, 7.8309, 0.0);                              # Initial Velocity (km/s)
@@ -37,5 +39,20 @@ Cd = 2.0;
 
 # #run APC code in single orbit mode with and without perturbations
 output = APC.SinglePropagate(r0,v0,t0,tf,area,reflectance,mass,Cd,False,False,False)
+# #use a user specified time vec
+time_vec = np.arange(t0,tf+1,30)
+output2 = APC.SinglePropagate(r0,v0,time_vec,area,reflectance,mass,Cd,False,False,False)
+plt.plot(output.getTimes(),np.array(output.getHamiltonian()))
+plt.show()
+# %%
+x1 = np.array(output.getPositionX())
+t1 = np.array(output.getTimes())
+x2 = np.array(output2.getPositionX())
+t2 = np.array(output.getTimes())
+xdif = x1-x2
+indx =  xdif!=0
+print(x1[indx])
+print(x2[indx])
+df = pd.DataFrame({"t1":t1,"t2":t2,"x1":x1,"x2":x2,"mismatch":indx})
 
 # %%

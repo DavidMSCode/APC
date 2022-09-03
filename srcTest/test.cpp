@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2022-09-01 17:41:37
+ * @ Modified time: 2022-09-03 13:46:11
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -83,7 +83,7 @@ int main(){
   vector<double> v0 = {0.0, 7.2329973040227244, 0.0}; // Initial Velocity (km/s)
   double T = 5431.013011331035;                               //Orbital period (s)
   double t0 = 0;                                              //initial time (s)
-  double tf = 7261;     
+  double tf = 7680;     
   double dt = 30;
   int steps = tf/dt+1;
   std::vector<double> time_vec;

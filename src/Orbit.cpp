@@ -87,3 +87,17 @@ void Orbit::SetProperties(double area, double reflectance, double mass, double C
 void Orbit::SetSubOrbital(){
     suborbital = true;
 }
+
+void Orbit::SetCC(std::vector<double> A, std::vector<double> B, std::vector<double> W1, std::vector<double> W2, int N, int coeff_size, std::vector<double> seg_times, double TF, double T0,int total_segs){
+    //Set values for chebyshev coefficients and associated variables
+    CC.A = A;
+    CC.B = B;
+    CC.W1 = W1;
+    CC.W2 = W2;
+    CC.N = N;
+    CC.coeff_size = coeff_size;
+    CC.seg_times = seg_times;
+    CC.TF = TF;
+    CC.T0 = T0;
+    CC.total_segs = total_segs;
+}

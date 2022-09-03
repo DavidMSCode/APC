@@ -49,7 +49,7 @@ EphemerisManager cacheEphemeris(double t0, double tf);
  * @param compute_third_body Boolean to toggle third body perturbation computation on or off
  * @return std::vector<std::vector<double> > The solutions stored in a vector of vectors {t,x,y,z,u,v,w,H}
  */
-std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit orbit, EphemerisManager ephem);
+std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager ephem);
 
 /**
  * @brief Returns propagated orbit solution as an Orbit object given initial conditions.
