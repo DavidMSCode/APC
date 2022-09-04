@@ -39,7 +39,8 @@ PYBIND11_MODULE(APC, m) {
             .def("getPosition", &Orbit::getPosition)
             .def("getVelocity", &Orbit::getVelocity)
             .def("getHamiltonian", &Orbit::getHamiltonian)
-            .def_readwrite("CC",&Orbit::CC);
+            .def_readwrite("CC",&Orbit::CC)
+            .def_readwrite("T",&Orbit::T);
       py::class_<ChebyshevCoefficients>(m, "ChebyshevCoefficients")
             .def(py::init<>())
             .def_readwrite("A",&ChebyshevCoefficients::A)

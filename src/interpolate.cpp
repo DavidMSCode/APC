@@ -157,7 +157,7 @@ std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> 
   // User specified output times
   int len;
   len = time_out.size()-1;
-  int soln_size = len+1;
+  int soln_size = time_out.size();
   std::vector<double> Soln(soln_size*6,0.0);
   //memset( time_out, 0.0, (len*sizeof(double)));
   double test_time = 0.0;

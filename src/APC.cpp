@@ -109,10 +109,11 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   double H    = 0.0;
   double H0   = 0.0;
   double Hmax = 0.0;
-
-  double t_curr = t0;
+  std::vector<double> t_vec = orb.T;
+  double t_curr;
+  soln_size = t_vec.size();
   for (int i=1; i<=soln_size; i++){
-    Ts.push_back(t_curr);
+    t_curr = t_vec[i-1];
     for (int j=1; j<=6; j++){
       States[j-1].push_back(Soln[ID2(i,j,soln_size)]);
       state[j-1] = Soln[ID2(i,j,soln_size)];
@@ -125,21 +126,16 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
       Hmax = fabs((H-H0)/H0);
     }
     Hs.push_back(fabs((H-H0)/H0));
-    t_curr = t_curr + dt;
-    if (t_curr > tf){
-      break;
-    }
-  }
   std::ostringstream ss;
   ss << Hmax;
   std::string HmaxStr(ss.str());
-
+  }
   //std::cout << to_string(orb.ID)+":\tFunc Evals: " + to_string(total) + "  \t Hmax: " + HmaxStr + "\n";
   // printf("Func Evals: %i\t",total);
   // printf("Hmax %1.16E\n",Hmax);
   //Assemble solution vector
   std::vector<std::vector<double> > Solution;
-  Solution.push_back(Ts);
+  Solution.push_back(t_vec);
   for(int i=0; i<=5; i++){
     Solution.push_back(States[i]);
   }
@@ -267,8 +263,23 @@ return orbits;
 class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body){
   EphemerisManager ephem = cacheEphemeris(t0,tf+3600);
   Orbit orbit(area,reflectance,mass,drag_C,compute_drag,compute_SRP,compute_third_body,1);
-  Orbit orbit2 = PropagateOrbit(r, v,  t0,  tf,  orbit, ephem);
-  return orbit2;
+ 
+  double dt  = 30;
+  double len = int(ceil(tf/dt));
+  std::vector<double> t_vec(len+1,0.0);
+  t_vec[0] = t0;
+  for (int ii=1; ii<=len; ii++){
+    double time = t_vec[ii-1] + dt;
+    if(time>tf)
+    {
+      time = tf;
+    }
+    t_vec[ii] = time;
+
+  }
+  orbit.SetTimeVec(t_vec);
+  orbit = PropagateOrbit(r, v,  t0,  tf,  orbit, ephem);
+  return orbit;
 }
 //overload using a user defined time vector
 class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, std::vector<double> time_vec, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body){

@@ -113,6 +113,11 @@
     "cmake.debugConfig": {
             "cwd": "${workspaceFolder}/bin"
           },
-    }
+          "python.testing.pytestArgs": [
+            "."
+          ],
+          "python.testing.unittestEnabled": false,
+          "python.testing.pytestEnabled": true,
+        }
 
 

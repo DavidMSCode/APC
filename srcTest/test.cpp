@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2022-09-03 13:46:11
+ * @ Modified time: 2022-09-03 18:49:27
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -81,9 +81,9 @@ int main(){
   // Nan Orbit
   vector<double> r0 = {8000, 0, 0};                  // Initial Position (km)
   vector<double> v0 = {0.0, 7.2329973040227244, 0.0}; // Initial Velocity (km/s)
-  double T = 5431.013011331035;                               //Orbital period (s)
+  double T = 7690.61;                               //Orbital period (s)
   double t0 = 0;                                              //initial time (s)
-  double tf = 7680;     
+  double tf = T;     
   double dt = 30;
   int steps = tf/dt+1;
   std::vector<double> time_vec;
@@ -102,7 +102,7 @@ int main(){
 
 
 
-  Orbit orb = SinglePropagate(r0, v0, time_vec,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
+  //Orbit orb = SinglePropagate(r0, v0, time_vec,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   Orbit orb2 = SinglePropagate(r0, v0, t0, tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
