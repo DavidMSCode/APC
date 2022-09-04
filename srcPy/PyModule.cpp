@@ -15,7 +15,10 @@
 #include <APC.h>
 #include "matrix_loader.h"
 
+
+using namespace pybind11::literals;
 namespace py = pybind11;
+
 
 PYBIND11_MODULE(APC, m) {
       m.doc() = "Test plugin for adaptive picard chebychev integrator";
@@ -25,8 +28,8 @@ PYBIND11_MODULE(APC, m) {
       m.def("Linktest",&Linktest,"testing linking against cspice");
       m.def("GenSigma13",&GenSigma13,"Generate 13 perturbed variations of an orbit");
       m.def("ParallelPropagate",&ParallelPropagate,"Propagates multiple orbits in parallel");
-      m.def("SinglePropagate",py::overload_cast<std::vector<double>, std::vector<double>, double, double, double, double, double, double, bool, bool, bool >(&SinglePropagate),"Propagates a single orbit");
-      m.def("SinglePropagate",py::overload_cast<std::vector<double>, std::vector<double>, std::vector<double>, double, double, double, double, bool, bool, bool >(&SinglePropagate),"Propagates a single orbit");
+      m.def("SinglePropagate",py::overload_cast<std::vector<double>, std::vector<double>, double, double, double, double, double, double, bool, bool, bool, bool >(&SinglePropagate),"Propagates a single orbit","r0"_a,"v0"_a,"t0"_a,"tf"_a,"area"_a,"reflectance"_a,"mass"_a,"Cd"_a,"compute_drag"_a=false,"compute_srp"_a=false,"compute_third_body"_a=false, "compute_hamiltonian"_a=false);
+      m.def("SinglePropagate",py::overload_cast<std::vector<double>, std::vector<double>, std::vector<double>, double, double, double, double, bool, bool, bool, bool >(&SinglePropagate),"Propagates a single orbit with user specified time vector","r0"_a,"v0"_a,"time_vec"_a,"area"_a,"reflectance"_a,"mass"_a,"Cd"_a,"compute_drag"_a=false,"compute_srp"_a=false,"compute_third_body"_a=false, "compute_hamiltonian"_a=false);
       m.def("Benchmark1000",&Benchmark1000,"Returns the number of threads used and the time (s) to complete 1000 orbit propagations");
       py::class_<Orbit>(m, "Orbit")
             .def("getTimes", &Orbit::getTimes)

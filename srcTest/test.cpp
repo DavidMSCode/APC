@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2022-09-03 18:49:27
+ * @ Modified time: 2022-09-04 17:11:20
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -37,6 +37,7 @@ int main(){
   bool compute_drag = true;                         //atmostpheric drag toggle
   bool compute_SRP = true;                          //Solar radiation pressure toggle
   bool compute_third_body = true;                   //Third body gravity toggle
+  bool compute_hamiltonian = false;                 //whether or not the hamiltonian should be compuited for the output
   //Ephemeris
   string spk = "de440.bsp";
   string lsk = "naif0012.tls";
@@ -119,7 +120,7 @@ int main(){
     largelist.push_back(sigma13[j]);
     j++;
   }
-  std::vector<Orbit> orbits = ParallelPropagate(largelist, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
+  std::vector<Orbit> orbits = ParallelPropagate(largelist, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body, compute_hamiltonian);
   std::cout << "Parallel Propagation Test Complete" << std::endl << "====================================" << std::endl;
 
   // std::pair<int,double> bench = Benchmark1000(8);

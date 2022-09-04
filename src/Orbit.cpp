@@ -20,8 +20,8 @@ Orbit::Orbit(){
 Orbit::Orbit(std::vector<std::vector<double > > Solution){
     SetSolution(Solution);
 }
-Orbit::Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id){
-    SetProperties(area, reflectivity, mass, Cd, compute_drag, compute_SRP, compute_third_body, id);
+Orbit::Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body,bool compute_hamiltonian, int id){
+    SetProperties(area, reflectivity, mass, Cd, compute_drag, compute_SRP, compute_third_body, compute_hamiltonian, id);
     suborbital = false;
 }
 
@@ -70,7 +70,7 @@ void Orbit::SetTimeVec(std::vector<double> time_vec){
     USER_TIME = true;
 }
 
-void Orbit::SetProperties(double area, double reflectance, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id){
+void Orbit::SetProperties(double area, double reflectance, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian, int id){
     //Set satellite properties and flags for perturbations
     satproperties.Area = area;
     satproperties.Mass = mass;
@@ -80,6 +80,8 @@ void Orbit::SetProperties(double area, double reflectance, double mass, double C
     Compute_Drag = compute_drag;
     Compute_SRP = compute_SRP;
     Compute_Third_Body = compute_third_body;
+    //Other flags
+    Compute_Hamiltonian = compute_hamiltonian;
     //ID
     ID = id;
 }

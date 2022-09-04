@@ -127,7 +127,7 @@ void printState(SatState state, int id);
  * @param compute_third_body Boolean to toggle third body perturbation computation on or off
  * @return std::vector<class Orbit> Returns a vector of orbit objects that each describe the satellite properties and the propagation solution
  */
-std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body);
+std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian);
 
 /**
  * @brief Propagates a single satellite orbit
@@ -145,7 +145,7 @@ std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0,
  * @param compute_third_body Boolean to toggle third body perturbation computation on or off
  * @return std::vector<class Orbit> Returns an orbit object that describes the satellite properties and the propagation solution
  */
-class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body);
+class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag=false, bool compute_SRP=false, bool compute_third_body=false, bool compute_hamiltonian=false);
 
 /**
  * @brief Propagates a single satellite orbit using a user defined time vector
@@ -163,7 +163,7 @@ class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double
  * @param compute_third_body Boolean to toggle third body perturbation computation on or off
  * @return std::vector<class Orbit> Returns an orbit object that describes the satellite properties and the propagation solution
  */
-class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, std::vector<double> time_vec, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body);
+class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, std::vector<double> time_vec, double area, double reflectance, double mass, double drag_C, bool compute_drag=false, bool compute_SRP=false, bool compute_third_body=false, bool compute_hamiltonian=false);
 
 /**
  * @brief Tests the thread safety of the ephemeris manager by reading data from the EphemerisManager and writing to stdout in parallel

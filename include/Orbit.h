@@ -41,6 +41,7 @@ class Orbit
         bool Compute_Drag;
         bool Compute_SRP;
         bool Compute_Third_Body;
+        bool Compute_Hamiltonian;
         bool suborbital;
         int ID;
         std::vector<double> T;              //user defined time vector
@@ -48,10 +49,10 @@ class Orbit
         //Constructors
         Orbit();
         Orbit(std::vector<std::vector<double > > Solution);
-        Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id);
+        Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian, int id);
         //Setters
         void SetSolution(std::vector<std::vector<double > > Solution);
-        void SetProperties(double area, double reflectance, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, int id);
+        void SetProperties(double area, double reflectance, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian, int id);
         void SetSubOrbital(); 
         void SetTimeVec(std::vector<double> time_vec);
         void SetCC(std::vector<double> A, std::vector<double> B, std::vector<double> W1, std::vector<double> W2, int N, int coeff_size, std::vector<double> seg_times, double TF, double T0,int total_segs);

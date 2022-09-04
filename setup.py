@@ -5,6 +5,10 @@ import platform
 from setuptools import setup
 import os
 import sys
+from pybind11.setup_helpers import ParallelCompile
+
+# Optional multithreaded build
+ParallelCompile("NPY_NUM_BUILD_JOBS").install()
 
 DIR = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(DIR, "extern", "pybind11"))

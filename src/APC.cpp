@@ -118,13 +118,18 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
       States[j-1].push_back(Soln[ID2(i,j,soln_size)]);
       state[j-1] = Soln[ID2(i,j,soln_size)];
     }
-    jacobiIntegral(t_curr,state,&H,deg);
-    if (i == 1){
-      H0 = H;
+    //Compute Hamiltonian
+    if(orb.Compute_Hamiltonian)
+    {
+      jacobiIntegral(t_curr,state,&H,deg);
+      if (i == 1){
+        H0 = H;
+      }
+      if (fabs((H-H0)/H0) > Hmax){
+        Hmax = fabs((H-H0)/H0);
+      }
     }
-    if (fabs((H-H0)/H0) > Hmax){
-      Hmax = fabs((H-H0)/H0);
-    }
+    //Store hamiltonian
     Hs.push_back(fabs((H-H0)/H0));
   std::ostringstream ss;
   ss << Hmax;
@@ -218,7 +223,7 @@ std::vector<SatState> GenSigma3(std::vector<double> r, std::vector<double> v, do
   return Sigma3;
 }
 
-std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body){
+std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body,bool compute_hamiltonian){
   size_t n = StateList.size();
   int threads;
   //std::cout<<"There are "+to_string(threads)+" available threads.\n";
@@ -244,7 +249,7 @@ std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0,
       std::vector<double> r0 = StateList[i].r;
       std::vector<double> v0 = StateList[i].v;
       //Private orbit object
-      Orbit orbit(area_priv,reflectance_priv,mass_priv,drag_C_priv,compute_drag_priv,compute_SRP_priv,compute_third_body_priv,i);
+      Orbit orbit(area_priv,reflectance_priv,mass_priv,drag_C_priv,compute_drag_priv,compute_SRP_priv,compute_third_body_priv,compute_hamiltonian,i);
       //thread debug
 
       //std::cout << "Running thread "+to_string(omp_get_thread_num())+".\n";
@@ -260,9 +265,9 @@ return orbits;
 }
 
 
-class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body){
+class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian){
   EphemerisManager ephem = cacheEphemeris(t0,tf+3600);
-  Orbit orbit(area,reflectance,mass,drag_C,compute_drag,compute_SRP,compute_third_body,1);
+  Orbit orbit(area,reflectance,mass,drag_C,compute_drag,compute_SRP,compute_third_body,compute_hamiltonian,1);
  
   double dt  = 30;
   double len = int(ceil(tf/dt));
@@ -282,11 +287,11 @@ class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double
   return orbit;
 }
 //overload using a user defined time vector
-class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, std::vector<double> time_vec, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body){
+class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, std::vector<double> time_vec, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian){
   double t0 = time_vec[0];
-  double tf = time_vec.back();
+  double tf = time_vec.back()+300;
   EphemerisManager ephem = cacheEphemeris(t0,tf+3600);
-  Orbit orbit(area,reflectance,mass,drag_C,compute_drag,compute_SRP,compute_third_body,1);
+  Orbit orbit(area,reflectance,mass,drag_C,compute_drag,compute_SRP,compute_third_body, compute_hamiltonian,1);
   orbit.SetTimeVec(time_vec);
   Orbit orbit2 = PropagateOrbit(r, v,  t0,  tf,  orbit, ephem);
   return orbit2;
@@ -337,7 +342,7 @@ std::pair<int,double>  Benchmark1000(int max_threads){
       std::vector<double> r0 = {8000, 0, 0};
       std::vector<double> v0 = {0, 8, 0};
       //Private orbit object
-      Orbit orbit(area_priv,reflectance_priv,mass_priv,drag_C_priv,false,false,false,i);
+      Orbit orbit(area_priv,reflectance_priv,mass_priv,drag_C_priv,false,false,false,false,i);
       //thread debug
 
       //std::cout << "Running thread "+to_string(omp_get_thread_num())+".\n";
