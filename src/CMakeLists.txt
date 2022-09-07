@@ -15,6 +15,7 @@ Ephemeris.cpp
 clenshaw_curtis_ivpII.cpp
 ecef2eci.cpp
 eci2ecef.cpp
+flags.cpp
 interpolate.cpp
 linktest.cpp
 lsq_chebyshev_fit.cpp
