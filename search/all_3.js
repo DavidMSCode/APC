@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['orbit_0',['Orbit',['../class_orbit.html',1,'']]]
+  ['itercounters_0',['IterCounters',['../struct_iter_counters.html',1,'']]]
 ];

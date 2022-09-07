@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['satstate_0',['SatState',['../struct_sat_state.html',1,'']]]
+  ['orbit_0',['Orbit',['../class_orbit.html',1,'']]]
 ];
