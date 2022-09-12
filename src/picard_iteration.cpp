@@ -253,6 +253,34 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
       break;
     }
   }
+  
+  double errSTM = 1.0; // added by Varsha
+  int itrSTM = 0;
+
+  while (errSTM > tol*10) {
+    
+    // STM Dynamics
+    // take from central difference code (C++)
+
+    double eta = w2*P1*A*phi_dot + phi_0; // MEE matrices
+
+    double phi_new = T1stm*eta; // ""
+
+    double errSTM = max(abs(phi_new - phi_0));
+
+    phi = phi_new;
+
+    if (itrSTM < 30) {
+      itrSTM += 1;
+
+    }
+
+    else {
+      itrSTM = itrSTM - 1;
+      break;
+    }
+
+  }
 
   if(suborbital){
     // Set suborbital flag to stop iterations early.
