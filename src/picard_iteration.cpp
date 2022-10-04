@@ -256,7 +256,7 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
   
   
 
-  }
+  
 
   if(suborbital){
     // Set suborbital flag to stop iterations early.
