@@ -32,6 +32,7 @@ Contents
     :maxdepth: 2
    usage
    APC
+   Dynamic Model
 
 Acknowledgments
 ===============

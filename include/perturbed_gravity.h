@@ -9,6 +9,10 @@
 #ifndef __PERT__
 #define __PERT__
  
+ /**
+  * @brief Iteration struct for controlling full or approximate calculations in the pertubed_gravity() function
+  * 
+  */
 struct IterCounters{
     int ITR1 = 0;
     int ITR2 = 0;
@@ -21,7 +25,7 @@ struct IterCounters{
  * @brief  Returns the gravitational acceleration at a position to a desired degree of gravity. Uses the full fidelity model or an approximation depending on the current tolerance and iteration count.
  * 
  * @param t time from epoch (s)
- * @param Xo position in ECI coordinates (km)
+ * @param Xo position in ECEF coordinates (km)
  * @param err error
  * @param i current index along array 
  * @param N number of sampled points
@@ -40,7 +44,7 @@ void perturbed_gravity(double t, double* Xo, double err, int i, int N, double de
  * @brief Returns the approximate gravity acceleration through the J6 zonal harmonic.
  * 
  * @param t time from epoch (s)
- * @param X position in ECI coordinates (km)
+ * @param X position in ECEF coordinates (km)
  * @param dX Approximate gravitational acceleration (km/s^2)
  * @param Feval Function evaluations counter
  */
@@ -50,7 +54,7 @@ void Grav_Approx(double t, double* X, double* dX, double* Feval);
  * @brief Returns the full gravity acceleration through the input degree
  * 
  * @param t times from epoch (s)
- * @param Xo position in ECI coordinates (km)
+ * @param Xo position in ECEF coordinates (km)
  * @param acc full gravitational acceleration (km/s^2)
  * @param tol output tolerance
  * @param deg degree of gravity model to use
