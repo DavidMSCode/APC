@@ -17,6 +17,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -330,6 +331,101 @@
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N8SatState1vE">
 <span id="_CPPv3N8SatState1vE"></span><span id="_CPPv2N8SatState1vE"></span><span id="SatState::v__std::vector:double:"></span><span class="target" id="struct_sat_state_1ad0c89869ac39c542cdbed18d8b4762e7"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v</span></span></span><a class="headerlink" href="#_CPPv4N8SatState1vE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417perturbed_gravitydPddiidiPddPiPdR12IterCountersPd">
+<span id="_CPPv317perturbed_gravitydPddiidiPddPiPdR12IterCountersPd"></span><span id="_CPPv217perturbed_gravitydPddiidiPddPiPdR12IterCountersPd"></span><span id="perturbed_gravity__double.doubleP.double.i.i.double.i.doubleP.double.iP.doubleP.IterCountersR.doubleP"></span><span class="target" id="perturbed__gravity_8h_1a98e103cc1fff857482983d42c5a2ab1f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">perturbed_gravity</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Xo</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">err</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">N</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">deg</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">hot</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">G</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tol</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">itr</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Feval</span></span>, <a class="reference internal" href="#_CPPv412IterCounters" title="IterCounters"><span class="n"><span class="pre">IterCounters</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">ITRs</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">del_G</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417perturbed_gravitydPddiidiPddPiPdR12IterCountersPd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the gravitational acceleration at a position to a desired degree of gravity. Uses the full fidelity model or an approximation depending on the current tolerance and iteration count. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> – time from epoch (s) </p></li>
+<li><p><strong>Xo</strong> – position in ECI coordinates (km) </p></li>
+<li><p><strong>err</strong> – error </p></li>
+<li><p><strong>i</strong> – current index along array </p></li>
+<li><p><strong>N</strong> – number of sampled points </p></li>
+<li><p><strong>deg</strong> – Gravity model degree </p></li>
+<li><p><strong>hot</strong> – Hot start switch condition </p></li>
+<li><p><strong>G</strong> – Gravitational acceleration for output (km/s^2) </p></li>
+<li><p><strong>tol</strong> – Solution tolerance </p></li>
+<li><p><strong>itr</strong> – Picard iteration counter </p></li>
+<li><p><strong>Feval</strong> – Function evaluations counter </p></li>
+<li><p><strong>ITRs</strong> – Iteration struct for controlling full or approx calculations </p></li>
+<li><p><strong>del_G</strong> – Difference between full and approximate gravity evaluation (km/s^2) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411Grav_ApproxdPdPdPd">
+<span id="_CPPv311Grav_ApproxdPdPdPd"></span><span id="_CPPv211Grav_ApproxdPdPdPd"></span><span id="Grav_Approx__double.doubleP.doubleP.doubleP"></span><span class="target" id="perturbed__gravity_8h_1aa88ff67b3caf173a81d8e98af21f3e18"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Grav_Approx</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">X</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">dX</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Feval</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411Grav_ApproxdPdPdPd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the approximate gravity acceleration through the J6 zonal harmonic. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> – time from epoch (s) </p></li>
+<li><p><strong>X</strong> – position in ECI coordinates (km) </p></li>
+<li><p><strong>dX</strong> – Approximate gravitational acceleration (km/s^2) </p></li>
+<li><p><strong>Feval</strong> – Function evaluations counter </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49Grav_FulldPdPdddPd">
+<span id="_CPPv39Grav_FulldPdPdddPd"></span><span id="_CPPv29Grav_FulldPdPdddPd"></span><span id="Grav_Full__double.doubleP.doubleP.double.double.doubleP"></span><span class="target" id="perturbed__gravity_8h_1a8b6c30db63c9b43b2c1d3918cff57bf0"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Grav_Full</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Xo</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">acc</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tol</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">deg</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Feval</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49Grav_FulldPdPdddPd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the full gravity acceleration through the input degree. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> – times from epoch (s) </p></li>
+<li><p><strong>Xo</strong> – position in ECI coordinates (km) </p></li>
+<li><p><strong>acc</strong> – full gravitational acceleration (km/s^2) </p></li>
+<li><p><strong>tol</strong> – output tolerance </p></li>
+<li><p><strong>deg</strong> – degree of gravity model to use </p></li>
+<li><p><strong>Feval</strong> – Function evaluations counter </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv412IterCounters">
+<span id="_CPPv312IterCounters"></span><span id="_CPPv212IterCounters"></span><span id="IterCounters"></span><span class="target" id="struct_iter_counters"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IterCounters</span></span></span><a class="headerlink" href="#_CPPv412IterCounters" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12IterCounters4ITR1E">
+<span id="_CPPv3N12IterCounters4ITR1E"></span><span id="_CPPv2N12IterCounters4ITR1E"></span><span id="IterCounters::ITR1__i"></span><span class="target" id="struct_iter_counters_1a356e301048d1de780a358e9bf7dd3228"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ITR1</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N12IterCounters4ITR1E" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12IterCounters4ITR2E">
+<span id="_CPPv3N12IterCounters4ITR2E"></span><span id="_CPPv2N12IterCounters4ITR2E"></span><span id="IterCounters::ITR2__i"></span><span class="target" id="struct_iter_counters_1a0bfcc6d72a18d87097a907641f9d00a5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ITR2</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N12IterCounters4ITR2E" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12IterCounters4ITR3E">
+<span id="_CPPv3N12IterCounters4ITR3E"></span><span id="_CPPv2N12IterCounters4ITR3E"></span><span id="IterCounters::ITR3__i"></span><span class="target" id="struct_iter_counters_1a5933290f11c47b4b57af2a4dc51d5326"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ITR3</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N12IterCounters4ITR3E" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12IterCounters4ITR4E">
+<span id="_CPPv3N12IterCounters4ITR4E"></span><span id="_CPPv2N12IterCounters4ITR4E"></span><span id="IterCounters::ITR4__i"></span><span class="target" id="struct_iter_counters_1aa7817c5786c8b4f76a907ab8c5394445"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ITR4</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N12IterCounters4ITR4E" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12IterCounters5MODELE">
+<span id="_CPPv3N12IterCounters5MODELE"></span><span id="_CPPv2N12IterCounters5MODELE"></span><span id="IterCounters::MODEL__i"></span><span class="target" id="struct_iter_counters_1ab59e4c3c1129a0be4617cb2614a923ca"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MODEL</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N12IterCounters5MODELE" title="Permalink to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 </div>
