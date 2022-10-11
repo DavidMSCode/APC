@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic Model &mdash; APC  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="APC" href="APC.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> APC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#usage-examples">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APC.html">APC</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Dynamic Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#perturbed-gravity-functions">Perturbed Gravity Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#other-perturbations">Other perturbations</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">APC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Dynamic Model</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Dynamic Model.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dynamic-model">
+<h1>Dynamic Model<a class="headerlink" href="#dynamic-model" title="Permalink to this heading"></a></h1>
+<p>APC’s dynamic model includes a variable fidelity gravity model. The gravity perturbations are calculated using the EGM2008 spherical harmonic gravity model up to a maximum degree of 100. This model is used to demonstrate the propagator’s efficiency with high order gravity models. The model also includes simple cannonball drag model for LEO orbits as well as a solar radiation pressure perturbation and solilunar third body gravity perturbations for MEO &amp; GEO orbits. These models are not necessary for APC to function and may be easily replaced by substituting their functions with alternatives or editing the picard_iteration.cpp file. Though to make full use of APC the dynamic model should be capable of calculating an approximation of the gravitational model or dynamic model during iterations where the full calculation is unecessary (see perturbed_gravity.cpp).</p>
+</section>
+<section id="perturbed-gravity-functions">
+<h1>Perturbed Gravity Functions<a class="headerlink" href="#perturbed-gravity-functions" title="Permalink to this heading"></a></h1>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417perturbed_gravitydPddiidiPddPiPdR12IterCountersPd">
+<span id="_CPPv317perturbed_gravitydPddiidiPddPiPdR12IterCountersPd"></span><span id="_CPPv217perturbed_gravitydPddiidiPddPiPdR12IterCountersPd"></span><span id="perturbed_gravity__double.doubleP.double.i.i.double.i.doubleP.double.iP.doubleP.IterCountersR.doubleP"></span><span class="target" id="perturbed__gravity_8h_1a98e103cc1fff857482983d42c5a2ab1f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">perturbed_gravity</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Xo</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">err</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">N</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">deg</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">hot</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">G</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tol</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">itr</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Feval</span></span>, <a class="reference internal" href="#_CPPv412IterCounters" title="IterCounters"><span class="n"><span class="pre">IterCounters</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">ITRs</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">del_G</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417perturbed_gravitydPddiidiPddPiPdR12IterCountersPd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the gravitational acceleration at a position to a desired degree of gravity. Uses the full fidelity model or an approximation depending on the current tolerance and iteration count. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> – time from epoch (s) </p></li>
+<li><p><strong>Xo</strong> – position in ECEF coordinates (km) </p></li>
+<li><p><strong>err</strong> – error </p></li>
+<li><p><strong>i</strong> – current index along array </p></li>
+<li><p><strong>N</strong> – number of sampled points </p></li>
+<li><p><strong>deg</strong> – Gravity model degree </p></li>
+<li><p><strong>hot</strong> – Hot start switch condition </p></li>
+<li><p><strong>G</strong> – Gravitational acceleration for output (km/s^2) </p></li>
+<li><p><strong>tol</strong> – Solution tolerance </p></li>
+<li><p><strong>itr</strong> – Picard iteration counter </p></li>
+<li><p><strong>Feval</strong> – Function evaluations counter </p></li>
+<li><p><strong>ITRs</strong> – Iteration struct for controlling full or approx calculations </p></li>
+<li><p><strong>del_G</strong> – Difference between full and approximate gravity evaluation (km/s^2) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411Grav_ApproxdPdPdPd">
+<span id="_CPPv311Grav_ApproxdPdPdPd"></span><span id="_CPPv211Grav_ApproxdPdPdPd"></span><span id="Grav_Approx__double.doubleP.doubleP.doubleP"></span><span class="target" id="perturbed__gravity_8h_1aa88ff67b3caf173a81d8e98af21f3e18"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Grav_Approx</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">X</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">dX</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Feval</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411Grav_ApproxdPdPdPd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the approximate gravity acceleration through the J6 zonal harmonic. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> – time from epoch (s) </p></li>
+<li><p><strong>X</strong> – position in ECEF coordinates (km) </p></li>
+<li><p><strong>dX</strong> – Approximate gravitational acceleration (km/s^2) </p></li>
+<li><p><strong>Feval</strong> – Function evaluations counter </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49Grav_FulldPdPdddPd">
+<span id="_CPPv39Grav_FulldPdPdddPd"></span><span id="_CPPv29Grav_FulldPdPdddPd"></span><span id="Grav_Full__double.doubleP.doubleP.double.double.doubleP"></span><span class="target" id="perturbed__gravity_8h_1a8b6c30db63c9b43b2c1d3918cff57bf0"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Grav_Full</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Xo</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">acc</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tol</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">deg</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Feval</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49Grav_FulldPdPdddPd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the full gravity acceleration through the input degree. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> – times from epoch (s) </p></li>
+<li><p><strong>Xo</strong> – position in ECEF coordinates (km) </p></li>
+<li><p><strong>acc</strong> – full gravitational acceleration (km/s^2) </p></li>
+<li><p><strong>tol</strong> – output tolerance </p></li>
+<li><p><strong>deg</strong> – degree of gravity model to use </p></li>
+<li><p><strong>Feval</strong> – Function evaluations counter </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv412IterCounters">
+<span id="_CPPv312IterCounters"></span><span id="_CPPv212IterCounters"></span><span id="IterCounters"></span><span class="target" id="struct_iter_counters"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IterCounters</span></span></span><a class="headerlink" href="#_CPPv412IterCounters" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;perturbed_gravity.h&gt;</em></div>
+<p>Iteration struct for controlling full or approximate calculations in the pertubed_gravity() function. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12IterCounters4ITR1E">
+<span id="_CPPv3N12IterCounters4ITR1E"></span><span id="_CPPv2N12IterCounters4ITR1E"></span><span id="IterCounters::ITR1__i"></span><span class="target" id="struct_iter_counters_1a356e301048d1de780a358e9bf7dd3228"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ITR1</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N12IterCounters4ITR1E" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12IterCounters4ITR2E">
+<span id="_CPPv3N12IterCounters4ITR2E"></span><span id="_CPPv2N12IterCounters4ITR2E"></span><span id="IterCounters::ITR2__i"></span><span class="target" id="struct_iter_counters_1a0bfcc6d72a18d87097a907641f9d00a5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ITR2</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N12IterCounters4ITR2E" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12IterCounters4ITR3E">
+<span id="_CPPv3N12IterCounters4ITR3E"></span><span id="_CPPv2N12IterCounters4ITR3E"></span><span id="IterCounters::ITR3__i"></span><span class="target" id="struct_iter_counters_1a5933290f11c47b4b57af2a4dc51d5326"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ITR3</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N12IterCounters4ITR3E" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12IterCounters4ITR4E">
+<span id="_CPPv3N12IterCounters4ITR4E"></span><span id="_CPPv2N12IterCounters4ITR4E"></span><span id="IterCounters::ITR4__i"></span><span class="target" id="struct_iter_counters_1aa7817c5786c8b4f76a907ab8c5394445"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ITR4</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N12IterCounters4ITR4E" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12IterCounters5MODELE">
+<span id="_CPPv3N12IterCounters5MODELE"></span><span id="_CPPv2N12IterCounters5MODELE"></span><span id="IterCounters::MODEL__i"></span><span class="target" id="struct_iter_counters_1ab59e4c3c1129a0be4617cb2614a923ca"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MODEL</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N12IterCounters5MODELE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="other-perturbations">
+<h1>Other perturbations<a class="headerlink" href="#other-perturbations" title="Permalink to this heading"></a></h1>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413Perturbed_SRPdPd5Orbit16EphemerisManagerPd">
+<span id="_CPPv313Perturbed_SRPdPd5Orbit16EphemerisManagerPd"></span><span id="_CPPv213Perturbed_SRPdPd5Orbit16EphemerisManagerPd"></span><span id="Perturbed_SRP__double.doubleP.Orbit.EphemerisManager.doubleP"></span><span class="target" id="perturbations_8h_1a0b204556c8ac521d8bd333baf5f5ce2e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Perturbed_SRP</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">time</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">X</span></span>, <span class="n"><span class="pre">Orbit</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">orb</span></span>, <span class="n"><span class="pre">EphemerisManager</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ephem</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">SRP_aECI</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413Perturbed_SRPdPd5Orbit16EphemerisManagerPd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the acceleration perturbation due to solar radiation pressure. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> – time since epoch (s) </p></li>
+<li><p><strong>X</strong> – position in ECI coordinates (km) </p></li>
+<li><p><strong>orb</strong> – orbital object which stores parameters </p></li>
+<li><p><strong>ephem</strong> – ephemeris caching manager that returns the Sun’s position </p></li>
+<li><p><strong>SRP_aECI</strong> – The SRP acceleration in ECI (km/s^2) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414Perturbed_DragPdPd5OrbitPd">
+<span id="_CPPv314Perturbed_DragPdPd5OrbitPd"></span><span id="_CPPv214Perturbed_DragPdPd5OrbitPd"></span><span id="Perturbed_Drag__doubleP.doubleP.Orbit.doubleP"></span><span class="target" id="perturbations_8h_1a6cc8ed3a694f9346b9ad2caa020a8681"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Perturbed_Drag</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">X</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">V</span></span>, <span class="n"><span class="pre">Orbit</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">orb</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">drag_aECEF</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414Perturbed_DragPdPd5OrbitPd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the acceleration perturbation due to atmospheric drag using Vallado’s exponential atmospheric model. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> – position in ECEF coordinates (km) </p></li>
+<li><p><strong>V</strong> – velocity in ECEF coordinates (km/s) </p></li>
+<li><p><strong>orb</strong> – orbital object which contains necessary parameters </p></li>
+<li><p><strong>drag_aECEF</strong> – The drag acceleration in ECEF (km/s^2) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420Perturbed_three_bodydPd5Orbit16EphemerisManagerPd">
+<span id="_CPPv320Perturbed_three_bodydPd5Orbit16EphemerisManagerPd"></span><span id="_CPPv220Perturbed_three_bodydPd5Orbit16EphemerisManagerPd"></span><span id="Perturbed_three_body__double.doubleP.Orbit.EphemerisManager.doubleP"></span><span class="target" id="perturbations_8h_1ac4e4cbaece6e279ae7160e9ad40e230d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Perturbed_three_body</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">time</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">X</span></span>, <span class="n"><span class="pre">Orbit</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">orb</span></span>, <span class="n"><span class="pre">EphemerisManager</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ephem</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">third_body_aECI</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420Perturbed_three_bodydPd5Orbit16EphemerisManagerPd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the perturbed third body acceleration due to the Moon and the Sun. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> – time since epoch (s) </p></li>
+<li><p><strong>X</strong> – position in ECI coordinates (km) </p></li>
+<li><p><strong>orb</strong> – orbital object which contains necessary parameters </p></li>
+<li><p><strong>ephem</strong> – ephemeris caching manager that returns the Sun’s and the Moon’s positions </p></li>
+<li><p><strong>third_body_aECI</strong> – the third body acceleration in ECI (km/s^2) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415LastFirstSearchPdid">
+<span id="_CPPv315LastFirstSearchPdid"></span><span id="_CPPv215LastFirstSearchPdid"></span><span id="LastFirstSearch__doubleP.i.double"></span><span class="target" id="perturbations_8h_1aeff33ed3f80d8ca4a5dcf67dc45e0b24"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LastFirstSearch</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">p</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">length_t</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415LastFirstSearchPdid" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This function attempts to find the index for the value given by the key by searching from largest to smallest. If the key is not present the function returns the index of the first item smaller than the key value assuming a sorted list. Used to search the atmospheric density tables. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – Table pointer </p></li>
+<li><p><strong>length_t</strong> – Length of table </p></li>
+<li><p><strong>key</strong> – Value to find in the table </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>int </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419atmospheric_densityd">
+<span id="_CPPv319atmospheric_densityd"></span><span id="_CPPv219atmospheric_densityd"></span><span id="atmospheric_density__double"></span><span class="target" id="perturbations_8h_1a724ad0e14c13c7731d4c21e93e12140a"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">atmospheric_density</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">alt</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419atmospheric_densityd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the qtmospheric density utilizing Vallado’s exponential atmospheric model given an altitude above sea-level. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>alt</strong> – Altitude of orbiting object (km) </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The atmospheric density (kg/m^3) </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="APC.html" class="btn btn-neutral float-left" title="APC" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Robyn Woollands, David Stanley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
