@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adaptive Picard Iteration &mdash; APC  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> APC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#usage-examples">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="APC.html">APC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dynamic%20Model.html">Dynamic Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dynamic%20Model.html#perturbed-gravity-functions">Perturbed Gravity Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dynamic%20Model.html#other-perturbations">Other perturbations</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">APC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Adaptive Picard Iteration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Adaptive Picard Iteration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="adaptive-picard-iteration">
+<h1>Adaptive Picard Iteration<a class="headerlink" href="#adaptive-picard-iteration" title="Permalink to this heading"></a></h1>
+<p>This page contains functions relating to the core adaptive picard iteration functions.</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv425adaptive_picard_chebyshevPdPddddddiPdRNSt6vectorIdEER5Orbit16EphemerisManager">
+<span id="_CPPv325adaptive_picard_chebyshevPdPddddddiPdRNSt6vectorIdEER5Orbit16EphemerisManager"></span><span id="_CPPv225adaptive_picard_chebyshevPdPddddddiPdRNSt6vectorIdEER5Orbit16EphemerisManager"></span><span id="adaptive_picard_chebyshev__doubleP.doubleP.double.double.double.double.double.i.doubleP.std::vector:double:R.OrbitR.EphemerisManager"></span><span class="target" id="adaptive__picard__chebyshev_8h_1aec44b8b137507b2b83c7744104001861"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">adaptive_picard_chebyshev</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">r0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">v0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tf</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">dt</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">deg</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tol</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">soln_size</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Feval</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Soln</span></span>, <span class="n"><span class="pre">Orbit</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">orb</span></span>, <span class="n"><span class="pre">EphemerisManager</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ephem</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425adaptive_picard_chebyshevPdPddddddiPdRNSt6vectorIdEER5Orbit16EphemerisManager" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This function controls the flow of the APC propagator from orbit segmentation to interpolating the final output vectors. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r0</strong> – Initial position in ECEF coordinates (km) </p></li>
+<li><p><strong>v0</strong> – Initial velocity in ECEF coordinates (km/s) </p></li>
+<li><p><strong>t0</strong> – Initial time from epoch </p></li>
+<li><p><strong>tf</strong> – Final time from epoch </p></li>
+<li><p><strong>dt</strong> – Default timestep </p></li>
+<li><p><strong>deg</strong> – degree of the gravity model </p></li>
+<li><p><strong>tol</strong> – tolerance for the solution </p></li>
+<li><p><strong>soln_size</strong> – size of interpolated output </p></li>
+<li><p><strong>Feval</strong> – Gravity function evaluations counter </p></li>
+<li><p><strong>Soln</strong> – The solution array </p></li>
+<li><p><strong>orb</strong> – The orbit object that stores various properties of the orbit </p></li>
+<li><p><strong>ephem</strong> – the cached ephemeris object for interpolatinf moon and sun positions. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>std::vector&lt;std::vector&lt;double&gt; &gt; Returns a vector of interpolated solution values </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419polydegree_segmentsPdPdddPdPiPiPdPd">
+<span id="_CPPv319polydegree_segmentsPdPdddPdPiPiPdPd"></span><span id="_CPPv219polydegree_segmentsPdPdddPdPiPiPdPd"></span><span id="polydegree_segments__doubleP.doubleP.double.double.doubleP.iP.iP.doubleP.doubleP"></span><span class="target" id="polydegree__segments_8h_1ad4289b9191f36de469ea0b13143e99c7"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">polydegree_segments</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">r0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">v0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">deg</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tol</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Feval</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">seg</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">degree</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">tp</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Period</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419polydegree_segmentsPdPdddPdPiPiPdPd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Computes the number of segments per orbit and the degree of the polynomial required to fit acceleration to the user specified accuracy. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r0</strong> – Initial position vector (km) </p></li>
+<li><p><strong>v0</strong> – Initial velocity vector (km/s) </p></li>
+<li><p><strong>deg</strong> – Gravity Degree (max 100) </p></li>
+<li><p><strong>tol</strong> – Tolerance </p></li>
+<li><p><strong>Feval</strong> – Function evaluation counter </p></li>
+<li><p><strong>seg</strong> – Segments per orbit </p></li>
+<li><p><strong>degree</strong> – Degree of Chebyshev Polynomial </p></li>
+<li><p><strong>tp</strong> – Approximate time of Keplerian perigee passage (s) </p></li>
+<li><p><strong>Period</strong> – Keplerian orbit period (s) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418prepare_propagatorPdPddddddiiiPiRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEE">
+<span id="_CPPv318prepare_propagatorPdPddddddiiiPiRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEE"></span><span id="_CPPv218prepare_propagatorPdPddddddiiiPiRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEE"></span><span id="prepare_propagator__doubleP.doubleP.double.double.double.double.double.i.i.i.iP.std::vector:double:R.std::vector:double:R.std::vector:double:R.std::vector:double:R.std::vector:double:R.std::vector:double:R.std::vector:double:R.std::vector:double:R"></span><span class="target" id="prepare__propagator_8h_1abc889875463e14fc905dea64b5f0c362"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">prepare_propagator</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">r0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">v0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t_final</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">dt</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tp</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tol</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">N</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">M</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">seg</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">prep_HS</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">t_orig</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">tvec</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">P1</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">P2</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">T1</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">T2</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">A</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Ta</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418prepare_propagatorPdPddddddiiiPiRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Prepares arrays for storing iteration computations. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r0</strong> – Initial position (km) </p></li>
+<li><p><strong>v0</strong> – Initial velocity (km/s) </p></li>
+<li><p><strong>t0</strong> – Initial time (s) </p></li>
+<li><p><strong>t_final</strong> – Final time (s) </p></li>
+<li><p><strong>dt</strong> – Time interval (s) </p></li>
+<li><p><strong>tp</strong> – Approximate time of perigee passage (s) </p></li>
+<li><p><strong>tol</strong> – Tolerance </p></li>
+<li><p><strong>N</strong> – Polynomial degree </p></li>
+<li><p><strong>M</strong> – Sample points </p></li>
+<li><p><strong>seg</strong> – Segments per orbit </p></li>
+<li><p><strong>prep_HS</strong> – Hot start switch condition </p></li>
+<li><p><strong>t_orig</strong> – Segment start and end times for first segment (s) </p></li>
+<li><p><strong>tvec</strong> – Segment start and end times (s) </p></li>
+<li><p><strong>P1</strong> – First integration operator </p></li>
+<li><p><strong>P2</strong> – Second integrationi operator </p></li>
+<li><p><strong>T1</strong> – Chebyshev velocity matrix </p></li>
+<li><p><strong>T2</strong> – Chebyshev position matrix </p></li>
+<li><p><strong>A</strong> – Least squares operator </p></li>
+<li><p><strong>Ta</strong> – Chebyshev acceleration matrix </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv427picard_chebyshev_propagatorPdPddddddRNSt6vectorIdEERNSt6vectorIdEEiiiPiiiPiRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEEPdRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEER5Orbit16EphemerisManager">
+<span id="_CPPv327picard_chebyshev_propagatorPdPddddddRNSt6vectorIdEERNSt6vectorIdEEiiiPiiiPiRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEEPdRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEER5Orbit16EphemerisManager"></span><span id="_CPPv227picard_chebyshev_propagatorPdPddddddRNSt6vectorIdEERNSt6vectorIdEEiiiPiiiPiRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEEPdRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEER5Orbit16EphemerisManager"></span><span id="picard_chebyshev_propagator__doubleP.doubleP.double.double.double.double.double.std::vector:double:R.std::vector:double:R.i.i.i.iP.i.i.iP.std::vector:double:R.std::vector:double:R.std::vector:double:R.std::vector:double:R.std::vector:double:R.std::vector:double:R.std::vector:double:R.std::vector:double:R.doubleP.std::vector:double:R.std::vector:double:R.std::vector:double:R.OrbitR.EphemerisManager"></span><span class="target" id="picard__chebyshev__propagator_8h_1aed049bd9d8879b4263035fae516fe6f3"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">picard_chebyshev_propagator</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">r0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">v0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t_final</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">deg</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tol</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">Period</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">tvec</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">t_orig</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">seg</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">N</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">M</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">prep_HS</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">coeff_size</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">soln_size</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">total_seg</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">P1</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">P2</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">T1</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">T2</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">A</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Ta</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">W1</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">W2</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Feval</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">ALPHA</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">BETA</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">segment_times</span></span>, <span class="n"><span class="pre">Orbit</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">orb</span></span>, <span class="n"><span class="pre">EphemerisManager</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ephem</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv427picard_chebyshev_propagatorPdPddddddRNSt6vectorIdEERNSt6vectorIdEEiiiPiiiPiRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEEPdRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEER5Orbit16EphemerisManager" title="Permalink to this definition"></a><br /></dt>
+<dd><p>This function iterates through each segment of the predicted orbit and solves the picard integral to the desired degree of precision for each chebyshev node. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r0</strong> – Initial position vector (km) </p></li>
+<li><p><strong>v0</strong> – Initial velocity vector (km/s) </p></li>
+<li><p><strong>t0</strong> – Iniitla time (s) </p></li>
+<li><p><strong>t_final</strong> – Final time (s) </p></li>
+<li><p><strong>deg</strong> – Gravity degree </p></li>
+<li><p><strong>tol</strong> – Tolerance </p></li>
+<li><p><strong>Period</strong> – Orbital period (s) </p></li>
+<li><p><strong>tvec</strong> – Start and end times for all segments (s) </p></li>
+<li><p><strong>t_orig</strong> – First segment start and end times </p></li>
+<li><p><strong>seg</strong> – Number of segments per orbit </p></li>
+<li><p><strong>N</strong> – Degree of Chebyshev polynomials </p></li>
+<li><p><strong>M</strong> – Number of Chebyshev nodes </p></li>
+<li><p><strong>prep_HS</strong> – Hot start switch flag </p></li>
+<li><p><strong>coeff_size</strong> – Length of Chebyshev coefficient array </p></li>
+<li><p><strong>soln_size</strong> – Size of solution vectors </p></li>
+<li><p><strong>total_seg</strong> – Total number of segments </p></li>
+<li><p><strong>P1</strong> – First integrator operator </p></li>
+<li><p><strong>P2</strong> – Second integrator operator </p></li>
+<li><p><strong>T1</strong> – Chebyshev position matrix </p></li>
+<li><p><strong>T2</strong> – Chebyshev velocity matrix </p></li>
+<li><p><strong>A</strong> – Least squares operator </p></li>
+<li><p><strong>Ta</strong> – Chebyshev acceleration matrix </p></li>
+<li><p><strong>W1</strong> – Segment time scale factor 1 </p></li>
+<li><p><strong>W2</strong> – Segment time scale factor 2 </p></li>
+<li><p><strong>Feval</strong> – Function evaluation counter </p></li>
+<li><p><strong>ALPHA</strong> – Output: Position coefficients </p></li>
+<li><p><strong>BETA</strong> – Output: Velocity coefficicents </p></li>
+<li><p><strong>segment_times</strong> – Array of segment start and end times </p></li>
+<li><p><strong>orb</strong> – Orbit object that stores properties of orbit </p></li>
+<li><p><strong>ephem</strong> – Ephemeris manager that provides position of Sun and Moon </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>std::vector&lt;std::vector&lt;double&gt; &gt; </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416picard_iterationPdPdRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEEiididRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEEPdRNSt6vectorIdEERNSt6vectorIdEER5Orbit16EphemerisManager">
+<span id="_CPPv316picard_iterationPdPdRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEEiididRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEEPdRNSt6vectorIdEERNSt6vectorIdEER5Orbit16EphemerisManager"></span><span id="_CPPv216picard_iterationPdPdRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEEiididRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEEPdRNSt6vectorIdEERNSt6vectorIdEER5Orbit16EphemerisManager"></span><span id="picard_iteration__doubleP.doubleP.std::vector:double:R.std::vector:double:R.std::vector:double:R.i.i.double.i.double.std::vector:double:R.std::vector:double:R.std::vector:double:R.std::vector:double:R.std::vector:double:R.doubleP.std::vector:double:R.std::vector:double:R.OrbitR.EphemerisManager"></span><span class="target" id="picard__iteration_8h_1aedeaad80a1a6f750e3d621089ff48521"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">picard_iteration</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Xint</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Vint</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">X</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">V</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">times</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">N</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">M</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">deg</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">hot</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tol</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">P1</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">P2</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">T1</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">T2</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">A</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">Feval</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Alpha</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">Beta</span></span>, <span class="n"><span class="pre">Orbit</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">orb</span></span>, <span class="n"><span class="pre">EphemerisManager</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ephem</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416picard_iterationPdPdRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEEiididRNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEERNSt6vectorIdEEPdRNSt6vectorIdEERNSt6vectorIdEER5Orbit16EphemerisManager" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Performs a single iteration over an orbital segment. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Xint</strong> – Initial position (km) </p></li>
+<li><p><strong>Vint</strong> – Initial velocity (km/s) </p></li>
+<li><p><strong>X</strong> – Position warm start for current segment (km) </p></li>
+<li><p><strong>V</strong> – Velocity warm start for current segment (km/s) </p></li>
+<li><p><strong>times</strong> – Time array for current segment (s) </p></li>
+<li><p><strong>N</strong> – Degree of Chebyshev polynomial </p></li>
+<li><p><strong>M</strong> – Number of sample points </p></li>
+<li><p><strong>deg</strong> – Degree of Gravity model </p></li>
+<li><p><strong>hot</strong> – Hot start on/off switch condition </p></li>
+<li><p><strong>tol</strong> – Tolerance </p></li>
+<li><p><strong>P1</strong> – First integration operator (Acceleration to Velocity) </p></li>
+<li><p><strong>P2</strong> – Second integration operator (Velocity to Position) </p></li>
+<li><p><strong>T1</strong> – First Chebyshev matrix </p></li>
+<li><p><strong>T2</strong> – Second Chebyshev matrix </p></li>
+<li><p><strong>A</strong> – Least squares operator </p></li>
+<li><p><strong>Feval</strong> – Function evaluation counter </p></li>
+<li><p><strong>Alpha</strong> – Position coefficients for current segment </p></li>
+<li><p><strong>Beta</strong> – Velocity coefficients for current segment </p></li>
+<li><p><strong>orb</strong> – Orbit object that stores properties of orbit </p></li>
+<li><p><strong>ephem</strong> – Ephemeris manager that provides position of Sun and Moon </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421picard_error_feedbackPdPdPd">
+<span id="_CPPv321picard_error_feedbackPdPdPd"></span><span id="_CPPv221picard_error_feedbackPdPdPd"></span><span id="picard_error_feedback__doubleP.doubleP.doubleP"></span><span class="target" id="picard__error__feedback_8h_1a0510d7971384f0309880fab49db61872"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">picard_error_feedback</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">X</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">del_X</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">del_a</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421picard_error_feedbackPdPdPd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Generates a linear correction term for acceleration based on the position error relative to the previous iteration. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> – The position (km) </p></li>
+<li><p><strong>del_X</strong> – The position error (km) </p></li>
+<li><p><strong>del_a</strong> – The acceleration correction </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411interpolateNSt6vectorIdEENSt6vectorIdEEiiiNSt6vectorIdEENSt6vectorIdEENSt6vectorIdEEdddi">
+<span id="_CPPv311interpolateNSt6vectorIdEENSt6vectorIdEEiiiNSt6vectorIdEENSt6vectorIdEENSt6vectorIdEEdddi"></span><span id="_CPPv211interpolateNSt6vectorIdEENSt6vectorIdEEiiiNSt6vectorIdEENSt6vectorIdEENSt6vectorIdEEdddi"></span><span id="interpolate__std::vector:double:.std::vector:double:.i.i.i.std::vector:double:.std::vector:double:.std::vector:double:.double.double.double.i"></span><span class="target" id="interpolate_8h_1ae7f49708a4b407b7211ff05590e242df"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">interpolate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ALPHA</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">BETA</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">soln_size</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">coeff_size</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">N</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">seg_times</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">W1</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">W2</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t0</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tf</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">dt</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">total_segs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411interpolateNSt6vectorIdEENSt6vectorIdEEiiiNSt6vectorIdEENSt6vectorIdEENSt6vectorIdEEdddi" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Interpolates solution using a default time step. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ALPHA</strong> – Position Coefficients </p></li>
+<li><p><strong>BETA</strong> – Velocity Coefficients </p></li>
+<li><p><strong>soln_size</strong> – Length of solution </p></li>
+<li><p><strong>coeff_size</strong> – Length of Coefficients </p></li>
+<li><p><strong>N</strong> – Degree of polynomial </p></li>
+<li><p><strong>seg_times</strong> – t0 and tf for each segment </p></li>
+<li><p><strong>W1</strong> – Time scale factor 1 </p></li>
+<li><p><strong>W2</strong> – Time scale factor 2 </p></li>
+<li><p><strong>t0</strong> – Initial time (s) </p></li>
+<li><p><strong>tf</strong> – Final time (s) </p></li>
+<li><p><strong>dt</strong> – User desired output time interval </p></li>
+<li><p><strong>total_segs</strong> – Total number of segments </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>std::vector&lt;double&gt; The array of interpolated solutions </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411interpolateNSt6vectorIdEENSt6vectorIdEEiiNSt6vectorIdEENSt6vectorIdEENSt6vectorIdEEiNSt6vectorIdEE">
+<span id="_CPPv311interpolateNSt6vectorIdEENSt6vectorIdEEiiNSt6vectorIdEENSt6vectorIdEENSt6vectorIdEEiNSt6vectorIdEE"></span><span id="_CPPv211interpolateNSt6vectorIdEENSt6vectorIdEEiiNSt6vectorIdEENSt6vectorIdEENSt6vectorIdEEiNSt6vectorIdEE"></span><span id="interpolate__std::vector:double:.std::vector:double:.i.i.std::vector:double:.std::vector:double:.std::vector:double:.i.std::vector:double:"></span><span class="target" id="interpolate_8h_1ac30a0d859dd1709ca2ee6ddea2d05d52"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">interpolate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ALPHA</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">BETA</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">coeff_size</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">N</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">seg_times</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">W1</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">W2</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">total_segs</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">time_out</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411interpolateNSt6vectorIdEENSt6vectorIdEEiiNSt6vectorIdEENSt6vectorIdEENSt6vectorIdEEiNSt6vectorIdEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Overload function that Interpolates solution using a user provided timestep. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ALPHA</strong> – Position Coefficients </p></li>
+<li><p><strong>BETA</strong> – Velocity Coefficients </p></li>
+<li><p><strong>coeff_size</strong> – Length of Coefficients </p></li>
+<li><p><strong>N</strong> – Degree of polynomial </p></li>
+<li><p><strong>seg_times</strong> – t0 and tf for each segment </p></li>
+<li><p><strong>W1</strong> – Time scale factor 1 </p></li>
+<li><p><strong>W2</strong> – Time scale factor 2 </p></li>
+<li><p><strong>total_segs</strong> – Total number of segments </p></li>
+<li><p><strong>time_out</strong> – User defined time output vector </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>std::vector&lt;double&gt; The array of interpolated solutions </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Robyn Woollands, David Stanley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
