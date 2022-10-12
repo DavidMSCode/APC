@@ -17,10 +17,31 @@
 // Cross Product in 3D
 // INPUT:  vector a & vector b
 // OUTPUT: vector c, (c = axb)
+
+/**
+ * @brief Takes the 3d cross product of a and b and returns it as c
+ * 
+ * @param a a 3 array of doubles
+ * @param b a 3 array of doubles
+ * @param c output: a 3 array of doubles
+ */
 void cross_product_3D( double* a, double* b, double* c );
 
+/**
+ * @brief Takes a 3d vector and returns its L2 norm
+ * 
+ * @param a a 3 array of doubles
+ * @param n the length of a
+ */
 void Cnorm( double* a, double &n);
 
+/**
+ * @brief returns the inner dot product of a and b
+ * 
+ * @param a a 3 array of doubles
+ * @param b a 3 array of doubles
+ * @return double the resulting dot product
+ */
 double Cdot(double* a, double* b);
 
 void find_less(double* a, double l, int len, double* ind);

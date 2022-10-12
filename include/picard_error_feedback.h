@@ -9,7 +9,13 @@
 #ifndef __PEF__
 #define __PEF__
 
-
+/**
+ * @brief Generates a linear correction term for acceleration based on the position error relative to the previous iteration
+ * 
+ * @param X The position (km)
+ * @param del_X  The position error (km)
+ * @param del_a  The acceleration correction
+ */
 void picard_error_feedback(double* X, double* del_X, double* del_a);
 
 #endif

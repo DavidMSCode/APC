@@ -13,36 +13,36 @@
 /**
  * @brief Interpolates solution using a default time step
  * 
- * @param ALPHA 
- * @param BETA 
- * @param soln_size 
- * @param coeff_size 
- * @param N 
- * @param seg_times 
- * @param W1 
- * @param W2 
- * @param t0 
- * @param tf 
- * @param dt 
- * @param total_segs 
- * @return std::vector<double> 
+ * @param ALPHA Position Coefficients
+ * @param BETA Velocity Coefficients
+ * @param soln_size Length of solution
+ * @param coeff_size Length of Coefficients
+ * @param N Degree of polynomial
+ * @param seg_times t0 and tf for each segment
+ * @param W1 Time scale factor 1
+ * @param W2 Time scale factor 2
+ * @param t0 Initial time (s)
+ * @param tf Final time (s)
+ * @param dt User desired output time interval
+ * @param total_segs Total number of segments
+ * @return std::vector<double> The array of interpolated solutions 
  */
 std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> BETA, int soln_size, int coeff_size, int N, std::vector<double> seg_times,
   std::vector<double> W1, std::vector<double> W2, double t0, double tf, double dt, int total_segs);
 
 /**
- * @brief Interpolates solution using a user provided timestep
+ * @brief Overload function that Interpolates solution using a user provided timestep
  * 
- * @param ALPHA 
- * @param BETA 
- * @param coeff_size 
- * @param N 
- * @param seg_times 
- * @param W1 
- * @param W2 
- * @param total_segs 
- * @param time_out 
- * @return std::vector<double> 
+ * @param ALPHA Position Coefficients
+ * @param BETA Velocity Coefficients
+ * @param coeff_size Length of Coefficients
+ * @param N Degree of polynomial
+ * @param seg_times t0 and tf for each segment
+ * @param W1 Time scale factor 1
+ * @param W2 Time scale factor 2
+ * @param total_segs Total number of segments
+ * @param time_out User defined time output vector
+ * @return std::vector<double> The array of interpolated solutions
  */
 std::vector<double> interpolate(std::vector<double>  ALPHA, std::vector<double> BETA, int coeff_size, int N, std::vector<double> seg_times,
   std::vector<double> W1, std::vector<double> W2, int total_segs, std::vector<double > time_out);

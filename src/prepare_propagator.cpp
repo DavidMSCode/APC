@@ -3,7 +3,7 @@
 *  DATE WRITTEN:     May 2017
 *  LAST MODIFIED:    May 2017
 *  AFFILIATION:      Department of Aerospace Engineering, Texas A&M University, College Station, TX
-*  DESCRIPTION:      Interpolate solution onto user specified times
+*  DESCRIPTION:      Prepares arrays for storing iteration computations
 *
 * INPUT:
 *    r0      -- Initial position (km)
