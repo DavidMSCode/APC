@@ -84,7 +84,6 @@ Once your virtual environment has been setup and activated install PyBind11 with
 
 If using pip or conda to install python packages is not an option then go to the `Installing PyBind11 Manually`_.
 
-.. _Building APC:
 
 Building APC
 ____________
@@ -134,7 +133,7 @@ A few files will change and in the extern folder there will be a submodule folde
     
     (.venv) $ git submodule update --init
 
-The folder should populate with the PyBind11 repo. Go to 'Building APC'_ to finish compiling the APC library from source.
+The folder should populate with the PyBind11 repo. Go to `Building APC`_ to finish compiling the APC library from source.
 
 Usage examples
 ==============
