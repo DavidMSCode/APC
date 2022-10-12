@@ -82,7 +82,7 @@ Once your virtual environment has been setup and activated install PyBind11 with
 
    (.venv) APC $ conda install -c conda-forge pybind11
 
-If using pip or conda to install python packages is not an option then go to the 'Installing PyBind11 Manually'_.
+If using pip or conda to install python packages is not an option then go to the `Installing PyBind11 Manually`_.
 
 .. _Building APC:
 
@@ -117,7 +117,6 @@ To uninstall APC, run the following while the virtual environment is active
     
     (.venv) $ pip uninstall APC
 
-.. _Installing Pybind11 Manually:
 
 Installing Pybind11 Manually
 ----------------------------
