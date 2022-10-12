@@ -30,9 +30,11 @@ Contents
 .. toctree::
 
     :maxdepth: 2
-   usage
-   APC
+   Usage
    Dynamic Model
+   APC
+   Adaptive Picard Iteration
+
 
 Acknowledgments
 ===============
