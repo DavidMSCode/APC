@@ -182,7 +182,7 @@ void MPGetTest(EphemerisManager ephem, double t0, double tf);
 std::pair<int,double>  Benchmark1000(int max_threads);
 
 /**
- * @brief Queries MATRICES_LAODED flag to find out if EGM2008 matrices are in memory
+ * @brief Queries MATRICES_LOADED flag to find out if EGM2008 matrices are in memory
  * 
  */
 void printMatrixState();
