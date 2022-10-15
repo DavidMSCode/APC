@@ -6,14 +6,15 @@ import platform
 from setuptools import setup
 import os
 import sys
+
+DIR = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(DIR, "extern", "pybind11"))
+from pybind11.setup_helpers import Pybind11Extension        #gets setup helpers from manually copied PyBind11 or from Pip installed
 from pybind11.setup_helpers import ParallelCompile
 
 # multithreaded build
 ParallelCompile("NPY_NUM_BUILD_JOBS").install()
 
-DIR = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(DIR, "extern", "pybind11"))
-from pybind11.setup_helpers import Pybind11Extension        #gets setup helpers from manually copied PyBind11 or from Pip installed
 del sys.path[-1]
 
 __version__ = "0.0.2"
