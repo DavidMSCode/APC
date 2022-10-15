@@ -3,7 +3,7 @@ Usage
 Instructions for installation and use. Issues may be reported at https://github.com/uiuc-ae-l3harris/APC-L3Harris.
 
 Installation from source
-------------------------
+--------------------------
 Prerequisites
 _____________
 
@@ -141,12 +141,12 @@ Usage examples
 In the "bin" folder within "APC" there is are two python notebooks that make use of the APC library. Examples.ipynb demonstrates APC running sequentially and in parallel with a few orbital plots. Benchmark.ipynb demonstrates the performance gains from running multiple orbits in parallel.
 Running these notebooks requires the following Python packages:
 
-1. **NumPy** A module primarily used here for manipulating vectors and matrices https://numpy.org/
-2. **MatplotLib** A plotting library that is used for some interactive features https://matplotlib.org
-    * **ipywidgets** Interactive widgets for notebooks
-    * **ipympl** Necessary for widgets to render properly
-3. **Plotly** A plotting library with simultaneous 3D rendering support https://plotly.com/python/
-    * **nbformat>=4.2** is required for Plotly to work in a Jupyter notebook
+1. **NumPy**\ A module primarily used here for manipulating vectors and matrices https://numpy.org/
+2. **MatplotLib**\ A plotting library that is used for some interactive features https://matplotlib.org
+    * **ipywidgets**\ Interactive widgets for notebooks
+    * **ipympl**\ Necessary for widgets to render properly
+3. **Plotly**\ A plotting library with simultaneous 3D rendering support https://plotly.com/python/
+    * **nbformat>=4.2**\ is required for Plotly to work in a Jupyter notebook
 
 For APC to utilize CSPICE, two CSPICE kernels must be present in the working directory
 
@@ -156,7 +156,6 @@ For APC to utilize CSPICE, two CSPICE kernels must be present in the working dir
 The matrices folder must also be present in the working directory. These files contain data for the 2008 Earth gravity model and has the structure:
 
 ::
-
     matrices
     ├── A_matrices.bin
     ├── P1_matrices.bin
