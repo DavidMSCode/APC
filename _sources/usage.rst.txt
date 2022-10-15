@@ -138,11 +138,15 @@ The folder should populate with the PyBind11 repo. Go to `Building APC`_ to fini
 Usage examples
 ==============
 
-In the "bin" folder within "APC" there are two python notebooks that make use of the APC library. Test.ipynb demonstrates APC running sequentially and in parallel with a few orbtial plots. Benchmark.ipynb demonstrates the performance gains from running multiple orbits in parallel.
+In the "bin" folder within "APC" there is are two python notebooks that make use of the APC library. Examples.ipynb demonstrates APC running sequentially and in parallel with a few orbital plots. Benchmark.ipynb demonstrates the performance gains from running multiple orbits in parallel.
 Running these notebooks requires the following Python packages:
 
-* Numpy
-* Plotly
+1. **NumPy** A module primarily used here for manipulating vectors and matrices https://numpy.org/
+2. **MatplotLib** A plotting library that is used for some interactive features https://matplotlib.org
+    * **ipywidgets** Interactive widgets for notebooks
+    * **ipympl** Necessary for widgets to render properly
+3. **Plotly** A plotting library with simultaneous 3D rendering support https://plotly.com/python/
+    * **nbformat>=4.2** is required for Plotly to work in a Jupyter notebook
 
 For APC to utilize CSPICE, two CSPICE kernels must be present in the working directory
 
