@@ -1,8 +1,10 @@
 """Functions for computing various properties of Keplerian Orbits and constants"""
 import numpy as np
 
-muEarth = 398600     #km^3/s^2
-def rv2elm(r,v,mu,tol=1e-10):
+muEarth = 398600.0     #km^3/s^2
+def rv2elm(r,v,mu=muEarth,tol=1e-10):
+    r = np.array(r)
+    v = np.array(v)
     #  Position & Velocity Magnitudes
     R       = np.linalg.norm(r)
     V       = np.linalg.norm(v)
@@ -16,7 +18,7 @@ def rv2elm(r,v,mu,tol=1e-10):
     n       = np.linalg.norm(nvec)
 
     #  Eccentricity Vector
-    evec    = 1/mu*((V**2 - mu/R)*r - (np.dot(r,v))*v);
+    evec    = 1/mu*((V**2 - mu/R)*r - np.dot(r,v)*v);
     e       = np.linalg.norm(evec);
 
     #  Energy

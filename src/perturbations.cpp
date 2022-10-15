@@ -251,7 +251,7 @@ void Perturbed_three_body(double time, double* X, Orbit orb, EphemerisManager ep
     double satmoonvec[3];
     double norm_sunpos;
     //double norm_satpos;
-    //double norm_moonpos
+    double norm_moonpos;
     double norm_satsunpos;
     double norm_satmoonpos;
     std::vector<double> sunstate;
@@ -276,27 +276,16 @@ void Perturbed_three_body(double time, double* X, Orbit orb, EphemerisManager ep
         }
         //calculate vector lengths and sun/moon unit vector from sat
         Cnorm(sunvec,norm_sunpos);
-        //Cnorm(satvec,norm_satpos);
+        Cnorm(moonvec,norm_moonpos);
         Cnorm(satsunvec,norm_satsunpos);
         Cnorm(satmoonvec,norm_satmoonpos);
+        // for(int i=0;i<3;i++){
+        //     satsununitvec[i]=satsunvec[i]/norm_satsunpos;
+        //     satmoonunitvec[i]=satmoonvec[i]/norm_satmoonpos;
+        // }
+        //calcualte third body acceleration in km/s^2
         for(int i=0;i<3;i++){
-            satsununitvec[i]=satsunvec[i]/norm_satsunpos;
-            satmoonunitvec[i]=satmoonvec[i]/norm_satmoonpos;
-        }
-        //Use vector angles to find occlusion state
-        double gSun = C_MUSun/pow(norm_satsunpos,2);
-        double gMoon = C_MUMoon/pow(norm_satmoonpos,2);
-        double q;
-        double Fq;
-        double tempvec[3];
-        for(int i=0;i<3;i++){
-            tempvec[i] = (2*sunvec[i]-satvec[i]);
-        }
-        q = Cdot(satvec,tempvec)/pow(norm_sunpos,2);
-        Fq = q*(pow(q,2)-3*q+3)/(1+pow(1-q,1.5));
-            //calcualte srp acceleration in km/s^2
-        for(int i=0;i<3;i++){
-            third_body_aECI[i]=gSun/norm_satsunpos*(Fq*sunvec[i]-satvec[i]) + gMoon*satmoonunitvec[i];
+            third_body_aECI[i]=C_MUSun*(satsunvec[i]/pow(norm_satsunpos,3)-sunvec[i]/pow(norm_sunpos,3)) + C_MUMoon*(satmoonvec[i]/pow(norm_satmoonpos,3)-moonvec[i]/pow(norm_moonpos,3));
         }
     }
 };
