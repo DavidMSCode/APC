@@ -44,7 +44,7 @@
 #include "FandG.h"
 #include "eci2ecef.h"
 #include "ecef2eci.h"
-#include "perturbed_gravity.h"
+#include "lunar_perturbed_gravity.h"
 #include "picard_error_feedback.h"
 #include "perturbations.h"
 #include "Orbit.h"
@@ -117,7 +117,7 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
       // Convert from ECI to ECEF
       eci2ecef(times[i-1],xI,vI,xECEF,vECEF);
       // Compute Variable Fidelity Gravity
-      perturbed_gravity(times[i-1],xECEF,err,i,M,deg,hot,aECEF,tol,&itr,Feval,ITRs,del_G);
+      lunar_perturbed_gravity(times[i-1],xECEF,err,i,M,deg,hot,aECEF,tol,&itr,Feval,ITRs,del_G);
       //Calculate acceleration from drag
       Perturbed_Drag(xECEF, vECEF, orb, drag_aECEF);
 

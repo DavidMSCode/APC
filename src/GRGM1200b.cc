@@ -3,17 +3,13 @@
  *  DATE WRITTEN:     Feb 2023
  *  LAST MODIFIED:    Feb 2023
  *  AFFILIATION:      Department of Aerospace Engineering, University of Illinois, Urbana-Champaign, IL
- *  DESCRIPTION:      This file contains the coefficients for the GRGM1200b Gravity Spherical harmonic library truncated to a degree of 250
+ *  DESCRIPTION:      This file contains the coefficients for the Lunar GRGM1200b Gravity Spherical harmonic library truncated to a degree of 250
  *
  */
 
+#include "GRGM1200b.h"
 
-
-
-const int max_degree_GRGM1200b = 250;
-const double Re_GRGM1200b = 1.7380000000000000e+03;
-const double GM_GRGM1200b = 4.9028001224453001e+03;
-const double C[(max_degree_GRGM1200b)*(max_degree_GRGM1200b)] = {
+const double C_GRGM1200b[(Max_Degree_GRGM1200b)*(Max_Degree_GRGM1200b)] = {
     0.0000000000000000e+00,
     0.0000000000000000e+00,
     -9.0882399518633699e-05,
@@ -62514,7 +62510,7 @@ const double C[(max_degree_GRGM1200b)*(max_degree_GRGM1200b)] = {
     0.0000000000000000e+00,
     0.0000000000000000e+00,
     6.2372624678713604e-09};
-const double S[(max_degree_GRGM1200b)*(max_degree_GRGM1200b)] = {
+const double S_GRGM1200b[(Max_Degree_GRGM1200b)*(Max_Degree_GRGM1200b)] = {
     0.0000000000000000e+00,
     0.0000000000000000e+00,
     0.0000000000000000e+00,

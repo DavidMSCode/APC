@@ -16,9 +16,12 @@ clenshaw_curtis_ivpII.cpp
 ecef2eci.cpp
 eci2ecef.cpp
 flags.cpp
+GRGM1200b.cc
+GRGM1200b.cpp
 interpolate.cpp
 linktest.cpp
 lsq_chebyshev_fit.cpp
+lunar_perturbed_gravity.cpp
 matrix_loader.cpp
 perigee_approx.cpp
 perturbations.cpp

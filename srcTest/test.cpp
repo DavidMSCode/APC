@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2022-09-04 17:11:20
+ * @ Modified time: 2023-02-28 13:17:55
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -34,9 +34,9 @@ int main(){
   double reflectance = 1.5;                        //sat refelction absorption ratio
   double drag_C = 2.0;                              //sat coefficient of drag
   //Perturbation calc flags
-  bool compute_drag = true;                         //atmostpheric drag toggle
-  bool compute_SRP = true;                          //Solar radiation pressure toggle
-  bool compute_third_body = true;                   //Third body gravity toggle
+  bool compute_drag = false;                         //atmostpheric drag toggle
+  bool compute_SRP = false;                          //Solar radiation pressure toggle
+  bool compute_third_body = false;                   //Third body gravity toggle
   bool compute_hamiltonian = false;                 //whether or not the hamiltonian should be compuited for the output
   //Ephemeris
   string spk = "de440.bsp";
@@ -80,8 +80,9 @@ int main(){
   // double t0    = 0.0;                                            // Initial Times (s)
   // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s
   // Nan Orbit
-  vector<double> r0 = {8000, 0, 0};                  // Initial Position (km)
-  vector<double> v0 = {0.0, 7.2329973040227244, 0.0}; // Initial Velocity (km/s)
+  //1000 km Lunar orbit
+  vector<double> r0 = {1838.,    0.,    0.};                  // Initial Position (km)
+  vector<double> v0 = {-0.        ,  0.74844211,  1.49688755}; // Initial Velocity (km/s)
   double T = 7690.61;                               //Orbital period (s)
   double t0 = 0;                                              //initial time (s)
   double tf = T;     

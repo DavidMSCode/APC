@@ -23,6 +23,8 @@
 #include "picard_error_feedback.h"
 #include "const.h"
 
+//FIXME: make error feedback for moon too
+
 void picard_error_feedback(double* X, double* del_X, double* del_a){
 
   double R3, R5;

@@ -6,30 +6,31 @@ from time import time
 from turtle import xcor
 import APC as APC
 import numpy as np
-from Kepler import elms2rv, muEarth
+from Kepler import elms2rv, muEarth, muMoon
 import matplotlib.pyplot as plt
 import pandas as pd
 # import faulthandler
 print('finished')
 
 # %%
-q = 8000
+Re = 1.7380000000000000e+03
+q = Re+100
 e = .05
 a = q/(1-e)
 i = 63.435*np.pi/180
-r0,v0 = elms2rv(a,e,i,0,0,0,muEarth)
-T = 2*np.pi*np.sqrt(a**3/muEarth)
+r0,v0 = elms2rv(a,e,i,0,0,0,muMoon)
+T = 2*np.pi*np.sqrt(a**3/muMoon)
 t0 = 0.0
-tf = 1*T
+tf = 2*T
 
 #sat props
 mass = 1000;
 area = 10;
 reflectance = 1.5;
 Cd = 2.0;
-
+# %%
 # #run APC code in single orbit mode with and without perturbations
-output = APC.SinglePropagate(r0,v0,t0,tf,area,reflectance,mass,Cd,compute_hamiltonian=True)
+output = APC.SinglePropagate(r0,v0,t0,tf,area,reflectance,mass,Cd,compute_hamiltonian=True,compute_drag=False)
 # #use a user specified time vec
 tstep = T/12
 #time vec with higher density as t approaches tf
