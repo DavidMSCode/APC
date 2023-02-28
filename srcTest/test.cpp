@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2023-02-28 13:17:55
+ * @ Modified time: 2023-02-28 13:57:04
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -41,8 +41,8 @@ int main(){
   //Ephemeris
   string spk = "de440.bsp";
   string lsk = "naif0012.tls";
-  list<string> bodies = {"SUN","MOON"};
-  string center = "Earth";
+  list<string> bodies = {"SUN","EARTH"};
+  string center = "MOON";
   string frame = "J2000";
 
   // Initialize Input Variables

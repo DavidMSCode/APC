@@ -33,13 +33,10 @@
 #include "Ephemeris.hpp"
 #include "flags.h"
 
-EphemerisManager cacheEphemeris(double t0, double tf){
+EphemerisManager cacheEphemeris(double t0, double tf, const string center = "Earth", const list<string> bodies = {"SUN","MOON"},string frame = "J2000"){
   //Ephemeris
   string spk = "de440.bsp";               //Ephemeris file for sun earth and moon
   string lsk = "naif0012.tls";            //leap second kernel
-  list<string> bodies = {"SUN","MOON"};   //Required bodies to store
-  string center = "Earth";                //Observing body
-  string frame = "J2000";                 //Frame
   EphemerisManager ephem(spk,lsk,t0,tf,bodies,center,frame);
   return ephem;
 }
@@ -265,7 +262,7 @@ return orbits;
 }
 
 
-class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian){
+class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian, const string primary_body="Earth"){
   EphemerisManager ephem = cacheEphemeris(t0,tf+3600);
   Orbit orbit(area,reflectance,mass,drag_C,compute_drag,compute_SRP,compute_third_body,compute_hamiltonian,1);
  

@@ -23,7 +23,7 @@
  * @param tf 
  * @return EmphemerisManager 
  */
-EphemerisManager cacheEphemeris(double t0, double tf);
+EphemerisManager cacheEphemeris(double t0, double tf, const string center, const list<string> bodies, string frame);
 
 /**
  * @brief Returns propagated orbit solution given initial conditions.
