@@ -35,16 +35,18 @@
 #include "const.h"
 #include "c_functions.h"
 #include "rv2elm.h"
+#include "Orbit.h"
 
 
 void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, std::vector<double> &Alpha, std::vector<double> &Beta,
   double tf, double t_final, std::vector<double> &t_orig, int N, int M, int* k, int seg, int* prep_HS,
-  double tol, double* orb_end, std::vector<double> &tvec, double* r0, double* v0){
+  double tol, double* orb_end, std::vector<double> &tvec, double* r0, double* v0, Orbit &orbit){
 
   // Initialization
   int peri_check = 0;
   double w1, w2, t1, t2, e, TAU_old, TAU, f_old, f_new, TAU_new, df_dtau, err;
   int itrf;
+  double mu = orbit.GetPrimaryGravitationalParameter();
   std::vector<double> TA(N+1,0.0);
   //memset( TA, 0.0, ((N+1)*sizeof(double)));
   std::vector<double> TB(N,0.0);
@@ -61,7 +63,7 @@ void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<d
       r[j-1] = X[ID2(i,j,M+1)];
       v[j-1] = V[ID2(i,j,M+1)];
     }
-    rv2elm(r,v,tol,elm);
+    rv2elm(r,v,tol,mu,elm);
     fvec[i-1] = elm[6];
     e = elm[2];
   }
@@ -107,7 +109,7 @@ void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<d
             }
             tf = TAU*w2 + w1;
 
-            rv2elm(r0,v0,tol,elm);
+            rv2elm(r0,v0,mu,tol,elm);
             f_new = elm[6];
 
             if (f_new > C_PI){

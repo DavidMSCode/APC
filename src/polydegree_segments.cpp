@@ -39,13 +39,15 @@
 #include "c_functions.h"
 #include "perigee_approx.h"
 #include "radial_gravity.h"
-#include "EGM2008.h"
+#include "Gravity.h"
 #include "lsq_chebyshev_fit.h"
 #include "matrix_loader.h"
+#include "Orbit.h"
 
-
-void polydegree_segments(double* r0,double* v0, double deg, double tol, double* Feval, int* seg, int* degree, double* tp, double* Period){
-
+//FIXME: remove redundant input parameters, pass and store orbital properties with orbit class
+void polydegree_segments(double* r0,double* v0, Orbit &orbit, double deg, double tol, double* Feval, int* seg, int* degree, double* tp, double* Period){
+  //Get gravitational parameter for primary body
+  const double mu = orbit.GetPrimaryGravitationalParameter();
   // Tolerances
   double coeff_tol = tol/100.0;
   double fit_tol   = tol/10.0;
@@ -53,10 +55,10 @@ void polydegree_segments(double* r0,double* v0, double deg, double tol, double* 
   // Compute Keplerian Orbit Period
   double a, e;
   double elm[10] = {0.0};
-  rv2elm(r0,v0,tol,elm);
+  rv2elm(r0,v0,tol,mu,elm);
   a      = elm[1];
   e      = elm[2];
-  *Period = 2.0*C_PI*sqrt(pow(a,3)/C_MU);
+  *Period = 2.0*C_PI*sqrt(pow(a,3)/mu);
 
   // Compute F&G Analytical Solution for 1 Orbit
   int n = 100;
@@ -76,7 +78,7 @@ void polydegree_segments(double* r0,double* v0, double deg, double tol, double* 
   for (int cnt=0; cnt<=n; cnt++){
     tau[cnt]   = -cos(cnt*C_PI/n);
     times[cnt] = tau[cnt]*w2 + w1;
-    FandG(z0,z,times[cnt]);
+    FandG(z0,z,times[cnt],mu);
     for (int i=0; i<=5; i++){
       X[ID2(cnt+1,i+1,n+1)] = z[i];
     }
@@ -99,7 +101,7 @@ void polydegree_segments(double* r0,double* v0, double deg, double tol, double* 
     tnew[0] = times[ind-1];
     for (int cnt=1; cnt<=n; cnt++){
       tnew[cnt] = tnew[cnt-1] + diff;
-      FandG(z0,z,tnew[cnt]);
+      FandG(z0,z,tnew[cnt],mu);
       for (int i=0; i<=5; i++){
         X[ID2(cnt+1,i+1,n+1)] = z[i];
       }
@@ -156,11 +158,11 @@ void polydegree_segments(double* r0,double* v0, double deg, double tol, double* 
         for (int cnt=0; cnt<=N; cnt++){
           tau[cnt]   = -cos(cnt*C_PI/N);
           times[cnt] = tau[cnt]*w2 + w1;
-          FandG(z0,z,times[cnt]);
+          FandG(z0,z,times[cnt],mu);
           double grav = 0.0;
           radial_gravity(z,tol,deg,&grav);
           double dstate[6] = {0.0};
-          EGM2008(z, &dstate[3], grav);
+          Gravity(z, &dstate[3], grav,orbit);
           Feval[0] = Feval[0] + pow(grav,2)/pow(deg,2);
           Gprev[ID2(cnt+1,1,N+1)] = dstate[3];
           Gprev[ID2(cnt+1,2,N+1)] = dstate[4];
@@ -177,11 +179,11 @@ void polydegree_segments(double* r0,double* v0, double deg, double tol, double* 
           if (cnt % 2 == 1){
             tau[(cnt-1)/2]   = -cos(cnt*C_PI/N);
             times[(cnt-1)/2] = tau[(cnt-1)/2]*w2 + w1;
-            FandG(z0,z,times[(cnt-1)/2]);
+            FandG(z0,z,times[(cnt-1)/2],mu);
             double grav = 0.0;
             radial_gravity(z,tol,deg,&grav);
             double dstate[6] = {0.0};
-            EGM2008(z, &dstate[3], grav);
+            Gravity(z, &dstate[3], grav, orbit);
             Feval[0] = Feval[0] + pow(grav,2)/pow(deg,2);
             G[ID2(cnt+1,1,N+1)] = dstate[3];
             G[ID2(cnt+1,2,N+1)] = dstate[4];

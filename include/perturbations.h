@@ -20,32 +20,32 @@
  * 
  * @param time time since epoch (s)
  * @param X position in ECI coordinates (km)
- * @param orb orbital object which stores parameters
+ * @param orbit orbital object which stores parameters
  * @param ephem ephemeris caching manager that returns the Sun's position
  * @param SRP_aECI The SRP acceleration in ECI (km/s^2)
  */
-void Perturbed_SRP(double time, double* X, Orbit orb, EphemerisManager ephem, double* SRP_aECI);
+void Perturbed_SRP(double time, double* X, Orbit &orbit, EphemerisManager &ephem, double* SRP_aECI);
 
 /**
  * @brief Returns the acceleration perturbation due to atmospheric drag using Vallado's exponential atmospheric model
  * 
  * @param X position in ECEF coordinates (km)
  * @param V velocity in ECEF coordinates (km/s)
- * @param orb orbital object which contains necessary parameters
+ * @param orbit orbital object which contains necessary parameters
  * @param drag_aECEF The drag acceleration in ECEF (km/s^2)
  */
-void Perturbed_Drag(double* X, double* V, Orbit orb, double* drag_aECEF);
+void Perturbed_Drag(double* X, double* V, Orbit &orbit, double* drag_aECEF);
 
 /**
  * @brief Returns the perturbed third body acceleration due to the Moon and the Sun
  * 
  * @param time time since epoch (s)
  * @param X position in ECI coordinates (km)
- * @param orb orbital object which contains necessary parameters
+ * @param orbit orbital object which contains necessary parameters
  * @param ephem ephemeris caching manager that returns the Sun's and the Moon's positions
  * @param third_body_aECI the third body acceleration in ECI (km/s^2)
  */
-void Perturbed_three_body(double time, double* X, Orbit orb, EphemerisManager ephem, double* third_body_aECI);
+void Perturbed_three_body(double time, double* X, Orbit &orbit, EphemerisManager &ephem, double* third_body_aECI);
 
 /**
  * @brief This function attempts to find the index for the value given by the key by searching from largest

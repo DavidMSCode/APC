@@ -71,7 +71,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
  * @param compute_third_body Boolean to toggle third body perturbation computation on or off
  * @return Orbit Orbit object that stores the solution and other relevant parameters
  */
-class Orbit PropagateOrbit(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit orbit, EphemerisManager ephem);
+class Orbit PropagateOrbit(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager ephem);
 
 /**
  * @brief Structure containing the position and velocity of some orbit state.
@@ -111,6 +111,13 @@ void printStateList(std::vector<SatState> statelist);
  */
 void printState(SatState state, int id);
 
+/**
+ * @brief Converts a vector of doubles to a string that is suitable for printing to console.
+ * 
+ * @param vector 
+ * @return string 
+ */
+string vec2prettystring(std::vector<double> vector);
 
 /**
  * @brief Propagates multiple satellite orbits in parallel
@@ -145,7 +152,7 @@ std::vector<Orbit> ParallelPropagate(std::vector<SatState> StateList, double t0,
  * @param compute_third_body Boolean to toggle third body perturbation computation on or off
  * @return std::vector<class Orbit> Returns an orbit object that describes the satellite properties and the propagation solution
  */
-class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag=false, bool compute_SRP=false, bool compute_third_body=false, bool compute_hamiltonian=false);
+class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag=false, bool compute_SRP=false, bool compute_third_body=false, bool compute_hamiltonian=false, string center = "Earth");
 
 /**
  * @brief Propagates a single satellite orbit using a user defined time vector
@@ -163,16 +170,8 @@ class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double
  * @param compute_third_body Boolean to toggle third body perturbation computation on or off
  * @return std::vector<class Orbit> Returns an orbit object that describes the satellite properties and the propagation solution
  */
-class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, std::vector<double> time_vec, double area, double reflectance, double mass, double drag_C, bool compute_drag=false, bool compute_SRP=false, bool compute_third_body=false, bool compute_hamiltonian=false);
+class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, std::vector<double> time_vec, double area, double reflectance, double mass, double drag_C, bool compute_drag=false, bool compute_SRP=false, bool compute_third_body=false, bool compute_hamiltonian=false, string center="Earth");
 
-/**
- * @brief Tests the thread safety of the ephemeris manager by reading data from the EphemerisManager and writing to stdout in parallel
- * 
- * @param ephem EphemerisManager object containing ephermeris data for solar system objects over a given interval
- * @param t0  Beginning of EphemerisManager time interval (s)
- * @param tf End of EphemerisManager time interval (s)
- */
-void MPGetTest(EphemerisManager ephem, double t0, double tf);
 
 /**
  * @brief Calculates 1000 orbits to benchmark parallel processing performance
@@ -182,13 +181,13 @@ void MPGetTest(EphemerisManager ephem, double t0, double tf);
 std::pair<int,double>  Benchmark1000(int max_threads);
 
 /**
- * @brief Queries MATRICES_LOADED flag to find out if EGM2008 matrices are in memory
+ * @brief Queries MATRICES_LOADED flag to find out if picard iteration matrices are in memory
  * 
  */
 void printMatrixState();
 
 /**
- * @brief Returnes true if EGM2008 matrices have been loaded.
+ * @brief Returnes true if picard iteration matrices have been loaded.
  * 
  */
 bool MatricesLoaded();

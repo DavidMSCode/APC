@@ -152,7 +152,7 @@ double atmospheric_density(double alt){
     return density;
 }
 
-void Perturbed_SRP(double time, double* X, Orbit orb, EphemerisManager ephem, double* SRP_aECI){
+void Perturbed_SRP(double time, double* X, Orbit &orbit, EphemerisManager &ephem, double* SRP_aECI){
     double satvec[3];
     double sunvec[3];
     double satsununitvec[3];
@@ -166,11 +166,12 @@ void Perturbed_SRP(double time, double* X, Orbit orb, EphemerisManager ephem, do
         SRP_aECI[i]=0.0;
         satvec[i] = X[i];
     }
-    if (orb.Compute_SRP){
-        double Mass = orb.GetMass();                            //Sat mass (kg)
-        double Area_m = orb.GetArea();                          //Sat cannonball area (m^2)
+    if (orbit.Compute_SRP){
+        double Mass = orbit.GetMass();                            //Sat mass (kg)
+        double Area_m = orbit.GetArea();                          //Sat cannonball area (m^2)
         double Area_km = Area_m/pow(1000,2);                    //Sat cannonball area (km^2)
-        double Cr = orb.GetReflectance();                        //Coeffecicient of reflectance
+        double Cr = orbit.GetReflectance();                        //Coeffecicient of reflectance
+        //FIXME: Replace C_Req with orbit defined primary body radius
         double r_eq = C_Req;                                    //Equatorial radius (km)
         double G_sc = C_Gsc;                                    //Solar constant (kg/s^3))
         double C = C_ckm;                                       //Speed of light (km/s)
@@ -212,7 +213,7 @@ void Perturbed_SRP(double time, double* X, Orbit orb, EphemerisManager ephem, do
     }
 };
 
-void Perturbed_Drag(double* X_ECEF, double* V_ECEF, Orbit orbit, double* drag_aECEF){
+void Perturbed_Drag(double* X_ECEF, double* V_ECEF, Orbit &orbit, double* drag_aECEF){
     /* Returns the atmospheric drag acceleration on the sattelite in a given orbit around Earth. 
     */
     for(int i=0;i<3;i++){
@@ -226,6 +227,7 @@ void Perturbed_Drag(double* X_ECEF, double* V_ECEF, Orbit orbit, double* drag_aE
         double Area_m = orbit.GetArea();                          //Sat cannonball area (m^2)
         double Area_km = Area_m/pow(1000,2);                    //Sat cannonball area (km^2)
         double Cd = orbit.GetDragCoefficient();                   //Sat drag coefficient 
+        //FIXME: Replace with primary body radius
         double r_eq = C_Req;                                    //Equatorial radius (km)
         double alt = r-r_eq;                                    //Altitude (km)
 
@@ -241,7 +243,7 @@ void Perturbed_Drag(double* X_ECEF, double* V_ECEF, Orbit orbit, double* drag_aE
     }
 };
 
-void Perturbed_three_body(double time, double* X, Orbit orb, EphemerisManager ephem, double* third_body_aECI){
+void Perturbed_three_body(double time, double* X, Orbit &orbit, EphemerisManager &ephem, double* third_body_aECI){
     double satvec[3];
     double sunvec[3];
     double moonvec[3];
@@ -261,7 +263,7 @@ void Perturbed_three_body(double time, double* X, Orbit orb, EphemerisManager ep
         third_body_aECI[i]=0.0;
         satvec[i] = X[i];
     }
-    if (orb.Compute_Third_Body){
+    if (orbit.Compute_Third_Body){
         //Get Earth to Sun vector and Earth to moon vector
         double epoch = time;
         //Read ephem data at current time

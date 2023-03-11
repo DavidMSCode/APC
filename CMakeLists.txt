@@ -8,14 +8,25 @@ project(APC VERSION 0.1.0)
 add_subdirectory(src)
 add_subdirectory(srcTest)
 add_subdirectory(srcMB)
+#Test code
+include(CTest)
+if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+    add_subdirectory(APCTests)
+endif ()
 #Compile Flags
-set_property(TARGET test APC PROPERTY CXX_STANDARD 14) #sets C++ standard to c++14 (ignored on Windows)
+set_property(TARGET main APC  PROPERTY CXX_STANDARD 14) #sets C++ standard to c++14 (ignored on Windows)
 
 #[[choose runtime library (only Windows). CSPICE is statically linked with the release runtime flags /MT (libcmt.lib) (no debug)
 When compiling for debug on Windows LNK4098 warning will occur but it will still be possible to run the resulting code.]]
-set_property(TARGET APC test MatrixBuilder PROPERTY
+set_property(TARGET APC main MatrixBuilder PROPERTY
   MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-  
+
+
+
+
+enable_testing()
+
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

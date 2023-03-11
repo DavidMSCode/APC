@@ -1,7 +1,7 @@
 /*
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     Feb 2016
-*  LAST MODIFIED:    Feb 2016
+*  LAST MODIFIED:    Mar 2023
 *  AFFILIATION:      Department of Aerospace Engineering, Texas A&M University, College Station, TX
 *  DESCRIPTION:      Convert r & v to orbital elements
 *
@@ -40,7 +40,7 @@
 #include "c_functions.h"
 #include "const.h"
 
-void rv2elm(double* r, double* v, double tol, double* elm){
+void rv2elm(double* r, double* v, double tol, double mu, double* elm){
 
   // Position & Velocity Magnitudes
   double R, V;
@@ -68,22 +68,22 @@ void rv2elm(double* r, double* v, double tol, double* elm){
   double rv, e;
   rv = r[0]*v[0] + r[1]*v[1] + r[2]*v[2];
   for (int i=0; i<=2; i++){
-    evec[i] = 1/C_MU*((pow(V,2) - C_MU/R)*r[i] - rv*v[i]);
+    evec[i] = 1/mu*((pow(V,2) - mu/R)*r[i] - rv*v[i]);
   }
   e = sqrt(evec[0]*evec[0] + evec[1]*evec[1] + evec[2]*evec[2]);
 
   // Energy
   double xi;
-  xi      = (pow(V,2))/2 - C_MU/R;
+  xi      = (pow(V,2))/2 - mu/R;
 
   // Semimajor Axis (a) & Semillatus Rectum (p)
   double a, p;
   if (fabs(1-e) <= tol){
     a   = INFINITY;
-    p   = (pow(H,2))/C_MU;
+    p   = (pow(H,2))/mu;
   }
   else{
-    a   = -C_MU/2/xi;
+    a   = -mu/2/xi;
     p   = a * (1 - pow(e,2));
   }
 

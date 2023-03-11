@@ -9,11 +9,14 @@
 #ifndef __PDS__
 #define __PDS__
 
+#include "Orbit.h"
+
 /**
  * @brief Computes the number of segments per orbit and the degree of the polynomial required to fit acceleration to the user specified accuracy
  * 
  * @param r0 Initial position vector (km)
  * @param v0 Initial velocity vector (km/s)
+ * @param orbit Orbit class object
  * @param deg Gravity Degree (max 100)
  * @param tol Tolerance
  * @param Feval Function evaluation counter
@@ -22,6 +25,6 @@
  * @param tp Approximate time of Keplerian perigee passage (s)
  * @param Period Keplerian orbit period (s)
  */
-void polydegree_segments( double* r0, double* v0, double deg, double tol, double* Feval, int* seg, int* degree, double* tp, double* Period );
+void polydegree_segments( double* r0, double* v0, Orbit &orbit, double deg, double tol, double* Feval, int* seg, int* degree, double* tp, double* Period );
 
 #endif

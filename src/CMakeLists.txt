@@ -16,6 +16,7 @@ clenshaw_curtis_ivpII.cpp
 ecef2eci.cpp
 eci2ecef.cpp
 flags.cpp
+Gravity.cpp
 GRGM1200b.cc
 GRGM1200b.cpp
 interpolate.cpp

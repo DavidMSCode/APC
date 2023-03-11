@@ -4,7 +4,7 @@ import numpy as np
 muEarth = 3.98600e+05                                #km^3/s^2
 muMoon = 4.9028001224453001e+03;                     #km^3/s^2
 
-def rv2elm(r,v,mu=muEarth,tol=1e-10):
+def rv2elm(r,v,mu,tol=1e-10):
     r = np.array(r)
     v = np.array(v)
     #  Position & Velocity Magnitudes

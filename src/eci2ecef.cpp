@@ -19,7 +19,7 @@
 #include "const.h"
 
 void eci2ecef(double t, double* X, double* V, double* xB, double* vB){
-
+  //FIXME: Transform based on the desired frames. Don't assume near Earth
   double th       = t*C_omega;
   double cos_th   = cos(th);
   double sin_th   = sin(th);

@@ -6,6 +6,10 @@
 *  DESCRIPTION:      Constants
 */
 
+#include <string>
+#include <vector>
+using namespace std;
+
 #ifndef _CONSTANTS_
 #define _CONSTANTS_
 #define C_PI 3.1415926535897932      // Pi
@@ -20,6 +24,7 @@
 #define C_MU_SUN_CAN C_MU_SUN/C_MU_EARTH
 #define C_omega 7292115.0e-011       // Angular Speed of Earth [rad/s]
 #define C_Req 6378.137               // Equatorial Radius of Earth [km]
+#define C_Rmoon 1738.0               // Reference Radius of the Moon [km] from GRAIL model
 #define C_ckm 299792.458             // Speed of Light (km/s)
 #define C_Gsc 1362                   // Solar constant (W/m^2 or kg/s^3)
 #define g0 9.8065                    // Earth's Surface Gravity (m/s^2)
@@ -30,4 +35,5 @@
 #define VU DU/TU
 #define si2can pow(TU,2.0)/(DU*1000.0) // Canonical unit conversion factor
 #define JD2000 2451545.0             // Julian days of J2000
+const vector<string> C_VALID_PRIMARIES = {"earth","moon"};  //List of valid primary body names
 #endif

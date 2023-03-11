@@ -273,6 +273,7 @@ EphemerisManager::EphemerisManager(string spkFile,
                                    string center,
                                    string frame)
 {
+    this -> bodies = bodies;
     for (list<string>::iterator it = bodies.begin(); it != bodies.end(); it++)
     {
         ephemeris[*it] = ChebyshevEphemeris(spkFile, lskFile, initialEpoch, finalEpoch, *it, center, frame);

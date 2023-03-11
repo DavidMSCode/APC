@@ -1,6 +1,6 @@
 .vscode/*
 *.code-workspace
-
+APCTests/testbin
 # Local History for Visual Studio Code
 .history/
 .DS_Store

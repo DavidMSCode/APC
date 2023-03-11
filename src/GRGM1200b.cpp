@@ -239,7 +239,8 @@ void loc_gravityPCPF_GRGM1200b( double* p, double* P, int DEG, double* smlambda,
 	double y = p[1];
 	double z = p[2];
 	radu = r;
-	rRatio = C_Req/radu;
+	//FIXME: 
+	rRatio = C_Rmoon/radu;
 	rRatio_n = rRatio;
 	// summation of gravity in radial coordinates
 	for (int n = 2; n <= DEG; n++) {
@@ -311,7 +312,7 @@ void loc_gravityPot_GRGM1200b( double* p, double* P, int DEG, double* smlambda, 
 	int m;
 
 	radu = r;
-	rRatio = C_Req/radu;
+	rRatio = C_Rmoon/radu;
 	rRatio_n = rRatio;
 	// summation of gravity in radial coordinates
 

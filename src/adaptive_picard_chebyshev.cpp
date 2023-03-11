@@ -43,14 +43,14 @@
 #include "Orbit.h"
 #include "Ephemeris.hpp"
 
-std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, double dt, double deg, double tol, int soln_size, double* Feval, std::vector<double> &Soln, Orbit &orb, EphemerisManager ephem){
+std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, double dt, double deg, double tol, int soln_size, double* Feval, std::vector<double> &Soln, Orbit &orbit, EphemerisManager ephem){
 
   /* 1. DETERMINE DEGREE/SEGMENTATION SCHEME
   Compute the polynomial degree and number of segments per orbit that will
   result in a solution that satisfies the user specified tolerance. */
   int seg, N;
   double tp, Period;
-  polydegree_segments(r0,v0,deg,tol,Feval,&seg,&N,&tp,&Period);
+  polydegree_segments(r0,v0,orbit,deg,tol,Feval,&seg,&N,&tp,&Period);
   // printf("N %i\t",N);
   // printf("seg %i\n",seg);
 
@@ -80,7 +80,7 @@ std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v
   //memset( t_orig, 0.0, ((seg+1)*sizeof(double)));
   std::vector<double> tvec(seg+1,0.0);
   //memset( tvec, 0.0, ((seg+1)*sizeof(double)));
-  prepare_propagator(r0,v0,t0,tf,dt,tp,tol,N,M,seg,&prep_HS,t_orig,tvec,P1,P2,T1,T2,A,Ta);
+  prepare_propagator(r0,v0,t0,tf,dt,tp,tol,N,M,seg,&prep_HS,t_orig,tvec,P1,P2,T1,T2,A,Ta, orbit);
   /* 3. PICARD-CHEBYSHEV PROPAGATOR
   Propagate from t0 to tf, iterating on each segment (Picard Iteration), until
   completion. */
@@ -99,17 +99,17 @@ std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v
   std::vector<std::vector<double> > states;
 
   states = picard_chebyshev_propagator(r0,v0,t0,tf,deg,tol,Period,tvec,t_orig,seg,N,M,&prep_HS,coeff_size,soln_size,&total_seg,
-    P1,P2,T1,T2,A,Ta,W1,W2,Feval,ALPHA,BETA,segment_times, orb, ephem);
+    P1,P2,T1,T2,A,Ta,W1,W2,Feval,ALPHA,BETA,segment_times, orbit, ephem);
 
   //store chebyshev in orbit object
-  orb.SetCC(ALPHA,BETA,W1,W2,N,coeff_size,segment_times,tf,t0,total_seg);
+  orbit.SetCC(ALPHA,BETA,W1,W2,N,coeff_size,segment_times,tf,t0,total_seg);
   // /* 4. INTERPOLATE SOLUTION
   // The Chebyshev coefficients from each of the orbit segments are used to compute
   // the solution (position & velocity) at the user specified times. */
-  if(orb.USER_TIME)
+  if(orbit.USER_TIME)
   {
     //Interpoalte with user defined time vec
-    Soln = interpolate(ALPHA,BETA,coeff_size,N,segment_times,W1,W2,total_seg,orb.T);
+    Soln = interpolate(ALPHA,BETA,coeff_size,N,segment_times,W1,W2,total_seg,orbit.T);
   }
   else
   {

@@ -44,20 +44,22 @@
 #include "rv2elm.h"
 #include "c_functions.h"
 #include "flags.h"
+#include "Orbit.h"
 
 
 
 void prepare_propagator(double* r0, double* v0, double t0, double t_final, double dt, double tp, double tol,
   int N, int M, int seg, int* prep_HS, std::vector<double> &t_orig, std::vector<double> &tvec,
-  std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, std::vector<double> &Ta){
+  std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, std::vector<double> &Ta, Orbit &orbit){
 
   // Compute Keplerian Orbit Period
   double a, e, Period, n;
   double elm[10] = {0.0};
-  rv2elm(r0,v0,tol,elm);
+  double mu = orbit.GetPrimaryGravitationalParameter();
+  rv2elm(r0,v0,tol,mu,elm);
   a      = elm[1];
   e      = elm[2];
-  Period = 2.0*C_PI*sqrt(pow(a,3)/C_MU);
+  Period = 2.0*C_PI*sqrt(pow(a,3)/mu);
   n      = 2.0*C_PI/Period;
 
   // Compute Time Vector (based on Keplerian true anomaly segments)
@@ -113,7 +115,7 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
     double* temp5;
     double* temp6;
 
-  #pragma omp critical(matrixloader)    //ensure only one thread loads the EGM2008 matrices
+  #pragma omp critical(matrixloader)    //ensure only one thread loads the Picard iteration matrices
   {
     if (!g_MATRICES_LOADED)
     {

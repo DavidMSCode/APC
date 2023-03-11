@@ -11,6 +11,6 @@
 
 #ifndef __FLAGS__
 #define __FLAGS__
-    extern bool g_MATRICES_LOADED;        //Tells APC whether the EGM2008 matrices have already been loaded
+    extern bool g_MATRICES_LOADED;        //Tells APC whether the picard iteration matrices have already been loaded
     extern bool g_DEBUG_MESSAGES;
 #endif

@@ -9,6 +9,6 @@
 #ifndef __RVE__
 #define __RVE__
 
-void rv2elm(double* r, double* v, double tol, double* elm);
+void rv2elm(double* r, double* v, double tol, double mu, double* elm);
 
 #endif

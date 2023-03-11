@@ -61,6 +61,6 @@ PYBIND11_MODULE(APC, m) {
             .def_readwrite("r", &SatState::r)
             .def_readwrite("v", &SatState::v);
       //Functions for debugging    
-      m.def("matrix_loader",&matrix_loader,"Loads EGM2008 matrices into memory.");
-      m.def("MatricesLoaded",&MatricesLoaded,"Returns true if EGM2008 matrices have been loaded.");
+      m.def("matrix_loader",&matrix_loader,"Loads Picard iteration matrices into memory.");
+      m.def("MatricesLoaded",&MatricesLoaded,"Returns true if Picard iteration matrices have been loaded.");
 }

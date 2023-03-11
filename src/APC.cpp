@@ -35,6 +35,7 @@
 
 EphemerisManager cacheEphemeris(double t0, double tf, const string center = "Earth", const list<string> bodies = {"SUN","MOON"},string frame = "J2000"){
   //Ephemeris
+  //FIXME: These strings should be user modifiable
   string spk = "de440.bsp";               //Ephemeris file for sun earth and moon
   string lsk = "naif0012.tls";            //leap second kernel
   EphemerisManager ephem(spk,lsk,t0,tf,bodies,center,frame);
@@ -57,6 +58,7 @@ void printState(SatState state, int i){
   vel.pop_back();
   std::cout << "Orbit " << i << " velocity: {" << vel <<"}"<< std::endl;
 }
+
 string vec2prettystring(std::vector<double> vector){
   std::stringstream output;
   std::string vecstring;
@@ -77,7 +79,7 @@ void printStateList(std::vector<SatState> statelist){
     }
 }
 
-std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orb, EphemerisManager ephem){
+std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager ephem){
   //Convert vectors to array since pybind wants vectors but the functions are coded for arrays
   double* r0 = &r[0];
   double* v0 = &v[0];
@@ -94,7 +96,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
 
   double Feval[2] = {0.0};
   std::vector<std::vector<double> > states;
-  states = adaptive_picard_chebyshev(r0,v0,t0,tf,dt,deg,tol,soln_size,Feval,Soln,orb,ephem);
+  states = adaptive_picard_chebyshev(r0,v0,t0,tf,dt,deg,tol,soln_size,Feval,Soln,orbit,ephem);
   int total;
   total = int(ceil(Feval[0] + Feval[1]*pow(6.0,2)/pow(deg,2)));
 
@@ -106,7 +108,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   double H    = 0.0;
   double H0   = 0.0;
   double Hmax = 0.0;
-  std::vector<double> t_vec = orb.T;
+  std::vector<double> t_vec = orbit.T;
   double t_curr;
   soln_size = t_vec.size();
   for (int i=1; i<=soln_size; i++){
@@ -116,7 +118,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
       state[j-1] = Soln[ID2(i,j,soln_size)];
     }
     //Compute Hamiltonian
-    if(orb.Compute_Hamiltonian)
+    if(orbit.Compute_Hamiltonian)
     {
       jacobiIntegral(t_curr,state,&H,deg);
       if (i == 1){
@@ -146,8 +148,8 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   return Solution;
 }
 
-
-class Orbit PropagateOrbit(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit orbit, EphemerisManager ephem){
+//FIXME: This should be an orbit class method
+class Orbit PropagateOrbit(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager ephem){
   //Generates 13 orbits with slight perturbations in state +/- on each coordinate
   std::vector<std::vector<double> > solution;
   solution = PropagateICs(r, v, t0 , tf, orbit, ephem);
@@ -262,9 +264,9 @@ return orbits;
 }
 
 
-class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian, const string primary_body="Earth"){
+class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian, string center){
   EphemerisManager ephem = cacheEphemeris(t0,tf+3600);
-  Orbit orbit(area,reflectance,mass,drag_C,compute_drag,compute_SRP,compute_third_body,compute_hamiltonian,1);
+  Orbit orbit(area,reflectance,mass,drag_C,compute_drag,compute_SRP,compute_third_body,compute_hamiltonian,1,center);
  
   double dt  = 30;
   double len = int(ceil(tf/dt));
@@ -284,7 +286,7 @@ class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double
   return orbit;
 }
 //overload using a user defined time vector
-class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, std::vector<double> time_vec, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian){
+class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, std::vector<double> time_vec, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian, string center){
   double t0 = time_vec[0];
   double tf = time_vec.back()+300;
   EphemerisManager ephem = cacheEphemeris(t0,tf+3600);
@@ -294,21 +296,7 @@ class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, std::v
   return orbit2;
 }
 
-void MPGetTest(EphemerisManager ephem, double t0, double tf){
-  int N = 1000;
-  double dt = (tf-t0)/N;
-  string target1 = "SUN";
-  string target2 = "MOON";
-  #pragma omp parallel for
-    for(int i=0;i<1000;i++){
-      double epoch = dt*i+t0;
-      std::vector<double> sunstate = ephem.getState(target1,epoch);
-      std::vector<double> moonstate = ephem.getState(target2,epoch);
-      std::string sunvec = vec2prettystring(sunstate);
-      std::string moonvec = vec2prettystring(moonstate);
-      std::cout << to_string(epoch)+"s: Sun @ "+sunvec+" Moon @ " + moonvec + "\n";
-    }
-}
+
 
 std::pair<int,double>  Benchmark1000(int max_threads){
   //Benchmarking function that solves 1000 orbits and reports the time for completion.

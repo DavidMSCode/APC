@@ -14,16 +14,13 @@
 #include "FandG.h"
 #include "const.h"
 
-
-
 //Define F and G magic numbers.
 const int newtonMaxIt = 300;
 const double newtonTol = 1E-13;
 
-void FandG( const double* z0, double* zf, const double dt, const double mu = C_MU)
+void FandG( const double* z0, double* zf, const double dt, const double mu)
 {
     int kk;
-
     double rMag = sqrt( z0[0]*z0[0] + z0[1]*z0[1] + z0[2]*z0[2] );
     double vSq  = z0[3]*z0[3] + z0[4]*z0[4] + z0[5]*z0[5];
     double a    = 1.0 / ( 2.0/rMag - vSq/mu );
@@ -46,16 +43,13 @@ void FandG( const double* z0, double* zf, const double dt, const double mu = C_M
 double newtonFandG( const double a, const double dt, const double rMag,
                     const double sig0, const double tol, const double mu)
 {
-
     // Initial guess
     //double EHat = C_PI;
     double EHat = C_PI;
     int ctr = 0;
     double fx, dfx;
     double dE = 1.0;
-
     while ( ( fabs(dE/EHat) > tol ) && ( ctr <= newtonMaxIt ) ) {
-
         // Calculate dE correction
         fx = sqrt(mu)/(a*sqrt(a))*dt  - EHat + (1.0-rMag/a)*sin(EHat) +  \
             sig0/sqrt(a)*(cos(EHat)-1.0);

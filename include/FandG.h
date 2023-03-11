@@ -1,6 +1,8 @@
 
 #ifndef _F_and_G_
 #define _F_and_G_
+
+#include "const.h"
 /*! \brief Calculates the analytic solution to the unperturbed orbit problem using F&G solution
  *   Used as a "warm-start" for MCPI.
  *  \param[in] z0  Initial state vector [r0,v0] in units of [e.r] and [e.r/ctu]
@@ -17,6 +19,6 @@ void FandG( const double* z0, double* zf, const double dt, const double mu);
  *  \param[out] Ehat Change in eccentric anomaly
 */
 double newtonFandG( const double a, const double dt, const double rMag,
-                    const double sig0, const double tol, const double mu);
+                    const double sig0, const double tol, const double mu = C_MU);
 
 #endif

@@ -54,7 +54,7 @@
 
 
 void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, int N, int M, double deg, int hot, double tol,
-  std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, double* Feval, std::vector<double> &Alpha, std::vector<double> &Beta, Orbit &orb, EphemerisManager ephem){
+  std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, double* Feval, std::vector<double> &Alpha, std::vector<double> &Beta, Orbit &orbit, EphemerisManager &ephem){
   
   // Initialization
   bool suborbital = false;
@@ -109,6 +109,7 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
       }
       // Exit loop early if orbit has crashed
       if (!suborbital){
+        //FIXME: Replace C_Req with primary radius that should be stored in the orbit file
         alt = sqrt(pow(xI[0],2)+pow(xI[1],2)+pow(xI[2],2))-C_Req;
         if (alt<0){
           suborbital=true;
@@ -119,7 +120,7 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
       // Compute Variable Fidelity Gravity
       lunar_perturbed_gravity(times[i-1],xECEF,err,i,M,deg,hot,aECEF,tol,&itr,Feval,ITRs,del_G);
       //Calculate acceleration from drag
-      Perturbed_Drag(xECEF, vECEF, orb, drag_aECEF);
+      Perturbed_Drag(xECEF, vECEF, orbit, drag_aECEF);
 
       //sum pertubed gravity and drag accelerations
       for(int k=0;k<3;k++){
@@ -129,8 +130,8 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
       // Convert from ECEF to ECI
       ecef2eci(times[i-1],aECEF,aECI);
       //calculate SRP and Third Body
-      Perturbed_SRP(times[i-1], xI, orb, ephem, SRP_aECI);
-      Perturbed_three_body(times[i-1], xI, orb, ephem, third_body_aECI);
+      Perturbed_SRP(times[i-1], xI, orbit, ephem, SRP_aECI);
+      Perturbed_three_body(times[i-1], xI, orbit, ephem, third_body_aECI);
       //Add perturbations to acceleration.
       for(int k=0;k<3;k++){
         aECI[k] = aECI[k] + SRP_aECI[k] + third_body_aECI[k];
@@ -260,6 +261,6 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
 
   if(suborbital){
     // Set suborbital flag to stop iterations early.
-    orb.SetSubOrbital();
+    orbit.SetSubOrbital();
     } 
 }

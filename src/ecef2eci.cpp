@@ -18,7 +18,7 @@
 #include "ecef2eci.h"
 
 void ecef2eci (double t,double* aB, double* acc){
-
+  //FIXME: Transform based on the desired frames
   double th       = t*C_omega;
   double cos_th   = cos(th);
   double sin_th   = sin(th);

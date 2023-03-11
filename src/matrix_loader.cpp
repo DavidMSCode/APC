@@ -78,14 +78,14 @@ void matrix_loader(){
     //Set MATRICES_LOADED flag
     g_MATRICES_LOADED = true;
     if(g_DEBUG_MESSAGES){
-      std::cout<<"EGM2008 matrices loaded into memory\n";
+      std::cout<<"Picard iteration matrices loaded into memory\n";
     }
   }
 
   else{ 
     if(g_DEBUG_MESSAGES)
     {
-      std::cout<<"EGM2008 matrices were already loaded\n";
+      std::cout<<"Picard iteration matrices were already loaded\n";
     }
   }
 }

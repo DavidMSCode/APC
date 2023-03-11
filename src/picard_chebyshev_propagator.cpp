@@ -55,11 +55,12 @@
 std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double* v0, double t0, double t_final,double deg, double tol, double Period,
    std::vector<double> &tvec, std::vector<double> &t_orig, int seg, int N, int M, int* prep_HS, int coeff_size, int soln_size, int* total_seg,
    std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, std::vector<double> &Ta, std::vector<double> &W1, std::vector<double> &W2, double* Feval,
-   std::vector<double> &ALPHA, std::vector<double> &BETA, std::vector<double> &segment_times, Orbit &orb, EphemerisManager ephem){
+   std::vector<double> &ALPHA, std::vector<double> &BETA, std::vector<double> &segment_times, Orbit &orbit, EphemerisManager ephem){
   int loop    = 0;      // Break loop condition
   int k       = 0;      // Counter: segments per orbit
   int hot     = 0;      // Hot start switch
   int seg_cnt = 0;      // Counter: total segments
+  double mu = orbit.GetPrimaryGravitationalParameter();
   //int sz      = int(ceil(1.1*t_final/Period)*seg);
   double w1, w2, tf;
   //store original initial conditions
@@ -124,7 +125,7 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     for (int cnt=0; cnt<=M; cnt++){
       tau[cnt]   = -cos(cnt*C_PI/M);
       times[cnt] = tau[cnt]*w2 + w1;
-      FandG(z0,z,times[cnt]-t0);
+      FandG(z0,z,times[cnt]-t0,mu);
       X[ID2(cnt+1,1,M+1)] = z[0];
       X[ID2(cnt+1,2,M+1)] = z[1];
       X[ID2(cnt+1,3,M+1)] = z[2];
@@ -155,12 +156,12 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     // }
 
     // PICARD ITERATION
-    picard_iteration(r0,v0,X,V,times,N,M,deg,hot,tol,P1,P2,T1,T2,A,Feval,Alpha,Beta,orb,ephem);
+    picard_iteration(r0,v0,X,V,times,N,M,deg,hot,tol,P1,P2,T1,T2,A,Feval,Alpha,Beta,orbit,ephem);
     // Loop exit condition
     if (fabs(tf - t_final)/tf < 1e-12){
       loop = 1;
     }
-    if(orb.suborbital){
+    if(orbit.suborbital){
       loop=1;
     }
     // Prepare Hot Start
@@ -193,7 +194,7 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     increases with increasing eccentricity. */
     
     double orb_end = 0.0;
-    reosc_perigee(X,V,times,Alpha,Beta,tf,t_final,t_orig,N,M,&k,seg,prep_HS,tol,&orb_end,tvec,r0,v0);
+    reosc_perigee(X,V,times,Alpha,Beta,tf,t_final,t_orig,N,M,&k,seg,prep_HS,tol,&orb_end,tvec,r0,v0,orbit);
     // Segments per orbit counter
     k = k+1;
 

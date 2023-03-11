@@ -67,6 +67,7 @@ class EphemerisManager
 {
     private:
         map<string, ChebyshevEphemeris> ephemeris;
+        list<string> bodies;
 
     public:
         // Overloaded constructor
@@ -89,6 +90,7 @@ class EphemerisManager
 
         // Function to retrieve the ephemeris of a body at a given epoch
         std::vector<double> getState(string body, double epoch);
+        std::list<string> getBodies(){return bodies;};
 };
 
 #endif
