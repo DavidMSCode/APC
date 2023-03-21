@@ -104,6 +104,10 @@ int main(){
 
   //Orbit orb = SinglePropagate(r0, v0, time_vec,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   Orbit orb2 = SinglePropagate(r0, v0, t0, tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body, compute_hamiltonian,"Moon");
+  vector<double> X = orb2.getPositionX();
+  vector<double> Y = orb2.getPositionY();
+  vector<double> Z = orb2.getPositionZ();
+
   // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;

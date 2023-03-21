@@ -110,7 +110,7 @@ void picard_iteration(double* Xint, double* Vint, std::vector<double> &X, std::v
       // Exit loop early if orbit has crashed
       if (!suborbital){
         //FIXME: Replace C_Req with primary radius that should be stored in the orbit file
-        alt = sqrt(pow(xI[0],2)+pow(xI[1],2)+pow(xI[2],2))-C_Req;
+        alt = sqrt(pow(xI[0],2)+pow(xI[1],2)+pow(xI[2],2))-orbit.GetPrimaryRadius();
         if (alt<0){
           suborbital=true;
         }

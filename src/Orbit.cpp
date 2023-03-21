@@ -71,6 +71,20 @@ std::vector<std::vector<double> > Orbit::getVelocity(){
     return Velocity;
 }
 
+double Orbit::GetPrimaryRadius()
+{
+    double Req = 0.0;
+    //Earth reference radius
+    if(InSet(_primary,{"Earth"})){
+        Req = 6378.137;
+    }
+    //Moon reference radius
+    else if(InSet(_primary,{"Moon"})){
+        Req = 1.738e+03;
+    }
+    return Req;
+}
+
 //Setter Functions
 void Orbit::SetSolution(std::vector<std::vector<double > > Solution){
     //store the solution
@@ -152,3 +166,15 @@ bool Orbit::InSet(string item, vector<string> validset){
     return inSet;
 }
 
+bool Orbit::HasAtmosphere()
+{
+    //List of bodies with atmospheric models in APC
+    vector<string> atmospheric_bodies = {"Earth"};
+    bool hasAtmosphere = false;
+
+    //If the orbit primary body has an atmospher then return true
+    if(InSet(_primary,atmospheric_bodies)){
+        hasAtmosphere = true;
+    }
+    return hasAtmosphere;
+}

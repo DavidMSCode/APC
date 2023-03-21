@@ -22,12 +22,12 @@ using namespace std;
 int main(){
     furnsh_c("naif0012.tls");
     SpiceDouble t0;
-    str2et_c("Mon Sep 30 09:59:10 PDT 1996", &t0);
+    str2et_c("Mon Sep 30 09:59:10 PDT 2023", &t0);
     double tf = t0 + 5*24*60*60;
     unload_c("naif0012.tls");
     EphemerisManager ephem("de440.bsp","naif0012.tls",t0,tf,{"SUN","MOON","EARTH"},"SOLAR SYSTEM BARYCENTER","J2000");
     int errs = 0;
-    errs += MPGetTest(ephem, 800,3600000-800);
+    errs += MPGetTest(ephem, t0+800,tf-800);
     return errs;
 }
 

@@ -42,6 +42,7 @@ class Orbit
         };
             double _mu;                                 //Gravitational parameter of primary body
             string _primary;                            //Primary body
+            double _Req;                                //Reference radius for primary body
             string _frame;                              //frame for input
             string _epoch = "J2000";                    //epoch for time and date, defaults to J2000
             bool _validOrbit = false;                   //bool to indicate whether the orbit object is valid for APC integration
@@ -79,7 +80,17 @@ class Orbit
          * @param primary The primary body for integration
          */
         void SetMu(string primary);
+
+
+        /// @brief 
+        /// @param item 
+        /// @param validset 
+        /// @return 
         bool InSet(string item, vector<string> validset);
+        
+        /// @brief 
+        /// @return 
+        bool HasAtmosphere();
         // Getters
         std::vector<double> getTimes(){return Soln[0];};
         std::vector<double> getPositionX(){return Soln[1];};
@@ -143,6 +154,18 @@ class Orbit
          * @return string 
          */
         string GetPrimaryBody(){return _primary;};
+        /**
+         * @brief Get the Primary body radius in km
+         * 
+         * @return double  (km)
+         */
+        double GetPrimaryRadius();
+        /**
+         * @brief 
+         * 
+         * @return true 
+         * @return false 
+         */
         bool ValidPrimary(){return _validPrimary;};
         //Internal properties struct declaration
         /**

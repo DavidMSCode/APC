@@ -219,7 +219,7 @@ void Perturbed_Drag(double* X_ECEF, double* V_ECEF, Orbit &orbit, double* drag_a
     for(int i=0;i<3;i++){
         drag_aECEF[i]=0.0;
     }
-    if (orbit.Compute_Drag){
+    if (orbit.Compute_Drag && orbit.HasAtmosphere()){
         double r = sqrt(pow(X_ECEF[0],2)+pow(X_ECEF[1],2)+pow(X_ECEF[2],2));   //distance of sattelite from center of the earth in km
         double s = sqrt(pow(V_ECEF[0],2)+pow(V_ECEF[1],2)+pow(V_ECEF[2],2));   //speed of sattelite in km/s
 
