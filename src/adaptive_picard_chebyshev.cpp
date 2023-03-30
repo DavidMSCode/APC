@@ -115,6 +115,19 @@ std::vector<std::vector<double> > adaptive_picard_chebyshev(double* r0,double* v
   {
     //Interpolate with default dt spacing
     Soln = interpolate(ALPHA,BETA,soln_size,coeff_size,N,segment_times,W1,W2,t0,tf,dt,total_seg);
-  }
+    int len;
+    len = int(ceil(tf/dt));
+    std::vector<double> time_out(len+1,0.0);
+    time_out[0] = t0;
+    for (int ii=1; ii<=len; ii++){
+      double time = time_out[ii-1] + dt;
+      if(time>tf)
+      {
+        time = tf;
+      }
+      time_out[ii] = time;
+    }
+    orbit.SetTimeVec(time_out);
+    }
   return states;
 }

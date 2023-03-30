@@ -1,6 +1,7 @@
 #ifndef __GRGM1200B_H__
 #define __GRGM1200B_H__
 
+#include "Orbit.h"
 
 const int Max_Degree_GRGM1200b = 250;
 const double Re_GRGM1200b = 1.7380000000000000e+03;                     //Reference radius in km
@@ -82,6 +83,7 @@ void loc_gravityPot_GRGM1200b(double *p, double *P, int DEG, double *smlambda, d
 * \param[in] Deg Degree and order of the serries to be used
 * \param[out] H Jacobi Integral Output
 */
-void jacobiIntegral_GRGM1200b(double t, double *solN, double *H, int Deg);
+
+void jacobiIntegral_GRGM1200b(double t, double *solN, double *H, int Deg,Orbit &orbit);
 
 #endif

@@ -25,6 +25,7 @@
 #include "eci2ecef.h"
 #include "const.h"
 #include "EGM2008.h"
+#include "EphemerisRotation.h"
 
 // Declare Needed Variables
 /*!
@@ -345,12 +346,12 @@ void loc_gravityPot_GRGM1200b( double* p, double* P, int DEG, double* smlambda, 
 
 }
 
-void jacobiIntegral_GRGM1200b(double t, double* solN, double* H, int Deg){
-
+void jacobiIntegral_GRGM1200b(double t, double* solN, double* H, int Deg, Orbit &orbit){
+	double et = orbit.et(t);
 	double xI[3]    = {0.0};
 	double vI[3]    = {0.0};
-	double xECEF[3] = {0.0};
-	double vECEF[3] = {0.0};
+	double xF[3] = {0.0};
+	double vF[3] = {0.0};
 
 	xI[0] = solN[0];
 	xI[1] = solN[1];
@@ -359,23 +360,22 @@ void jacobiIntegral_GRGM1200b(double t, double* solN, double* H, int Deg){
 	vI[1] = solN[4];
 	vI[2] = solN[5];
 
-	// Convert from ECI to ECEF
-	eci2ecef(t,xI,vI,xECEF,vECEF);
+	// Convert from inertial frame to body fixed frame
+	InertialToBodyFixed(xI,vI,xF,vF,t,orbit);
 
-	solN[0] = xECEF[0];
-	solN[1] = xECEF[1];
-	solN[2] = xECEF[2];
-	solN[3] = vECEF[0];
-	solN[4] = vECEF[1];
-	solN[5] = vECEF[2];
+	solN[0] = xF[0];
+	solN[1] = xF[1];
+	solN[2] = xF[2];
+	solN[3] = vF[0];
+	solN[4] = vF[1];
+	solN[5] = vF[2];
 
 	double KE,PE,RotTerm;
 
-	KE = 0.5*(solN[3]*solN[3] + solN[4]*solN[4] + solN[5]*solN[5]);
-	GRGM1200bPot(solN, &PE, Deg);
+	KE = 0.5*(vI[0]*vI[0] + vI[1]*vI[1] + vI[2]*vI[2]);		//Kinetic energy in inertial frame
+	GRGM1200bPot(solN, &PE, Deg);							//Potential energy from body fixed position
 	PE = -PE;
-	RotTerm = 0.5*C_omega*C_omega*(solN[0]*solN[0] + solN[1]*solN[1]);
-	*H  = PE + KE - RotTerm; // Hamiltonian
+	*H  = PE + KE; // Hamiltonian
 
 	// printf("KE: %e\tPE: %e\tRT: %e\tSum: %e\n ",KE,PE,RotTerm,*H);
 	// getchar();

@@ -22,7 +22,8 @@ using namespace std;
 #define C_MU_EARTH_CAN 1                    // Gravitational Constant Canonical Units
 #define C_MU_MOON_CAN C_MU_MOON/C_MU_EARTH
 #define C_MU_SUN_CAN C_MU_SUN/C_MU_EARTH
-#define C_omega 7292115.0e-011       // Angular Speed of Earth [rad/s]
+// #define C_omega 7292115.0e-011       // Angular Speed of Earth [rad/s]
+#define C_omega 0.00000266169        //angular speed of Moon [rad/s]
 #define C_Req 6378.137               // Equatorial Radius of Earth [km]
 #define C_Rmoon 1738.0               // Reference Radius of the Moon [km] from GRAIL model
 #define C_ckm 299792.458             // Speed of Light (km/s)

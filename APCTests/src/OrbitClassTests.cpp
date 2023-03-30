@@ -17,7 +17,9 @@ using namespace std;
 int main() {
     std::cout << "Orbit Class Tests started!" << std::endl;
     int primaryTestFailures = testValidPrimaries();           //Primary body name tests
-    return primaryTestFailures;
+    int initTestFailures = testInitOrbit();
+    int initStateTestFailures = testSetState();
+    return primaryTestFailures+initTestFailures+initStateTestFailures;
 };
 
 int testValidPrimaries(){
@@ -49,4 +51,51 @@ int testValidPrimaries(){
         cout << "Primary body name should default to \"Earth\" and be a valid name, but Orbit::ValidPrimary returned False." << endl;
     }
     return failures;
-};
+}
+int testInitOrbit()
+{
+    int failures;
+    //Initialize orbit around the moon, in moon primary axis frame with J2000 epoch.
+    string primary = "MOON";
+    string IOFrame = "MOON_PA";
+    string epoch = "J2000";
+    Orbit orbit(primary,IOFrame,epoch);
+    //check if primary was set properly
+    if (orbit.InSet(orbit.GetPrimaryBody(),{primary})+
+        orbit.InSet(orbit.GetIOFrame(),{IOFrame})+
+        orbit.InSet(orbit.GetEpoch(),{epoch})!=3){
+        failures+=1;
+        cout << "Orbit initialization with primary axis frame centered on the moon did not initialize properly"<<endl;
+    }
+    return failures;
+}
+
+int testSetState()
+{
+    int failures=0;
+    vector<double> r0 = {1838.,         0.,         0.};    // Initial Position (km)
+    vector<double> v0 = {0.   , 0.74844211, 1.49688755};
+    vector<double> s0;
+    s0.reserve( r0.size() + v0.size() ); // preallocate memory
+    s0.insert( s0.end(), r0.begin(), r0.end() );
+    s0.insert( s0.end(), v0.begin(), v0.end() );
+    string primary = "MOON";
+    string IOFrame = "MOON_PA";
+    string epoch = "J2000";
+    Orbit orbit(primary,IOFrame,epoch);
+    orbit.SetState0(s0);
+    if(orbit.getPosition0()!=r0){
+        failures+=1;
+    }
+    if(orbit.getVelocity0()!=v0){
+        failures+=1;
+    }
+    if(orbit.getState0()!=s0){
+        failures+=1;
+    }
+
+    if (failures>0){
+        cout<<"Orbit state initialization test failed."<<endl;
+    }
+    return failures;
+}

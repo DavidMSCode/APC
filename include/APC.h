@@ -23,7 +23,7 @@
  * @param tf 
  * @return EmphemerisManager 
  */
-EphemerisManager cacheEphemeris(double t0, double tf, const string center, const list<string> bodies, string frame);
+EphemerisManager cacheEphemeris(double t0, double tf, const string center = "MOON", const list<string> bodies = {"SUN","EARTH","MOON"},string frame = "J2000");
 
 /**
  * @brief Returns propagated orbit solution given initial conditions.
@@ -171,7 +171,6 @@ class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double
  * @return std::vector<class Orbit> Returns an orbit object that describes the satellite properties and the propagation solution
  */
 class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, std::vector<double> time_vec, double area, double reflectance, double mass, double drag_C, bool compute_drag=false, bool compute_SRP=false, bool compute_third_body=false, bool compute_hamiltonian=false, string center="Earth");
-
 
 /**
  * @brief Calculates 1000 orbits to benchmark parallel processing performance

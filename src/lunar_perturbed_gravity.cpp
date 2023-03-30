@@ -255,9 +255,9 @@
      }
    }
 
-   double grav = 0.0;
+   double grav = deg;
    //FIXME: Radial gravity is written for Earth model assuming that atmospheric drag perturbation dominates at low orbit
-   radial_gravity(Xo,tol,deg,&grav);
+  //  radial_gravity(Xo,tol,deg,&grav);
    GRGM1200b(state, &dstate[3], grav);
    Feval[0] = Feval[0] + pow(grav,2)/pow(deg,2);
 

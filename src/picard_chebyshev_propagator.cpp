@@ -40,6 +40,7 @@
 
 #include <math.h>
 
+#include <string>
 #include <vector>
 
 #include "picard_chebyshev_propagator.h"
@@ -51,6 +52,8 @@
 #include "c_functions.h"
 #include "Orbit.h"
 #include "Ephemeris.hpp"
+#include "SpiceUsr.h"
+using namespace std;
 
 std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double* v0, double t0, double t_final,double deg, double tol, double Period,
    std::vector<double> &tvec, std::vector<double> &t_orig, int seg, int N, int M, int* prep_HS, int coeff_size, int soln_size, int* total_seg,
@@ -122,16 +125,28 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     
 
     // KEPLERIAN WARM START
+    double et;              //Ephermeris time
+    string primary = orbit.GetPrimaryBody();         //The body of primary orbit
+    string InertFrame = orbit.GetInertFrame();
+    string InertCenter = orbit.GetInertCenter();
+    double p_state[6];
+    double lt;
+
     for (int cnt=0; cnt<=M; cnt++){
+      //Use F and G equations to get two body guess for inertial position and velocity  relative to the primary body
       tau[cnt]   = -cos(cnt*C_PI/M);
       times[cnt] = tau[cnt]*w2 + w1;
+      et = orbit.et(times[cnt]);
       FandG(z0,z,times[cnt]-t0,mu);
-      X[ID2(cnt+1,1,M+1)] = z[0];
-      X[ID2(cnt+1,2,M+1)] = z[1];
-      X[ID2(cnt+1,3,M+1)] = z[2];
-      V[ID2(cnt+1,1,M+1)] = z[3];
-      V[ID2(cnt+1,2,M+1)] = z[4];
-      V[ID2(cnt+1,3,M+1)] = z[5];
+      //GET STATE OF PRIMARY BODY RELATIVE TO INERTIAL FRAME CENTER
+      spkezr_c(primary.c_str(),et,InertFrame.c_str(),"LT+S",InertCenter.c_str(),p_state,&lt);
+      //Add two body to primary body state to get the inertial state for the satellite relative to the inertial frame center
+      X[ID2(cnt+1,1,M+1)] = z[0]+p_state[0];
+      X[ID2(cnt+1,2,M+1)] = z[1]+p_state[1];
+      X[ID2(cnt+1,3,M+1)] = z[2]+p_state[2];
+      V[ID2(cnt+1,1,M+1)] = z[3]+p_state[3];
+      V[ID2(cnt+1,2,M+1)] = z[4]+p_state[4];
+      V[ID2(cnt+1,3,M+1)] = z[5]+p_state[5];
     }
     // Warm Start
     std::vector<double> WSX((M+1)*3,0.0);
@@ -157,6 +172,19 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
 
     // PICARD ITERATION
     picard_iteration(r0,v0,X,V,times,N,M,deg,hot,tol,P1,P2,T1,T2,A,Feval,Alpha,Beta,orbit,ephem);
+    for (int cnt=0; cnt<=M; cnt++){
+      //GET STATE OF PRIMARY BODY RELATIVE TO INERTIAL FRAME CENTER
+      times[cnt] = tau[cnt]*w2 + w1;
+      et = orbit.et(times[cnt]);
+      spkezr_c(primary.c_str(),et,InertFrame.c_str(),"LT+S",InertCenter.c_str(),p_state,&lt);
+      //Add two body to primary body state to get the inertial state for the satellite relative to the primary body
+      X[ID2(cnt+1,1,M+1)] -= p_state[0];
+      X[ID2(cnt+1,2,M+1)] -= p_state[1];
+      X[ID2(cnt+1,3,M+1)] -= p_state[2];
+      V[ID2(cnt+1,1,M+1)] -= p_state[3];
+      V[ID2(cnt+1,2,M+1)] -= p_state[4];
+      V[ID2(cnt+1,3,M+1)] -= p_state[5];
+    }
     // Loop exit condition
     if (fabs(tf - t_final)/tf < 1e-12){
       loop = 1;

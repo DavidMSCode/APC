@@ -23,7 +23,6 @@
 #include "picard_error_feedback.h"
 #include "const.h"
 
-//FIXME: make error feedback for moon too
 
 void picard_error_feedback(double* X, double* del_X, double* del_a){
 
@@ -48,4 +47,28 @@ void picard_error_feedback(double* X, double* del_X, double* del_a){
   del_a[1] = J[0][1]*del_X[0] + J[1][1]*del_X[1] + J[2][1]*del_X[2];
   del_a[2] = J[0][2]*del_X[0] + J[1][2]*del_X[1] + J[2][2]*del_X[2];
 
+}
+
+void picard_error_feedback_GRGM1200b(double *X, double *del_X, double *del_a)
+{
+    double R3, R5;
+  R3 = pow(sqrt(X[0]*X[0] + X[1]*X[1] + X[2]*X[2]),3);
+  R5 = pow(sqrt(X[0]*X[0] + X[1]*X[1] + X[2]*X[2]),5);
+
+  double J[3][3] = {0.0};
+
+  J[0][0] = 3.0*C_MU_MOON*pow(X[0],2)/R5 - C_MU_MOON/R3;
+  J[0][1] = 3.0*C_MU_MOON*X[0]*X[1]/R5;
+  J[0][2] = 3.0*C_MU_MOON*X[0]*X[2]/R5;
+  J[1][0] = 3.0*C_MU_MOON*X[1]*X[0]/R5;
+  J[1][1] = 3.0*C_MU_MOON*pow(X[1],2)/R5 - C_MU_MOON/R3;
+  J[1][2] = 3.0*C_MU_MOON*X[1]*X[2]/R5;
+  J[2][0] = 3.0*C_MU_MOON*X[2]*X[0]/R5;
+  J[2][1] = 3.0*C_MU_MOON*X[2]*X[1]/R5;
+  J[2][2] = 3.0*C_MU_MOON*pow(X[2],2)/R5 - C_MU_MOON/R3;
+
+  // Acceleration Error Feedback
+  del_a[0] = J[0][0]*del_X[0] + J[1][0]*del_X[1] + J[2][0]*del_X[2];
+  del_a[1] = J[0][1]*del_X[0] + J[1][1]*del_X[1] + J[2][1]*del_X[2];
+  del_a[2] = J[0][2]*del_X[0] + J[1][2]*del_X[1] + J[2][2]*del_X[2];
 }

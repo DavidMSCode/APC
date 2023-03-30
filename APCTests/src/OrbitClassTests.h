@@ -10,4 +10,12 @@
  */
 int testValidPrimaries();
 
+int testInitOrbit();
+
+int testSetState();
+
+int testSetProperties();
+
+int testSetIntegrationTime();
+
 #endif

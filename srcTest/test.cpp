@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2023-03-10 18:18:15
+ * @ Modified time: 2023-03-24 18:34:04
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -23,13 +23,13 @@
 #include <Ephemeris.hpp>
 #include "matrix_loader.h"
 #include "flags.h"
-
+#include "EphemerisRotation.h"
 using namespace std;
 
 int main(){
   // MATRICES_LOADED=false;
   //satellite properties
-  double mass = 1000;                               //sat mass (kg)
+  double mass = 212;                               //sat mass (kg)
   double area = 10;                                 //sat wetted area (m^2)
   double reflectance = 1.5;                        //sat refelction absorption ratio
   double drag_C = 2.0;                              //sat coefficient of drag
@@ -37,7 +37,7 @@ int main(){
   bool compute_drag = false;                         //atmostpheric drag toggle
   bool compute_SRP = false;                          //Solar radiation pressure toggle
   bool compute_third_body = false;                   //Third body gravity toggle
-  bool compute_hamiltonian = false;                 //whether or not the hamiltonian should be compuited for the output
+  bool compute_hamiltonian = true;                 //whether or not the hamiltonian should be compuited for the output
   //Ephemeris
   string spk = "de440.bsp";
   string lsk = "naif0012.tls";
@@ -81,11 +81,12 @@ int main(){
   // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s
   // Nan Orbit
   //1000 km Lunar orbit
-  vector<double> r0 = {1838.,         0.,         0.};                  // Initial Position (km)
-  vector<double> v0 = {0.   , 0.74844211, 1.49688755}; // Initial Velocity (km/s)
+  vector<double> r0 = {-550.88475695,  460.26699639, 1652.48226511};                  // Initial Position (km)
+  vector<double> v0 = {0.57985191, -1.42445477,  0.58555784}; // Initial Velocity (km/s)
+  
   double T = 7690.61;                               //Orbital period (s)
-  double t0 = 0;                                              //initial time (s)
-  double tf = T;     
+  double t0 = 386553666.1856561;                                              //initial time (s)
+  double tf = t0+1*60*60;     
   double dt = 30;
   int steps = tf/dt+1;
   std::vector<double> time_vec;
@@ -100,14 +101,25 @@ int main(){
   }
 
 
-
-
   //Orbit orb = SinglePropagate(r0, v0, time_vec,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
-  Orbit orb2 = SinglePropagate(r0, v0, t0, tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body, compute_hamiltonian,"Moon");
-  vector<double> X = orb2.getPositionX();
-  vector<double> Y = orb2.getPositionY();
-  vector<double> Z = orb2.getPositionZ();
-
+  Orbit orbit("MOON","MOON_PA","J2000");
+  orbit.SetProperties(area,reflectance,mass,drag_C);
+  orbit.SetPosition0(r0);
+  orbit.SetVelocity0(v0);
+  orbit.SetIntegrationTime(t0,tf);
+  orbit.SetComputeThirdBody();
+  orbit.SetComputeSRP();
+  orbit.SetComputeHamiltonian();
+  //run propagation
+  orbit.SinglePropagate();
+  vector<double> X = orbit.getPositionX();
+  vector<double> Y = orbit.getPositionY();
+  vector<double> Z = orbit.getPositionZ();
+  vector<double> H = orbit.getHamiltonian();
+  vector<double> ts = orbit.getTimes();
+  std::vector<double> xI;
+  std::vector<double> vI;
+  double t = 3000;
   // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;

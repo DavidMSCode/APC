@@ -14,6 +14,7 @@ if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
     add_subdirectory(APCTests)
 endif ()
 #Compile Flags
+set(CMAKE_CXX_STANDARD 14)
 set_property(TARGET main APC  PROPERTY CXX_STANDARD 14) #sets C++ standard to c++14 (ignored on Windows)
 
 #[[choose runtime library (only Windows). CSPICE is statically linked with the release runtime flags /MT (libcmt.lib) (no debug)

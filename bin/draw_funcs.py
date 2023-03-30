@@ -41,13 +41,17 @@ def plot_circle(size,color='green',opacity=0.3,pos=[0,0,0],res=100):
 
 def traceOrbit(orbit,color):
     Xs = orbit.getPosition()
-    trace = go.Scatter3d(x=Xs[0],y=Xs[1],z=Xs[2],mode='lines',line=dict(color=color))
+    trace = go.Scatter3d(x=Xs[0][0:-2],y=Xs[1][0:-2],z=Xs[2][0:-2],mode='lines',line=dict(color=color))
+    return (trace)
+
+def traceEphem(ephem,color):
+    trace = go.Scatter3d(x=ephem[:,0],y=ephem[:,1],z=ephem[:,2],mode='lines',line=dict(color=color))
     return (trace)
 
 def plotTraces(traces,*args,**kwargs):
     if not isinstance(traces,list):
         traces = [traces]
-    traceEarth = plot_sphere(6378,res=30)
+    traceEarth = plot_sphere(1738,res=30)
     traces.append(traceEarth)
     fig = go.Figure(data=traces)
     fig.update_coloraxes(showscale=False)
@@ -65,6 +69,15 @@ def plotOrbit(orbit,color=nan,*args,**kwargs):
         colors = prop_cycle.by_key()['color']
         color=colors[0]
     trace = traceOrbit(orbit,color)
+    fig = plotTraces(trace,*args,**kwargs)
+    return fig
+
+def plotEphem(ephem,color=nan,*args,**kwargs):
+    if np.isnan(color):
+        prop_cycle = plt.rcParams['axes.prop_cycle']
+        colors = prop_cycle.by_key()['color']
+        color=colors[0]
+    trace = traceEphem(ephem,color)
     fig = plotTraces(trace,*args,**kwargs)
     return fig
 

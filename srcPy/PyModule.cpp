@@ -28,10 +28,11 @@ PYBIND11_MODULE(APC, m) {
       m.def("Linktest",&Linktest,"testing linking against cspice");
       m.def("GenSigma13",&GenSigma13,"Generate 13 perturbed variations of an orbit");
       m.def("ParallelPropagate",&ParallelPropagate,"Propagates multiple orbits in parallel");
-      m.def("SinglePropagate",static_cast<class Orbit (*)(std::vector<double>, std::vector<double>, double, double, double, double, double, double, bool, bool, bool, bool )>(&SinglePropagate),"Propagates a single orbit","r0"_a,"v0"_a,"t0"_a,"tf"_a,"area"_a,"reflectance"_a,"mass"_a,"Cd"_a,"compute_drag"_a=false,"compute_srp"_a=false,"compute_third_body"_a=false, "compute_hamiltonian"_a=false);
-      m.def("SinglePropagate",static_cast<class Orbit (*)(std::vector<double>, std::vector<double>, std::vector<double>, double, double, double, double, bool, bool, bool, bool) >(&SinglePropagate),"Propagates a single orbit with user specified time vector","r0"_a,"v0"_a,"time_vec"_a,"area"_a,"reflectance"_a,"mass"_a,"Cd"_a,"compute_drag"_a=false,"compute_srp"_a=false,"compute_third_body"_a=false, "compute_hamiltonian"_a=false);
+      m.def("SinglePropagate",static_cast<class Orbit (*)(std::vector<double>, std::vector<double>, double, double, double, double, double, double, bool, bool, bool, bool, std::string)>(&SinglePropagate),"Propagates a single orbit","r0"_a,"v0"_a,"t0"_a,"tf"_a,"area"_a,"reflectance"_a,"mass"_a,"Cd"_a,"compute_drag"_a=false,"compute_srp"_a=false,"compute_third_body"_a=false, "compute_hamiltonian"_a=false, "primary_body"_a="Earth");
+      // m.def("SinglePropagate",static_cast<class Orbit (*)(std::vector<double>, std::vector<double>, std::vector<double>, double, double, double, double, bool, bool, bool, bool, std::string) >(&SinglePropagate),"Propagates a single orbit with user specified time vector","r0"_a,"v0"_a,"time_vec"_a,"area"_a,"reflectance"_a,"mass"_a,"Cd"_a,"compute_drag"_a=false,"compute_srp"_a=false,"compute_third_body"_a=false, "compute_hamiltonian"_a=false);
       m.def("Benchmark1000",&Benchmark1000,"Returns the number of threads used and the time (s) to complete 1000 orbit propagations");
       py::class_<Orbit>(m, "Orbit")
+            .def(py::init<std::string, std::string, std::string &>())
             .def("getTimes", &Orbit::getTimes)
             .def("getPositionX", &Orbit::getPositionX)
             .def("getPositionY", &Orbit::getPositionY)
@@ -42,6 +43,15 @@ PYBIND11_MODULE(APC, m) {
             .def("getPosition", &Orbit::getPosition)
             .def("getVelocity", &Orbit::getVelocity)
             .def("getHamiltonian", &Orbit::getHamiltonian)
+            // .def("Orbit", &Orbit::Orbit(std::string, std::string, std::string))
+            .def("SetProperties", py::overload_cast<double, double, double, double>(&Orbit::SetProperties))
+            .def("SetPosition0",&Orbit::SetPosition0)
+            .def("SetVelocity0",&Orbit::SetVelocity0)
+            .def("SetIntegrationTime",py::overload_cast<double, double>(&Orbit::SetIntegrationTime))
+            .def("SetComputeThirdBody",&Orbit::SetComputeThirdBody)
+            .def("SetComputeSRP",&Orbit::SetComputeSRP)
+            .def("SetComputeHamiltonian",&Orbit::SetComputeHamiltonian)
+            .def("SinglePropagate",&Orbit::SinglePropagate)
             .def_readwrite("CC",&Orbit::CC)
             .def_readwrite("T",&Orbit::T);
       py::class_<ChebyshevCoefficients>(m, "ChebyshevCoefficients")

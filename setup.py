@@ -30,7 +30,7 @@ if platform.system() == 'Darwin':
     cpp_extra_args.append('-mmacosx-version-min=10.15')
     cpp_extra_args.append("-Xpreprocessor") # Enable OpenMP support on Clang++ for newer versions of Mac OS
     cpp_extra_args.append("-fopenmp")   #enable openmp
-    cpp_extra_args.append('-std=c++11') #c++11 standard
+    cpp_extra_args.append('-std=c++14') #c++11 standard
     link_args.append('-mmacosx-version-min=10.15')
     link_args.append('-lomp')  # use llvm OpenMP runtime
 

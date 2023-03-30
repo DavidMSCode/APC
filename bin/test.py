@@ -30,13 +30,14 @@ reflectance = 1.5;
 Cd = 2.0;
 # %%
 # #run APC code in single orbit mode with and without perturbations
-output = APC.SinglePropagate(r0,v0,t0,tf,area,reflectance,mass,Cd,compute_hamiltonian=True,compute_drag=False)
-# #use a user specified time vec
-tstep = T/12
-#time vec with higher density as t approaches tf
-time_vec = np.flip(tf-np.geomspace(1,tf,32))
-output2 = APC.SinglePropagate(r0,v0,time_vec,area,reflectance,mass,Cd,compute_hamiltonian=True)
+orbit = APC.Orbit("MOON","MOON_PA","J2000")
 
+# #%%
+# # #use a user specified time vec
+# tstep = T/12
+# #time vec with higher density as t approaches tf
+# time_vec = np.flip(tf-np.geomspace(1,tf,32))
+# output = APC.SinglePropagate(r0,v0,time_vec,area,reflectance,mass,Cd,compute_hamiltonian=True)
 
 #Plotting
 l1 = "default 30s timestep"

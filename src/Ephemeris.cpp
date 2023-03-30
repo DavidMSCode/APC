@@ -153,6 +153,7 @@ void ChebyshevEphemeris::getState(double* state, double epoch)
     {
         T[ID2(1,i+1,1)] = cos(i*acos(tau));
     }
+    
 
     // Compute state
     std::vector<double> state_v = matmul(T, coefficients[idx], 1, N+1, 6, 1, N+1);

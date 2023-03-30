@@ -29,11 +29,14 @@
 #include "adaptive_picard_chebyshev.h"
 #include "c_functions.h"
 #include "EGM2008.h"
+#include "GRGM1200b.h"
 #include "Orbit.h"
 #include "Ephemeris.hpp"
 #include "flags.h"
 
-EphemerisManager cacheEphemeris(double t0, double tf, const string center = "Earth", const list<string> bodies = {"SUN","MOON"},string frame = "J2000"){
+using namespace std;
+
+EphemerisManager cacheEphemeris(double t0, double tf, const string center, const list<string> bodies,string frame){
   //Ephemeris
   //FIXME: These strings should be user modifiable
   string spk = "de440.bsp";               //Ephemeris file for sun earth and moon
@@ -80,20 +83,27 @@ void printStateList(std::vector<SatState> statelist){
 }
 
 std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager ephem){
+  //Load spice kernels
+  string spkFile = "de440.bsp";
+  string lskFile = "naif0012.tls";
+  furnsh_c(spkFile.c_str());
+  furnsh_c(lskFile.c_str());
+  furnsh_c("moon_de440_220930.tf");
+  furnsh_c("moon_pa_de440_200625.bpc");
+  furnsh_c("pck00010.tpc");
+  
   //Convert vectors to array since pybind wants vectors but the functions are coded for arrays
   double* r0 = &r[0];
   double* v0 = &v[0];
   double dt    = 30.0;                             // Soution Output Time Interval (s)
-  double deg   = 70.0;                             // Gravity Degree (max 100)
+  double deg   = 120;                             // Gravity Degree (max 100)
   double tol   = 1.0e-15;                          // Tolerance
   // Initialize Output Variables
   int soln_size = int(ceil((tf/dt)))+1;
   if (soln_size == 1){
     soln_size = 2;
-  }
+  } 
   std::vector<double> Soln(soln_size*6,0.0);
-  //Soln = static_cast<double*>(calloc(soln_size*6,sizeof(double)));       // Position (km) & Velocity (km/s)
-
   double Feval[2] = {0.0};
   std::vector<std::vector<double> > states;
   states = adaptive_picard_chebyshev(r0,v0,t0,tf,dt,deg,tol,soln_size,Feval,Soln,orbit,ephem);
@@ -120,7 +130,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
     //Compute Hamiltonian
     if(orbit.Compute_Hamiltonian)
     {
-      jacobiIntegral(t_curr,state,&H,deg);
+      jacobiIntegral_GRGM1200b(t_curr,state,&H,deg,orbit);
       if (i == 1){
         H0 = H;
       }
@@ -144,6 +154,12 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
     Solution.push_back(States[i]);
   }
   Solution.push_back(Hs);
+
+  unload_c(spkFile.c_str());
+  unload_c(lskFile.c_str());
+  unload_c("moon_de440_220930.tf");
+  unload_c("moon_pa_de440_200625.bpc");
+  unload_c("pck00010.tpc");
   //free(Soln);
   return Solution;
 }
@@ -266,22 +282,22 @@ return orbits;
 
 class Orbit SinglePropagate(std::vector<double> r, std::vector<double> v, double t0, double tf, double area, double reflectance, double mass, double drag_C, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian, string center){
   EphemerisManager ephem = cacheEphemeris(t0,tf+3600);
+  //Initialize orbit object
   Orbit orbit(area,reflectance,mass,drag_C,compute_drag,compute_SRP,compute_third_body,compute_hamiltonian,1,center);
- 
   double dt  = 30;
   double len = int(ceil(tf/dt));
-  std::vector<double> t_vec(len+1,0.0);
-  t_vec[0] = t0;
-  for (int ii=1; ii<=len; ii++){
-    double time = t_vec[ii-1] + dt;
-    if(time>tf)
-    {
-      time = tf;
-    }
-    t_vec[ii] = time;
+  // std::vector<double> t_vec(len+1,0.0);
+  // t_vec[0] = t0;
+  // for (int ii=1; ii<=len; ii++){
+  //   double time = t_vec[ii-1] + dt;
+  //   if(time>tf)
+  //   {
+  //     time = tf;
+  //   }
+  //   t_vec[ii] = time;
 
-  }
-  orbit.SetTimeVec(t_vec);
+  // }
+  // orbit.SetTimeVec(t_vec);
   orbit = PropagateOrbit(r, v,  t0,  tf,  orbit, ephem);
   return orbit;
 }

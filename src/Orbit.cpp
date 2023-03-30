@@ -15,21 +15,31 @@
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
+#include <math.h>
 #include "Orbit.h"
 #include "const.h"
+
+#include "SpiceUsr.h"
+#include "Ephemeris.hpp"
+#include "APC.h"
 
 using namespace std;
 //Orbit Constructors
 Orbit::Orbit(){
 //Empty Orbit Constructor
 }
-Orbit::Orbit(string primary, string frame){
+Orbit::Orbit(string primary, string IOframe, string epoch){
     //Initialize orbit with primary body and input data frame
     if(InSet(primary,C_VALID_PRIMARIES)){
         _primary = primary;
         _validPrimary = true;
         SetMu(_primary);
+        _Req = GetPrimaryRadius();
     }
+    _IOFrame = IOframe;
+    _InertFrame = GetInertFrame();
+    _FixedFrame = GetFixedFrame();
+    _epoch = epoch;
 }
 Orbit::Orbit(std::vector<std::vector<double > > Solution){
     SetSolution(Solution);
@@ -85,6 +95,40 @@ double Orbit::GetPrimaryRadius()
     return Req;
 }
 
+string Orbit::GetInertFrame()
+{
+    string InertFrame;
+    if (InSet(_IOFrame,{"MOON_PA","J2000","EME2000"})){
+        InertFrame = "J2000";
+    }
+    return InertFrame;
+}
+
+string Orbit::GetFixedFrame()
+{
+    string FixedFrame;
+    if (InSet(_primary,{"MOON"})){
+        FixedFrame = "MOON_PA";
+    }
+    else if(InSet(_primary,{"EARTH"})){
+        //FIXME:THE IAU EARTH frame is not precies enough.
+        FixedFrame = "IAU_EARTH";
+    }
+    return FixedFrame;
+}
+
+string Orbit::GetInertCenter()
+{
+    string InertCenter;
+    if (InSet(_primary,{"MOON"})){
+        InertCenter = "MOON";
+    }
+    else if (InSet(_primary,{"EARTH"})){
+        InertCenter = "EARTH";
+    }
+    return InertCenter;
+}
+
 //Setter Functions
 void Orbit::SetSolution(std::vector<std::vector<double > > Solution){
     //store the solution
@@ -131,6 +175,28 @@ void Orbit::SetCC(std::vector<double> A, std::vector<double> B, std::vector<doub
     CC.total_segs = total_segs;
 }
 
+void Orbit::SetPosition0(vector<double> r0)
+{
+    //set initial position and the position part of initial state
+    _In_r0 = r0;
+    copy(r0.begin(),r0.end(),_In_s0.begin());
+}
+
+void Orbit::SetVelocity0(vector<double> v0)
+{
+    //set initial velocity and the velocity part of initial state
+    _In_v0 = v0;
+    copy(v0.begin(),v0.end(),_In_s0.begin()+3);
+}
+
+void Orbit::SetState0(vector<double> s0)
+{   
+    copy(s0.begin(),s0.begin()+3,_In_r0.begin());
+    copy(s0.begin()+3,s0.end(),_In_v0.begin());
+    //set state
+    _In_s0 = s0;
+}
+
 void Orbit::SetMu(string primary){
     //lower primary name case
     std::transform(primary.begin(),primary.end(),primary.begin(),
@@ -166,6 +232,42 @@ bool Orbit::InSet(string item, vector<string> validset){
     return inSet;
 }
 
+void Orbit::SetIntegrationTime(double t0, double tf)
+{
+    _Ephemeris_t0 = t0;
+    _Ephemeris_tf = tf;
+    _Integrator_t0 = 0;
+    _Integrator_tf = tf-t0;
+}
+
+void Orbit::SetIntegrationTime(double tf)
+{
+    //If only a final time is given. Assume the start time is at 0 s in J2000
+    SetIntegrationTime(0,tf);
+}
+
+void Orbit::SetIntegrationTime(string date0, string datef)
+{   
+    //convert date strings to char array for SPICE
+    const char *char_date0 = date0.c_str();
+    const char *char_datef = datef.c_str();
+    double t0;
+    double tf;
+    //convert date to seconds in J2000;
+    str2et_c(char_date0,&t0);
+    str2et_c(char_datef,&tf);
+    //set times with the set function that takes doubles.
+    SetIntegrationTime(t0,tf);
+}
+
+void Orbit::SetProperties(double area, double reflectance, double mass, double Cd)
+{
+    satproperties._Area = area;
+    satproperties._Reflectance = reflectance;
+    satproperties._Mass = mass;
+    satproperties._Cd = Cd;
+}
+
 bool Orbit::HasAtmosphere()
 {
     //List of bodies with atmospheric models in APC
@@ -177,4 +279,29 @@ bool Orbit::HasAtmosphere()
         hasAtmosphere = true;
     }
     return hasAtmosphere;
+}
+
+void Orbit::SinglePropagate(){
+    double t0 = _Integrator_t0;
+    double tf = _Integrator_tf;
+    //FIXME: change to the inertial frame r0 and v0
+    vector<double> r = _In_r0;
+    vector<double> v = _In_v0;
+    EphemerisManager ephem = cacheEphemeris(t0,tf+3600);
+    //Initialize orbit object
+    double dt  = 30;
+    double len = int(ceil(tf/dt));
+    // std::vector<double> t_vec(len+1,0.0);
+    // t_vec[0] = t0;
+    // for (int ii=1; ii<=len; ii++){
+    // double time = t_vec[ii-1] + dt;
+    // if(time>tf)
+    // {
+    //     time = tf;
+    // }
+    // t_vec[ii] = time;
+
+    // }
+    // SetTimeVec(t_vec);
+    PropagateOrbit(r, v,  t0,  tf,  *this, ephem);
 }

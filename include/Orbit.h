@@ -52,27 +52,50 @@ class Orbit
             bool _validTimes = false;
             bool _validDrag = false;
             bool _validSRP = false;
+            double _Ephemeris_t0;                       //ephemeris start time in chosen epoch.
+            double _Ephemeris_tf;
+            double _Integrator_t0;
+            double _Integrator_tf;
+            string _Epochname = "J2000";                //name of Epoch. Defaults to J2000.
+            string _IOFrame;
+            string _InertFrame;
+            string _FixedFrame;
+            vector<double> _In_r0 = {0,0,0};
+            vector<double> _In_v0 = {0,0,0};
+            vector<double> _In_s0 = {0,0,0,0,0,0};
     public:
-        bool Compute_Drag;
-        bool Compute_SRP;
-        bool Compute_Third_Body;
-        bool Compute_Hamiltonian;
-        bool suborbital;
+        bool Compute_Drag = false;
+        bool Compute_SRP = false;
+        bool Compute_Third_Body = false;
+        bool Compute_Hamiltonian = false;
+        bool suborbital = false;
         int ID;
 
         std::vector<double> T;              //user defined time vector
         bool USER_TIME = false;             //flag if user time is used
         //Constructors
         Orbit();
-        Orbit(string primary, string frame);
+        Orbit(string primary, string frame, string epoch = "J2000");
+        //Legacy constructors for compatability with old code
         Orbit(std::vector<std::vector<double>> Solution);
         Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian, int id);
         Orbit(double area, double reflectivity, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian, int id, string primary);
-        //Setters
+        //Setters for defining orbit params
+        void SetPosition0(vector<double> r0);
+        void SetVelocity0(vector<double> v0);
+        void SetState0(vector<double> s0);
+        void SetIntegrationTime(double t0, double tf);
+        void SetIntegrationTime(double tf);
+        void SetIntegrationTime(string date0, string datef);
+        void SetProperties(double area, double reflectivity, double mass, double Cd);
+        //Setters for utility
         void SetSolution(std::vector<std::vector<double > > Solution);
         void SetProperties(double area, double reflectance, double mass, double Cd, bool compute_drag, bool compute_SRP, bool compute_third_body, bool compute_hamiltonian, int id, string primary = "Earth");
         void SetSubOrbital(); 
         void SetTimeVec(std::vector<double> time_vec);
+        void SetComputeThirdBody(bool compute_third_body = true){Compute_Third_Body=compute_third_body;};
+        void SetComputeSRP(bool compute_SRP=true){Compute_SRP=compute_SRP;};
+        void SetComputeHamiltonian(bool compute_hamiltonian=true){Compute_Hamiltonian=compute_hamiltonian;};
         void SetCC(std::vector<double> A, std::vector<double> B, std::vector<double> W1, std::vector<double> W2, int N, int coeff_size, std::vector<double> seg_times, double TF, double T0,int total_segs);
         /**
          * @brief Sets gravitational parameter for two body gravity based on the primary body name
@@ -100,6 +123,9 @@ class Orbit
         std::vector<double> getVelocityY(){return Soln[5];};
         std::vector<double> getVelocityZ(){return Soln[6];};
         std::vector<double> getHamiltonian(){return Soln[7];};
+        std::vector<double> getPosition0(){return _In_r0;};
+        std::vector<double> getVelocity0(){return _In_v0;};
+        std::vector<double> getState0(){return _In_s0;};
         /**
          * @brief Get the Position of the satellite at the interpolated timesteps
          * 
@@ -154,6 +180,20 @@ class Orbit
          * @return string 
          */
         string GetPrimaryBody(){return _primary;};
+
+        /**
+         * @brief returns the frame name used for I/O
+         * 
+         * @return string
+         */
+        string GetIOFrame(){return _IOFrame;};
+
+        /**
+         * @brief Get the Epoch name
+         * 
+         * @return string 
+         */
+        string GetEpoch(){return _epoch;};
         /**
          * @brief Get the Primary body radius in km
          * 
@@ -161,12 +201,37 @@ class Orbit
          */
         double GetPrimaryRadius();
         /**
+         * @brief Get the Inert Frame name by looking in valid sets of
+         * 
+         * @return string 
+         */
+        string GetInertFrame();
+        /**
+         * @brief Get the Fixed Body Frame
+         * 
+         * @return string 
+         */
+        string GetFixedFrame();
+        /**
+         * @brief Get the Inert Center object
+         * 
+         * @return string 
+         */
+        string GetInertCenter();
+         /**
          * @brief 
          * 
-         * @return true 
-         * @return false 
+         * @return true if the primary target is valid for APC 
          */
         bool ValidPrimary(){return _validPrimary;};
+        /**
+         * @brief 
+         * 
+         * @param t 
+         * @return return time in the ephemeris time frame 
+         */
+        double et(double t){return t+_Ephemeris_t0;};
+
         //Internal properties struct declaration
         /**
          * @brief Struct containing Mass, Drag Coeficicent, Drag Area and Relflectance of the satellite
@@ -178,7 +243,8 @@ class Orbit
          * 
          */
         struct ChebyshevCoefficients CC;
-        
+    
+        void SinglePropagate();
 };
 
 

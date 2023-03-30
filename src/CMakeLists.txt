@@ -1,5 +1,7 @@
 include_directories(${APC_SOURCE_DIR}/include ${APC_SOURCE_DIR}/extern/cspice/include) #add header file locations for APC and CSPICE
 find_package(OpenMP REQUIRED)
+find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+ 
 
 # Source files must be listed here to be compiled into the APC library
 add_library(APC 
@@ -12,6 +14,7 @@ adaptive_picard_chebyshev.cpp
 c_functions.cpp
 chebyshev.cpp
 Ephemeris.cpp
+EphemerisRotation.cpp
 clenshaw_curtis_ivpII.cpp
 ecef2eci.cpp
 eci2ecef.cpp
@@ -42,3 +45,4 @@ else ()
     target_link_libraries(APC ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.a) #link cspice library
 endif()
 target_link_libraries(APC OpenMP::OpenMP_CXX)   #link openmp library
+target_link_libraries (APC Eigen3::Eigen)

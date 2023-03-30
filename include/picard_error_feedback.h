@@ -17,5 +17,5 @@
  * @param del_a  The acceleration correction
  */
 void picard_error_feedback(double* X, double* del_X, double* del_a);
-
+void picard_error_feedback_GRGM1200b(double* X, double* del_X, double* del_a);
 #endif

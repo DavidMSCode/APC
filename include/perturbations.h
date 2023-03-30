@@ -37,6 +37,17 @@ void Perturbed_SRP(double time, double* X, Orbit &orbit, EphemerisManager &ephem
 void Perturbed_Drag(double* X, double* V, Orbit &orbit, double* drag_aECEF);
 
 /**
+ * @brief Returns the perturbed third body acceleration due to the Earth and the Sun
+ * 
+ * @param time time since epoch (s)
+ * @param X position in ECI coordinates (km)
+ * @param orbit orbital object which contains necessary parameters
+ * @param ephem ephemeris caching manager that returns the Sun's and the Moon's positions
+ * @param third_body_aECI the third body acceleration in ECI (km/s^2)
+ */
+void Perturbed_three_body_moon(double time, double* X, Orbit &orbit, EphemerisManager &ephem, double* third_body_aECI);
+
+/**
  * @brief Returns the perturbed third body acceleration due to the Moon and the Sun
  * 
  * @param time time since epoch (s)
