@@ -13,6 +13,7 @@ Orbit.cpp
 adaptive_picard_chebyshev.cpp
 c_functions.cpp
 chebyshev.cpp
+Constellation.cpp
 Ephemeris.cpp
 EphemerisRotation.cpp
 clenshaw_curtis_ivpII.cpp
@@ -23,7 +24,6 @@ Gravity.cpp
 GRGM1200b.cc
 GRGM1200b.cpp
 interpolate.cpp
-linktest.cpp
 lsq_chebyshev_fit.cpp
 lunar_perturbed_gravity.cpp
 matrix_loader.cpp

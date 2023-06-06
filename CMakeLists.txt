@@ -1,4 +1,4 @@
-#documentation tutorial from https://github.com/smrfeld/cpp_doxygen_sphinx/blob/master/README_doxygen.md
+#documentation tutorial from https://github.com/smrfeld/cpp_doxygen_sphinx/blob/master/README_doxygen.md  
 
 cmake_minimum_required(VERSION 3.13.0)
 # set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE INTERNAL "" FORCE)
@@ -6,7 +6,6 @@ cmake_policy(SET CMP0091 NEW) #allow setting MSVC runtime library instead of usi
 project(APC VERSION 0.1.0)
 
 add_subdirectory(src)
-add_subdirectory(srcTest)
 add_subdirectory(srcMB)
 #Test code
 include(CTest)
@@ -15,16 +14,12 @@ if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
 endif ()
 #Compile Flags
 set(CMAKE_CXX_STANDARD 14)
-set_property(TARGET main APC  PROPERTY CXX_STANDARD 14) #sets C++ standard to c++14 (ignored on Windows)
+set_property(TARGET TestMain APC  PROPERTY CXX_STANDARD 14) #sets C++ standard to c++14 (ignored on Windows)
 
 #[[choose runtime library (only Windows). CSPICE is statically linked with the release runtime flags /MT (libcmt.lib) (no debug)
-When compiling for debug on Windows LNK4098 warning will occur but it will still be possible to run the resulting code.]]
-set_property(TARGET APC main MatrixBuilder PROPERTY
+When compiling for debug on Windows LNK4098 warning will occur but it will still be possible to run the resulting binary.]]
+set_property(TARGET APC TestMain MatrixBuilder PROPERTY
   MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-
-
-
-
 enable_testing()
 
 
