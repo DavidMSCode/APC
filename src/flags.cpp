@@ -12,3 +12,4 @@
 #include "flags.h"
 bool g_MATRICES_LOADED = false;        //Tells APC whether the picard iteration matrices have already been loaded
 bool g_DEBUG_MESSAGES = true;
+bool g_KERNELS_LOADED = false;

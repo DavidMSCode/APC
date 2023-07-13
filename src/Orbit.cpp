@@ -22,6 +22,7 @@
 #include "SpiceUsr.h"
 #include "Ephemeris.hpp"
 #include "APC.h"
+#include "flags.h"
 
 using namespace std;
 //Orbit Constructors
@@ -284,7 +285,6 @@ bool Orbit::HasAtmosphere()
 void Orbit::SinglePropagate(){
     double t0 = _Integrator_t0;
     double tf = _Integrator_tf;
-    //FIXME: change to the inertial frame r0 and v0
     vector<double> r = _In_r0;
     vector<double> v = _In_v0;
     EphemerisManager ephem = cacheEphemeris(t0,tf+3600);
@@ -304,4 +304,33 @@ void Orbit::SinglePropagate(){
     // }
     // SetTimeVec(t_vec);
     PropagateOrbit(r, v,  t0,  tf,  *this, ephem);
+}
+
+void Orbit::PrintConfig()
+{
+    bool Kernels_were_loaded = g_KERNELS_LOADED;
+    LoadKernels();
+    //Print Header
+    cout<<"===Orbit Information Start==="<<endl;
+    //Print pimary body and frame
+    cout<<"Primary Body: "<<GetPrimaryBody()<<endl;
+    cout<<"Fixed Frame: "<<GetFixedFrame()<<endl;
+    //Print Integration start and end time and length
+    ConstSpiceChar* format = "C";
+    SpiceInt prec = 0;
+    SpiceInt utclen = 21;
+    SpiceChar start_date[utclen];
+    SpiceChar end_date[utclen];
+    et2utc_c(_Ephemeris_t0, format, prec, utclen, start_date);
+    et2utc_c(_Ephemeris_tf, format, prec, utclen, end_date);
+    cout<<"Start Time: "<<start_date<<endl;
+    cout<<"End Time: "<<end_date<<endl;
+    cout<<"Propagation Time: "<<_Ephemeris_tf-_Ephemeris_t0<< " (s)"<<endl;
+
+    cout<<"===Orbit Information End==="<<endl;
+
+    //Unload kernels only if kernels were not loaded before this method was run
+    if(not Kernels_were_loaded){
+        UnloadKernels();
+    }
 }

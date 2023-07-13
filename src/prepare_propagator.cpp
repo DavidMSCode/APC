@@ -22,7 +22,7 @@
 *    tvec    -- Segment start and end times (s)
 *    t_orig  -- Segment start and end times for first segment (s)
 *    P1      -- First integration operator
-*    P2      -- Second integrationi operator
+*    P2      -- Second integration operator
 *    T1      -- Chebyshev velocity matrix
 *    T2      -- Chebyshev position matrix
 *    A       -- Least squares operator
@@ -46,12 +46,30 @@
 #include "flags.h"
 #include "Orbit.h"
 
+using namespace std;
 
 
-void prepare_propagator(double* r0, double* v0, double t0, double t_final, double dt, double tp, double tol,
-  int N, int M, int seg, int* prep_HS, std::vector<double> &t_orig, std::vector<double> &tvec,
-  std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, std::vector<double> &Ta, Orbit &orbit){
+void prepare_propagator(double tol, int* prep_HS, Orbit &orbit){
+  //Initialize arrays
+  int N  = orbit.N;
+  int M = orbit.N;                // # sample points = polynomial degree
+  vector<double> T2((M+1)*(N+1),0.0);   // [(M+1)x(N+1)]
+  vector<double> P2((N+1)*N,0.0);       // [(N+1)xN]
+  vector<double> T1((M+1)*N,0.0);       // [(M+1)xN]
+  vector<double> P1(N*(N-1),0.0);       // [Nx(N-1)]
+  vector<double> Ta((M+1)*(N-1),0.0);   // [(M+1)x(N-1)]
+  vector<double> A((N-1)*(M+1),0.0);    // [(N-1)x(M+1)]
+  vector<double> t_orig(orbit.seg+1,0.0);
+  vector<double> tvec(orbit.seg+1,0.0);
 
+  //Get values from orbit class
+  int seg = orbit.seg;
+  double* r0 = &orbit._In_r0[0];
+  double* v0 = &orbit._In_v0[0];
+  double t0 = orbit._Integrator_t0;
+  double t_final = orbit._Integrator_tf;
+  double dt = orbit._dt;
+  double tp = orbit.tp;
   // Compute Keplerian Orbit Period
   double a, e, Period, n;
   double elm[10] = {0.0};
@@ -167,4 +185,12 @@ void prepare_propagator(double* r0, double* v0, double t0, double t_final, doubl
     }
   }
 //std::cout << "finished loading matrices";
+orbit.T2 = T2;   // [(M+1)x(N+1)]
+orbit.P2 = P2;       // [(N+1)xN]
+orbit.T1 = T1;       // [(M+1)xN]
+orbit.P1 = P1;       // [Nx(N-1)]
+orbit.Ta = Ta;   // [(M+1)x(N-1)]
+orbit.A = A;    // [(N-1)x(M+1)]
+orbit.t_orig = t_orig;
+orbit.tvec = tvec;
 }

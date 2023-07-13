@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2023-03-24 18:34:04
+ * @ Modified time: 2023-07-06 13:36:09
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -110,6 +110,7 @@ int main(){
   orbit.SetComputeThirdBody();
   orbit.SetComputeSRP();
   orbit.SetComputeHamiltonian();
+  orbit.PrintConfig();
   //run propagation
   orbit.SinglePropagate();
   vector<double> X = orbit.getPositionX();

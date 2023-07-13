@@ -23,4 +23,9 @@ Constellation::Constellation()
 Constellation::Constellation(vector<Orbit> Orbit_list)
 {
     _Orbit_List = Orbit_list;
+    //TODO: Iterate through orbit list and ensure each orbit is using the same values as the overall constellation
+}
+
+void Constellation::SharedPropagate(){
+
 }

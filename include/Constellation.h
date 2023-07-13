@@ -1,9 +1,9 @@
 /**
  * @file Constellation.h
  * @author David Stanley (davidms4@illinois.edu)
- * @brief 
- * @version 0.1
- * @date 2023-04-04
+ * @ Modified by: Your name
+ * @ Modified time: 2023-07-06 12:49:44
+ * @date 2023-03-10
  * 
  * @copyright Copyright (c) 2023
  * 
@@ -21,11 +21,18 @@ using namespace std;
 class Constellation: public Orbit
 {
     private:
-        vector<Orbit> _Orbit_List;  //List of all orbit objects in constellation
+
                 
     public:
+
+        vector<Orbit> _Orbit_List;  //List of all orbit objects in constellation
+
+        //Constructors
         Constellation();
         Constellation(vector<Orbit> Orbit_List);
+        //Methods
+        void SharedPropagate();
+        
 };
 
 #endif

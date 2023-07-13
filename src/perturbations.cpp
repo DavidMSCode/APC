@@ -49,7 +49,7 @@ int LastFirstSearch(double *p, int length_t, double key)
 
 double atmospheric_density(double alt)
 {
-    // Returns Atmospheric density  utilizing Vallado's exponential atmospheric model given an altitude above sea-level
+    // Returns Atmospheric density utilizing Vallado's exponential atmospheric model given an altitude above sea-level
     double density_vector[28] = {
         1.225,
         3.899e-2,

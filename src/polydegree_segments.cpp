@@ -43,9 +43,15 @@
 #include "lsq_chebyshev_fit.h"
 #include "matrix_loader.h"
 #include "Orbit.h"
-
+using namespace std;
 //FIXME: remove redundant input parameters, pass and store orbital properties with orbit class
-void polydegree_segments(double* r0,double* v0, Orbit &orbit, double deg, double tol, double* Feval, int* seg, int* degree, double* tp, double* Period){
+void polydegree_segments(Orbit &orbit, double deg, double tol, double* Feval){
+  double* r0 = &orbit._In_r0[0];    //get input states as pointers to start of vector (acts like array)
+  double* v0 = &orbit._In_v0[0];
+  double *Period = &orbit.Period;
+  int *seg = &orbit.seg;
+  int *degree = &orbit.N;
+  double *tp = &orbit.tp;
   //Get gravitational parameter for primary body
   const double mu = orbit.GetPrimaryGravitationalParameter();
   // Tolerances

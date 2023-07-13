@@ -49,7 +49,8 @@ EphemerisManager cacheEphemeris(double t0, double tf, const string center = "MOO
  * @param compute_third_body Boolean to toggle third body perturbation computation on or off
  * @return std::vector<std::vector<double> > The solutions stored in a vector of vectors {t,x,y,z,u,v,w,H}
  */
-std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager ephem);
+void UnloadKernels();
+std::vector<std::vector<double>> PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager ephem);
 
 /**
  * @brief Returns propagated orbit solution as an Orbit object given initial conditions.
@@ -102,6 +103,8 @@ std::vector<SatState> GenSigma13(std::vector<double> r, std::vector<double> v, d
  * @param statelist A vector contatining satellite states
  */
 void printStateList(std::vector<SatState> statelist);
+
+void LoadKernels();
 
 /**
  * @brief Writes a satellite state to stdout

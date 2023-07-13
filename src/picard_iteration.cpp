@@ -53,8 +53,8 @@
 #include "Ephemeris.hpp"
 #include "EphemerisRotation.h"
 
-void picard_iteration(double *Xint, double *Vint, std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, int N, int M, double deg, int hot, double tol,
-                      std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, double *Feval, std::vector<double> &Alpha, std::vector<double> &Beta, Orbit &orbit, EphemerisManager &ephem)
+void picard_iteration(double *Xint, double *Vint, std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, double deg, int hot, double tol,
+                      double *Feval, Orbit &orbit, EphemerisManager &ephem)
 {
 
   // Initialization
@@ -92,7 +92,7 @@ void picard_iteration(double *Xint, double *Vint, std::vector<double> &X, std::v
   int itr, MaxIt;
   double err, w2;
   itr = 0;
-  MaxIt = 30;
+  MaxIt = 300;
   err = 10.0;
   w2 = (times[M] - times[0]) / 2.0;
 
@@ -120,7 +120,6 @@ void picard_iteration(double *Xint, double *Vint, std::vector<double> &X, std::v
       //   }
       // }
       // Convert from ECI to ECEF
-      // eci2ecef(times[i - 1], xI, vI, xPrimaryFixed, vPrimaryFixed);
       InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
 
       // Compute Variable Fidelity Gravity
@@ -135,7 +134,6 @@ void picard_iteration(double *Xint, double *Vint, std::vector<double> &X, std::v
       }
 
       // Convert from ECEF to ECI
-      // ecef2eci(times[i - 1], aPrimaryFixed, aI);
       BodyFixedAccelerationToInertial(aPrimaryFixed,aI,times[i-1],orbit);
       // calculate SRP and Third Body
       Perturbed_SRP(times[i - 1], xI, orbit, ephem, SRP_aI);
@@ -155,8 +153,8 @@ void picard_iteration(double *Xint, double *Vint, std::vector<double> &X, std::v
     // Velocity
     std::vector<double> tmp1;
     std::vector<double> tmp2;
-    tmp1 = matmul(A, G, N - 1, M + 1, 3, N - 1, M + 1);
-    tmp2 = matmul(P1, tmp1, N, N - 1, 3, N, N - 1);
+    tmp1 = matmul(orbit.A, G, N - 1, M + 1, 3, N - 1, M + 1);
+    tmp2 = matmul(orbit.P1, tmp1, N, N - 1, 3, N, N - 1);
     for (int i = 1; i <= N; i++)
     {
       for (int j = 1; j <= 3; j++)
@@ -168,11 +166,11 @@ void picard_iteration(double *Xint, double *Vint, std::vector<double> &X, std::v
         }
       }
     }
-    Vorig = matmul(T1, beta, M + 1, N, 3, M + 1, N);
+    Vorig = matmul(orbit.T1, beta, M + 1, N, 3, M + 1, N);
 
     // Position
     std::vector<double> tmp3;
-    tmp3 = matmul(P2, beta, N + 1, N, 3, N + 1, N);
+    tmp3 = matmul(orbit.P2, beta, N + 1, N, 3, N + 1, N);
     for (int i = 1; i <= N + 1; i++)
     {
       for (int j = 1; j <= 3; j++)
@@ -184,7 +182,7 @@ void picard_iteration(double *Xint, double *Vint, std::vector<double> &X, std::v
         }
       }
     }
-    Xorig = matmul(T2, alpha, M + 1, N + 1, 3, M + 1, N + 1);
+    Xorig = matmul(orbit.T2, alpha, M + 1, N + 1, 3, M + 1, N + 1);
 
     for (int i = 1; i <= M + 1; i++)
     {
@@ -216,8 +214,8 @@ void picard_iteration(double *Xint, double *Vint, std::vector<double> &X, std::v
     // Linear Error Correction Velocity Coefficients
     std::vector<double> tmp4;
     std::vector<double> tmp5;
-    tmp4 = matmul(A, del_a, N - 1, M + 1, 3, N - 1, M + 1);
-    tmp5 = matmul(P1, tmp4, N, N - 1, 3, N, N - 1);
+    tmp4 = matmul(orbit.A, del_a, N - 1, M + 1, 3, N - 1, M + 1);
+    tmp5 = matmul(orbit.P1, tmp4, N, N - 1, 3, N, N - 1);
     for (int i = 1; i <= N; i++)
     {
       for (int j = 1; j <= 3; j++)
@@ -238,11 +236,11 @@ void picard_iteration(double *Xint, double *Vint, std::vector<double> &X, std::v
         }
       }
     }
-    Vnew = matmul(T1, Beta, M + 1, N, 3, M + 1, N);
+    Vnew = matmul(orbit.T1, Beta, M + 1, N, 3, M + 1, N);
 
     // Corrected Position
     std::vector<double> tmp6;
-    tmp6 = matmul(P2, gamma, N + 1, N, 3, N + 1, N);
+    tmp6 = matmul(orbit.P2, gamma, N + 1, N, 3, N + 1, N);
     for (int i = 1; i <= N + 1; i++)
     {
       for (int j = 1; j <= 3; j++)
@@ -255,7 +253,7 @@ void picard_iteration(double *Xint, double *Vint, std::vector<double> &X, std::v
         }
       }
     }
-    Xnew = matmul(T2, Alpha, M + 1, N + 1, 3, M + 1, N + 1);
+    Xnew = matmul(orbit.T2, Alpha, M + 1, N + 1, 3, M + 1, N + 1);
 
     // Non-dimensional Error
     double tmp = 0.0;

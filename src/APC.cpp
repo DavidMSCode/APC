@@ -82,22 +82,41 @@ void printStateList(std::vector<SatState> statelist){
     }
 }
 
+void LoadKernels(){
+  if(not g_KERNELS_LOADED){
+    //Load spice kernels
+    string spkFile = "de440.bsp";
+    string lskFile = "naif0012.tls";
+    furnsh_c(spkFile.c_str());
+    furnsh_c(lskFile.c_str());
+    furnsh_c("moon_de440_220930.tf");
+    furnsh_c("moon_pa_de440_200625.bpc");
+    furnsh_c("pck00010.tpc");
+    g_KERNELS_LOADED = true;
+  }
+}
+
+void UnloadKernels(){
+  if(g_KERNELS_LOADED){
+    string spkFile = "de440.bsp";
+    string lskFile = "naif0012.tls";
+    unload_c(spkFile.c_str());
+    unload_c(lskFile.c_str());
+    unload_c("moon_de440_220930.tf");
+    unload_c("moon_pa_de440_200625.bpc");
+    unload_c("pck00010.tpc");
+    g_KERNELS_LOADED = false;
+  }
+}
+
 std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager ephem){
-  //Load spice kernels
-  string spkFile = "de440.bsp";
-  string lskFile = "naif0012.tls";
-  furnsh_c(spkFile.c_str());
-  furnsh_c(lskFile.c_str());
-  furnsh_c("moon_de440_220930.tf");
-  furnsh_c("moon_pa_de440_200625.bpc");
-  furnsh_c("pck00010.tpc");
-  
+  LoadKernels();
   //Convert vectors to array since pybind wants vectors but the functions are coded for arrays
   double* r0 = &r[0];
   double* v0 = &v[0];
-  double dt    = 30.0;                             // Soution Output Time Interval (s)
-  double deg   = 120;                             // Gravity Degree (max 100)
-  double tol   = 1.0e-15;                          // Tolerance
+  double dt    = 30.0;                              // Soution Output Time Interval (s)
+  double deg   = 120;                               // Gravity Degree (max 100)
+  double tol   = 1.0e-15;                           // Tolerance
   // Initialize Output Variables
   int soln_size = int(ceil((tf/dt)))+1;
   if (soln_size == 1){
@@ -154,12 +173,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
     Solution.push_back(States[i]);
   }
   Solution.push_back(Hs);
-
-  unload_c(spkFile.c_str());
-  unload_c(lskFile.c_str());
-  unload_c("moon_de440_220930.tf");
-  unload_c("moon_pa_de440_200625.bpc");
-  unload_c("pck00010.tpc");
+  UnloadKernels();        //Unload the kernels from SPICE
   //free(Soln);
   return Solution;
 }

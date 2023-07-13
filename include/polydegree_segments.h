@@ -25,6 +25,6 @@
  * @param tp Approximate time of Keplerian perigee passage (s)
  * @param Period Keplerian orbit period (s)
  */
-void polydegree_segments( double* r0, double* v0, Orbit &orbit, double deg, double tol, double* Feval, int* seg, int* degree, double* tp, double* Period );
+void polydegree_segments(Orbit &orbit, double deg, double tol, double* Feval);
 
 #endif

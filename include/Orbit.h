@@ -33,6 +33,8 @@ struct ChebyshevCoefficients{
 class Orbit
 {
     private:
+
+    public:
         std::vector<std::vector<double> > Soln;
         struct SatProperties{
             double _Area;               
@@ -40,39 +42,56 @@ class Orbit
             double _Mass;
             double _Cd;
         };
-            double _mu;                                 //Gravitational parameter of primary body
-            string _primary;                            //Primary body
-            double _Req;                                //Reference radius for primary body
-            string _frame;                              //frame for input
-            string _epoch = "J2000";                    //epoch for time and date, defaults to J2000
-            bool _validOrbit = false;                   //bool to indicate whether the orbit object is valid for APC integration
-            bool _validPrimary = false;
-            bool _validPosition = false;
-            bool _validVelocity = false;
-            bool _validTimes = false;
-            bool _validDrag = false;
-            bool _validSRP = false;
-            double _Ephemeris_t0;                       //ephemeris start time in chosen epoch.
-            double _Ephemeris_tf;
-            double _Integrator_t0;
-            double _Integrator_tf;
-            string _Epochname = "J2000";                //name of Epoch. Defaults to J2000.
-            string _IOFrame;
-            string _InertFrame;
-            string _FixedFrame;
-            vector<double> _In_r0 = {0,0,0};
-            vector<double> _In_v0 = {0,0,0};
-            vector<double> _In_s0 = {0,0,0,0,0,0};
-    public:
+        double _mu;                                 //Gravitational parameter of primary body
+        string _primary;                            //Primary body
+        double _Req;                                //Reference radius for primary body
+        string _frame;                              //frame for input
+        string _epoch = "J2000";                    //epoch for time and date, defaults to J2000
+        bool _validOrbit = false;                   //bool to indicate whether the orbit object is valid for APC integration
+        bool _validPrimary = false;
+        bool _validPosition = false;
+        bool _validVelocity = false;
+        bool _validTimes = false;
+        bool _validDrag = false;
+        bool _validSRP = false;
+        double _Ephemeris_t0;                       //ephemeris start time in chosen epoch.
+        double _Ephemeris_tf;
+        double _Integrator_t0;
+        double _Integrator_tf;
+        double _dt;
+        string _Epochname = "J2000";                //name of Epoch. Defaults to J2000.
+        string _IOFrame;
+        string _InertFrame;
+        string _FixedFrame;
+        vector<double> _In_r0 = {0,0,0};
+        vector<double> _In_v0 = {0,0,0};
+        vector<double> _In_s0 = {0,0,0,0,0,0};
         bool Compute_Drag = false;
         bool Compute_SRP = false;
         bool Compute_Third_Body = false;
         bool Compute_Hamiltonian = false;
         bool suborbital = false;
         int ID;
-
         std::vector<double> T;              //user defined time vector
         bool USER_TIME = false;             //flag if user time is used
+
+        //Degree segmentation variables
+        int seg; //number of segments per complete orbit
+        int N; //degree of chebyshev polynomials
+        double tp; // time of Keplerian perigee passage
+        double Period; // Keplerian orbit period (s)
+        int coeff_size; //
+
+        //Integrator operators and matrices
+        vector<double> tvec;    //-- Segment start and end times (s)
+        vector<double> t_orig;  //-- Segment start and end times for first segment (s)
+        vector<double> P1;      //-- First integration operator
+        vector<double> P2;      //-- Second integration operator
+        vector<double> T1;      //-- Chebyshev velocity matrix
+        vector<double> T2;       //-- Chebyshevposition matrix
+        vector<double> A;       //-- Least squares operator
+        vector<double> Ta;      //-- Chebyshev acceleration matrix
+
         //Constructors
         Orbit();
         Orbit(string primary, string frame, string epoch = "J2000");
@@ -243,8 +262,13 @@ class Orbit
          * 
          */
         struct ChebyshevCoefficients CC;
-    
+
+        /**
+         * Runs a propagation for this single orbit
+        */
         void SinglePropagate();
+
+        void PrintConfig();
 };
 
 
