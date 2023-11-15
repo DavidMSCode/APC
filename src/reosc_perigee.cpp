@@ -36,12 +36,29 @@
 #include "c_functions.h"
 #include "rv2elm.h"
 #include "Orbit.h"
+using namespace std;
 
+void reosc_perigee(double tf,  Orbit &orbit){
 
-void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, std::vector<double> &Alpha, std::vector<double> &Beta,
-  double tf, double t_final, std::vector<double> &t_orig, int N, int M, int* k, int seg, int* prep_HS,
-  double tol, double* orb_end, std::vector<double> &tvec, double* r0, double* v0, Orbit &orbit){
-
+  //initital state of next segment
+  double *r0 = &orbit.r0_seg[0];
+  double *v0 = &orbit.v0_seg[0];
+  vector<double> &tvec = orbit.tvec;
+  vector<double> &times = orbit.segment_times;
+  double t_final = orbit._Integrator_tf;
+  vector<double> &t_orig = orbit.t_orig;
+  int N = orbit.N;
+  int M = orbit.M;
+  int &k = orbit.k;
+  int seg = orbit.seg;
+  double tol = orbit.tol;
+  double &orb_end = orbit.orb_end;
+  orb_end = 0.0;
+  vector<double> &X = orbit.X_seg;
+  vector<double> &V = orbit.V_seg;
+  vector<double> &Alpha = orbit.Alpha_seg;
+  vector<double> &Beta = orbit.Beta_seg;
+  int &prep_HS = orbit.prep_HS;
   // Initialization
   int peri_check = 0;
   double w1, w2, t1, t2, e, TAU_old, TAU, f_old, f_new, TAU_new, df_dtau, err;
@@ -68,7 +85,7 @@ void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<d
     e = elm[2];
   }
 
-  if (*k == seg-1 || (*k == *prep_HS && fabs(tf - t_final)/tf > tol)){
+  if (k == seg-1 || (k == prep_HS && fabs(tf - t_final)/tf > tol)){
     if (fabs(e) > 1e-15){    // Skip for zero eccentricity (no need to re-osculate as perigee is undefined)
       for (int i=1; i<=M+1; i++){
         // If passing through perigee
@@ -144,8 +161,8 @@ void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<d
           for (int j=0; j<=seg; j++){
             tvec[j] = t_orig[j] + tf;
           }
-          *k    = -1;
-          *orb_end    = tvec[0];
+          k    = -1;
+          orb_end    = tvec[0];
           peri_check = 1;
           break;
         }
@@ -158,11 +175,11 @@ void reosc_perigee(std::vector<double> &X, std::vector<double> &V, std::vector<d
         tvec[j] = t_orig[j] + tf;
       }
     }
-    *orb_end = tvec[0];
+    orb_end = tvec[0];
 
     // Reset counters
-    *prep_HS = -1;
-    *k       = -1;
+    prep_HS = -1;
+    k       = -1;
   }
 
 }

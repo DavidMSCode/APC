@@ -210,40 +210,6 @@ void loc_gravLegendre( double phi, double* scaleFactor, double* P, int DEG )
 	P[IDX2F(2,2,Max_Degree+3)] = sqrt(3.0)*sphi; // n = 1, m = 1;
 	scaleFactor[IDX2F(2,2,Max_Degree+3)] = 0.0;
 
-	// // New Method
-	//     int nn = 2;
-	//     int mm = 0;
-	//     double m, n;
-	//     int limit = (DEG+3)*(DEG+4)/2;
-	//     for (int counter = 3; counter <= limit;counter++){
-	//         k = nn + 1;
-	//         p = mm + 1;
-	//         n = coefMatrix[counter][0];
-	//         m = coefMatrix[counter][1];
-	//
-	//         switch ( (int)(coefMatrix[counter][4]) )
-	//        {
-	//           case 1:
-	//             P[IDX2F(k,k,Max_Degree+3)] = sqrt(2*n+1.0)/sqrt(2.0*n)*sphi*P[IDX2F(k-1,k-1, Max_Degree+3)];
-	//             scaleFactor[IDX2F(k,k,Max_Degree+3)] = 0.0;
-	//              nn++;
-	//              mm = 0;
-	//              break;
-	//           case 2:
-	//             P[IDX2F(k,p,Max_Degree+3)] = (sqrt(2*n+1)/n)*(sqrt(2*n-1.0)*cphi*P[IDX2F(k-1,p,Max_Degree+3)] - (n-1)/sqrt(2*n-3)* P[IDX2F(k-2,p, Max_Degree+3)] );
-	//             scaleFactor[IDX2F(k,p,Max_Degree+3)] = sqrt( (n+1)*(n)/2);
-	//             mm++;
-	//             break;
-	//           case 3:
-	//             P[IDX2F(k,p,Max_Degree+3)] = sqrt(2*n+1)/(sqrt(n+m)*sqrt(n-m))*(sqrt(2*n-1.0)*cphi*P[IDX2F(k-1,p,Max_Degree+3)] - sqrt(n+m-1.0)*sqrt(n-m-1)/sqrt(2*n-3)*P[IDX2F(k-2,p,Max_Degree+3)] );
-	//             scaleFactor[IDX2F(k,p,Max_Degree+3)] = sqrt( (n+m+1)*(n-m));
-	//             mm++;
-	//             break;
-	//
-	//        }
-	//
-	//     }
-
 	// Old Method
 	for (int nn = 2; nn <= DEG+2;nn++){
 		double n = (double)nn;
@@ -313,50 +279,6 @@ void loc_gravityPCPF( double* p, double* P, int DEG, double* smlambda, double* c
 	rRatio = C_Req/radu;
 	rRatio_n = rRatio;
 	// summation of gravity in radial coordinates
-
-
-
-
-	//    // New Method
-	//        int nn = 2;
-	//        int mm = 0;
-	//        double m, n;
-	//        dUdrSumM      = 0.0;
-	//        dUdphiSumM    = 0.0;
-	//        dUdlambdaSumM = 0.0;
-	//        int limit = (DEG+1)*(DEG+2)/2;
-	//        for (int counter = 3; counter <= limit;counter++){
-	//            k = nn + 1;
-	//            j = mm + 1;
-	//            n = coefMatrix[counter][0];
-	//            m = coefMatrix[counter][1];
-
-	//            switch ( (int)(coefMatrix[counter][4]) )
-	//           {
-	//              case 1:
-	//                dUdrSumM      = dUdrSumM + P[IDX2F(k,j,Max_Degree+3)] *(C[IDX2F(k,j,Max_Degree)]*cmlambda[j-1] + S[IDX2F(k,j,Max_Degree)]*smlambda[j-1]);
-	//                dUdphiSumM    = dUdphiSumM + ((P[IDX2F(k,j+1,Max_Degree+3)]*scaleFactor[IDX2F(k,j,Max_Degree+3)]) - z/(sqrt(x*x + y*y))*m*P[IDX2F(k,j,Max_Degree+3)])*(C[IDX2F(k,j,Max_Degree)]*cmlambda[j-1] + S[IDX2F(k,j,Max_Degree)]*smlambda[j-1]);
-	//                dUdlambdaSumM = dUdlambdaSumM + m*P[IDX2F(k,j,Max_Degree+3)]*(S[IDX2F(k,j,Max_Degree)]*cmlambda[j-1] - C[IDX2F(k,j,Max_Degree)]*smlambda[j-1]);
-	//                rRatio_n = rRatio_n*rRatio;
-	//                dUdrSumN      = dUdrSumN      + dUdrSumM*rRatio_n*k;
-	//                dUdphiSumN    = dUdphiSumN    + dUdphiSumM*rRatio_n;
-	//                dUdlambdaSumN = dUdlambdaSumN + dUdlambdaSumM*rRatio_n;
-	//                 nn++;
-	//                 mm = 0;
-	//                 dUdrSumM      = 0.0;
-	//                 dUdphiSumM    = 0.0;
-	//                 dUdlambdaSumM = 0.0;
-	//                 break;
-	//              default:
-	//                dUdrSumM      = dUdrSumM + P[IDX2F(k,j,Max_Degree+3)] *(C[IDX2F(k,j,Max_Degree)]*cmlambda[j-1] + S[IDX2F(k,j,Max_Degree)]*smlambda[j-1]);
-	//                dUdphiSumM    = dUdphiSumM + ((P[IDX2F(k,j+1,Max_Degree+3)]*scaleFactor[IDX2F(k,j,Max_Degree+3)]) - z/(sqrt(x*x + y*y))*m*P[IDX2F(k,j,Max_Degree+3)])*(C[IDX2F(k,j,Max_Degree)]*cmlambda[j-1] + S[IDX2F(k,j,Max_Degree)]*smlambda[j-1]);
-	//                dUdlambdaSumM = dUdlambdaSumM + m*P[IDX2F(k,j,Max_Degree+3)]*(S[IDX2F(k,j,Max_Degree)]*cmlambda[j-1] - C[IDX2F(k,j,Max_Degree)]*smlambda[j-1]);
-	//                mm++;
-
-	//           }
-
-	//        }
-
 	// // Old Method
 	for (int n = 2; n <= DEG; n++) {
 		k = n+1;

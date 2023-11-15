@@ -14,8 +14,7 @@
 #include "OrbitClassTests.h"
 using namespace std;
 
-int main() {
-    std::cout << "Orbit Class Tests started!" << std::endl;
+int OrbitClassTests(int argc, char** argv) {
     int primaryTestFailures = testValidPrimaries();           //Primary body name tests
     int initTestFailures = testInitOrbit();
     int initStateTestFailures = testSetState();

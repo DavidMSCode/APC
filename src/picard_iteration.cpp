@@ -52,10 +52,29 @@
 #include "matrix_loader.h"
 #include "Ephemeris.hpp"
 #include "EphemerisRotation.h"
-
-void picard_iteration(double *Xint, double *Vint, std::vector<double> &X, std::vector<double> &V, std::vector<double> &times, double deg, int hot, double tol,
-                      double *Feval, Orbit &orbit, EphemerisManager &ephem)
+using namespace std;
+void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
 {
+  // Load constants
+  int N = orbit.N;  // Degree of Chebyshev polynomial
+  int M = orbit.M;  // Number of sample points
+  int hot = orbit.hot;  // Hot start on/off switch condition
+  double tol = orbit.tol;  // Tolerance
+  int deg = orbit.deg;      // Gravity degree
+  vector<double> &times = orbit.times_seg;  // Time array for current segment
+  vector<double> &P1 = orbit.P1;  // First integration operator (Acceleration to Velocity)
+  vector<double> &P2 = orbit.P2;  // Second integration operator (Velocity to Position)
+  vector<double> &T1 = orbit.T1;  // First Chebyshev matrix
+  vector<double> &T2 = orbit.T2;  // Second Chebyshev matrix
+  vector<double> &A = orbit.A;  // Least squares operator
+  double *Xint = orbit.r0_seg; // initial position of segment
+  double *Vint = orbit.v0_seg; // initial velocity of segment
+
+  //Output solution variables
+  vector<double> &Beta = orbit.Beta_seg;  // Velocity coefficients for current segment
+  vector<double> &Alpha = orbit.Alpha_seg;  // Position coefficients for current segment
+  vector<double> &X = orbit.X_seg; // Position warm start for current segment
+  vector<double> &V = orbit.V_seg; // Velocity warm start for current segment
 
   // Initialization
   bool suborbital = false;

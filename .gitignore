@@ -21,6 +21,7 @@ bin/sam-test.py
 
 #external libraries
 extern/cspice*
+res/
 
 #documentation builds
 build/

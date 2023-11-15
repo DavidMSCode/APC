@@ -54,92 +54,90 @@
 #include "Ephemeris.hpp"
 #include "SpiceUsr.h"
 using namespace std;
+//  picard_chebyshev_propagator(double* r0, double* v0, double t0, double t_final,double deg, double tol, double Period,
+//    std::vector<double> &tvec, std::vector<double> &t_orig, int seg, int N, int M, int* prep_HS, int coeff_size, int soln_size, int* total_seg,
+//    std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, std::vector<double> &Ta, std::vector<double> &W1, std::vector<double> &W2, double* Feval,
+//    std::vector<double> &ALPHA, std::vector<double> &BETA, std::vector<double> &segment_times, Orbit &orbit, EphemerisManager ephem){
 
-std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double* v0, double t0, double t_final,double deg, double tol, double Period,
-   std::vector<double> &tvec, std::vector<double> &t_orig, int seg, int N, int M, int* prep_HS, int coeff_size, int soln_size, int* total_seg,
-   std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, std::vector<double> &Ta, std::vector<double> &W1, std::vector<double> &W2, double* Feval,
-   std::vector<double> &ALPHA, std::vector<double> &BETA, std::vector<double> &segment_times, Orbit &orbit, EphemerisManager ephem){
+void picard_chebyshev_propagator(int coeff_size, double* Feval, Orbit &orbit, EphemerisManager ephem){
   int loop    = 0;      // Break loop condition
-  int k       = 0;      // Counter: segments per orbit
-  int hot     = 0;      // Hot start switch
-  int seg_cnt = 0;      // Counter: total segments
+  int M = orbit.M;      // Number of Chebyshev nodes
+  int N = orbit.N;      // Chebyshev polynomial degree
+  int &k       = orbit.k;             // Counter: segments per orbit
+  int &hot     = orbit.prep_HS;       // Hot start switch
+  int &seg_cnt = orbit.total_segs;    // Counter: total segments
+  int seg = orbit.seg;  // Segments per orbit
   double mu = orbit.GetPrimaryGravitationalParameter();
-  //int sz      = int(ceil(1.1*t_final/Period)*seg);
   double w1, w2, tf;
-  //store original initial conditions
-  double r0_orig[3];
-  double v0_orig[3];
-  for (int i=0;i<3;i++){
-    r0_orig[i] = r0[i];
-    v0_orig[i] = v0[i];
-   }
+  vector<double> &ALPHA = orbit.CC.A;
+  vector<double> &BETA = orbit.CC.B;
+  vector<double> &segment_times = orbit.segment_times;
+  //Temporary segment variables
+  vector<double> &Alpha = orbit.Alpha_seg;
+  vector<double> &Beta = orbit.Beta_seg;
+  vector<double> &X = orbit.X_seg;
+  vector<double> &V = orbit.V_seg;
 
+
+  //Store initial position and velocity in temporary arrays for the integrator
+  for (int i=1; i<=3; i++){
+    orbit.r0_seg[i-1] = orbit._In_r0[i-1];
+    orbit.v0_seg[i-1] = orbit._In_v0[i-1];
+    orbit.z0_seg[i-1] = orbit._In_r0[i-1];
+    orbit.z0_seg[i-1+3] = orbit._In_v0[i-1];
+  }
 
   std::vector<double> HotX(seg*(M+1)*3,0.0);
-  //memset( HotX, 0.0, (seg*(M+1)*3*sizeof(double)));
   std::vector<double> HotV(seg*(M+1)*3,0.0);
-  //memset( HotV, 0.0, (seg*(M+1)*3*sizeof(double)));
   std::vector<double> Xpoints(coeff_size*3,0.0);
-  //memset( Beta, 0.0, (N*3*sizeof(double)));
   std::vector<double> Vpoints(coeff_size*3,0.0);
-  //memset( Alpha, 0.0, ((N+1)*3*sizeof(double)));
 
   // PROPAGATION
   // #pragma omp critical(PI)
   // {
   while (loop == 0){
-
     // Compute cosine time vector for a given segment
-    t0 = tvec[k];
-    tf = tvec[k+1];
+    double t0 = orbit.tvec[k];
+    tf = orbit.tvec[k+1];
     while (tf == 0.0){
       k = k+1;
-      t0 = tvec[k];
-      tf = tvec[k+1];
+      t0 = orbit.tvec[k];
+      tf = orbit.tvec[k+1];
     }
-    if (tf > t_final){
-      tf = t_final;
+    if (tf > orbit._Integrator_tf){
+      tf = orbit._Integrator_tf;
     }
     w1 = (tf + t0)/2.0;
     w2 = (tf - t0)/2.0;
-    W1[seg_cnt] = w1;
-    W2[seg_cnt] = w2;
+    orbit.W1[seg_cnt] = w1;
+    orbit.W2[seg_cnt] = w2;
 
-    double z0[6] = {0.0};
     double z[6] = {0.0};
-    z0[0] = r0[0]; z0[1] = r0[1]; z0[2] = r0[2];
-    z0[3] = v0[0]; z0[4] = v0[1]; z0[5] = v0[2];
 
-    std::vector<double> tau(M+1,0.0);
-    //memset( tau, 0.0, ((M+1)*sizeof(double)));
-    std::vector<double> times(M+1,0.0);
-    //memset( times, 0.0, ((M+1)*sizeof(double)));
-    std::vector<double> X((M+1)*3,0.0);
-    //memset( X, 0.0, ((M+1)*3*sizeof(double)));
-    std::vector<double> V((M+1)*3,0.0);
-    //memset( V, 0.0, ((M+1)*3*sizeof(double)));
-    std::vector<double> Beta(N*3,0.0);
-    //memset( Beta, 0.0, (N*3*sizeof(double)));
-    std::vector<double> Alpha((N+1)*3,0.0);
-    //memset( Alpha, 0.0, ((N+1)*3*sizeof(double)));
-    
+    orbit.tau.resize(M+1,0.0);
+    orbit.times_seg.resize(M+1,0.0);
+    orbit.X_seg.resize((M+1)*3,0.0);
+    orbit.V_seg.resize((M+1)*3,0.0);
+    orbit.Beta_seg.resize(N*3,0.0);
+    orbit.Alpha_seg.resize((N+1)*3,0.0);
 
     // KEPLERIAN WARM START
-    double et;              //Ephermeris time
+    double et;                                        //Ephermeris time
     string primary = orbit.GetPrimaryBody();         //The body of primary orbit
     string InertFrame = orbit.GetInertFrame();
     string InertCenter = orbit.GetInertCenter();
-    double p_state[6];
+    double p_state[6]={0.0};
     double lt;
 
     for (int cnt=0; cnt<=M; cnt++){
+      //Warm start
       //Use F and G equations to get two body guess for inertial position and velocity  relative to the primary body
-      tau[cnt]   = -cos(cnt*C_PI/M);
-      times[cnt] = tau[cnt]*w2 + w1;
-      et = orbit.et(times[cnt]);
-      FandG(z0,z,times[cnt]-t0,mu);
+      orbit.tau[cnt]   = -cos(cnt*C_PI/M);
+      orbit.times_seg[cnt] = orbit.tau[cnt]*w2 + w1;
+      et = orbit.et(orbit.times_seg[cnt]);
+      FandG(orbit.z0_seg,z,orbit.times_seg[cnt]-t0,mu);
       //GET STATE OF PRIMARY BODY RELATIVE TO INERTIAL FRAME CENTER
-      spkezr_c(primary.c_str(),et,InertFrame.c_str(),"LT+S",InertCenter.c_str(),p_state,&lt);
+      //spkezr_c(primary.c_str(),et,InertFrame.c_str(),"LT+S",InertCenter.c_str(),p_state,&lt);
       //Add two body to primary body state to get the inertial state for the satellite relative to the inertial frame center
       X[ID2(cnt+1,1,M+1)] = z[0]+p_state[0];
       X[ID2(cnt+1,2,M+1)] = z[1]+p_state[1];
@@ -148,35 +146,14 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
       V[ID2(cnt+1,2,M+1)] = z[4]+p_state[4];
       V[ID2(cnt+1,3,M+1)] = z[5]+p_state[5];
     }
-    // Warm Start
-    std::vector<double> WSX((M+1)*3,0.0);
-    //memset( WSX, 0.0, ((M+1)*3*sizeof(double)));
-    std::vector<double> WSV((M+1)*3,0.0);
-    //memset( WSV, 0.0, ((M+1)*3*sizeof(double)));
-    WSX = X;
-    //memcpy(WSX,X,(M+1)*3*sizeof(double));
-    WSV = V;
-    //memcpy(WSV,V,(M+1)*3*sizeof(double));
-
-    // HOT START (after 1+ orbits)
-    // if (hot == 1){
-    //   for (int i = 1; i<=M+1; i++){
-    //     X[ID2(i,1,M+1)] = X[ID2(i,1,M+1)] + HotX[ID2(i+(k*(M+1)),1,seg*(M+1))];
-    //     X[ID2(i,2,M+1)] = X[ID2(i,2,M+1)] + HotX[ID2(i+(k*(M+1)),2,seg*(M+1))];
-    //     X[ID2(i,3,M+1)] = X[ID2(i,3,M+1)] + HotX[ID2(i+(k*(M+1)),3,seg*(M+1))];
-    //     V[ID2(i,1,M+1)] = V[ID2(i,1,M+1)] + HotV[ID2(i+(k*(M+1)),1,seg*(M+1))];
-    //     V[ID2(i,2,M+1)] = V[ID2(i,2,M+1)] + HotV[ID2(i+(k*(M+1)),2,seg*(M+1))];
-    //     V[ID2(i,3,M+1)] = V[ID2(i,3,M+1)] + HotV[ID2(i+(k*(M+1)),3,seg*(M+1))];
-    //   }
-    // }
 
     // PICARD ITERATION
-    picard_iteration(r0,v0,X,V,times,N,M,deg,hot,tol,P1,P2,T1,T2,A,Feval,Alpha,Beta,orbit,ephem);
+    picard_iteration(Feval,orbit,ephem);
     for (int cnt=0; cnt<=M; cnt++){
       //GET STATE OF PRIMARY BODY RELATIVE TO INERTIAL FRAME CENTER
-      times[cnt] = tau[cnt]*w2 + w1;
-      et = orbit.et(times[cnt]);
-      spkezr_c(primary.c_str(),et,InertFrame.c_str(),"LT+S",InertCenter.c_str(),p_state,&lt);
+      orbit.times_seg[cnt] = orbit.tau[cnt]*w2 + w1;
+      et = orbit.et(orbit.times_seg[cnt]);
+      //spkezr_c(primary.c_str(),et,InertFrame.c_str(),"LT+S",InertCenter.c_str(),p_state,&lt);
       //Add two body to primary body state to get the inertial state for the satellite relative to the primary body
       X[ID2(cnt+1,1,M+1)] -= p_state[0];
       X[ID2(cnt+1,2,M+1)] -= p_state[1];
@@ -185,33 +162,18 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
       V[ID2(cnt+1,2,M+1)] -= p_state[4];
       V[ID2(cnt+1,3,M+1)] -= p_state[5];
     }
-    // Loop exit condition
-    if (fabs(tf - t_final)/tf < 1e-12){
+    // Loop exit condition (if tf is within 1e-12 of the final time)
+    if (fabs(tf - orbit._Integrator_tf)/tf < 1e-12){
       loop = 1;
     }
     if(orbit.suborbital){
       loop=1;
     }
-    // Prepare Hot Start
-    // if (*prep_HS == -1){
-    //   for (int i=1; i<=M+1; i++){
-    //     HotX[ID2(i+(k*(M+1)),1,seg*(M+1))] = X[ID2(i,1,M+1)] - WSX[ID2(i,1,M+1)];
-    //     HotX[ID2(i+(k*(M+1)),2,seg*(M+1))] = X[ID2(i,2,M+1)] - WSX[ID2(i,2,M+1)];
-    //     HotX[ID2(i+(k*(M+1)),3,seg*(M+1))] = X[ID2(i,3,M+1)] - WSX[ID2(i,3,M+1)];
-    //     HotV[ID2(i+(k*(M+1)),1,seg*(M+1))] = V[ID2(i,1,M+1)] - WSV[ID2(i,1,M+1)];
-    //     HotV[ID2(i+(k*(M+1)),2,seg*(M+1))] = V[ID2(i,2,M+1)] - WSV[ID2(i,2,M+1)];
-    //     HotV[ID2(i+(k*(M+1)),3,seg*(M+1))] = V[ID2(i,3,M+1)] - WSV[ID2(i,3,M+1)];
-    //   }
-    //
-    //   if (k == seg-1){
-    //     hot = 1;
-    //   }
-    // }
 
-    // Assign new initial Conditions (next segment)
+    // Assign new initial conditions for next segment. (The final conditions of the current segment)
     for (int j=1; j<=3; j++){
-      r0[j-1] = X[ID2(M+1,j,M+1)];
-      v0[j-1] = V[ID2(M+1,j,M+1)];
+      orbit.r0_seg[j-1] = orbit.X_seg[ID2(M+1,j,M+1)];
+      orbit.v0_seg[j-1] = orbit.V_seg[ID2(M+1,j,M+1)];
     }
 
     /* REOSCULATE PERIGEE
@@ -221,8 +183,8 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     produce a solution that satisfies the required tolerance. This effect
     increases with increasing eccentricity. */
     
-    double orb_end = 0.0;
-    reosc_perigee(X,V,times,Alpha,Beta,tf,t_final,t_orig,N,M,&k,seg,prep_HS,tol,&orb_end,tvec,r0,v0,orbit);
+    double &orb_end = orbit.orb_end;
+    reosc_perigee(tf,orbit);
     // Segments per orbit counter
     k = k+1;
 
@@ -234,14 +196,6 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
     }
     for (int i=1; i<=N+1; i++){
       //Store X and V points
-      Xpoints[ID2(i+seg_cnt*(N+1),1,coeff_size)] = X[ID2(i,1,N+1)];
-      Xpoints[ID2(i+seg_cnt*(N+1),2,coeff_size)] = X[ID2(i,2,N+1)];
-      Xpoints[ID2(i+seg_cnt*(N+1),3,coeff_size)] = X[ID2(i,3,N+1)];
-
-      Vpoints[ID2(i+seg_cnt*(N+1),1,coeff_size)] = V[ID2(i,1,N+1)];
-      Vpoints[ID2(i+seg_cnt*(N+1),2,coeff_size)] = V[ID2(i,2,N+1)];
-      Vpoints[ID2(i+seg_cnt*(N+1),3,coeff_size)] = V[ID2(i,3,N+1)];
-
       ALPHA[ID2(i+seg_cnt*(N+1),1,coeff_size)] = Alpha[ID2(i,1,N+1)];
       ALPHA[ID2(i+seg_cnt*(N+1),2,coeff_size)] = Alpha[ID2(i,2,N+1)];
       ALPHA[ID2(i+seg_cnt*(N+1),3,coeff_size)] = Alpha[ID2(i,3,N+1)];
@@ -257,14 +211,5 @@ std::vector<std::vector<double> > picard_chebyshev_propagator(double* r0, double
 
   }
   // }
-//Restore initial conditions
-for (int i=0;i<3;i++){
-    r0[i] = r0_orig[i];
-    v0[i] = v0_orig[i];
-   }
-   
-  *total_seg = seg_cnt;
-  std::vector<std::vector<double> > states = {Xpoints,Vpoints};
-  return states;
-  // std::cout << "finished propagating";
+   // std::cout << "finished propagating";
 }

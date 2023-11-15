@@ -2,7 +2,7 @@
  * @file EphemerisManagerTests.cpp
  * @author David Stanley (davidms4@illinois.edu)
  * @ Modified by: Your name
- * @ Modified time: 2023-03-10 16:31:40
+ * @ Modified time: 2023-10-17 14:12:20
  * @date 2023-03-10
  * 
  * @copyright Copyright (c) 2023
@@ -19,7 +19,7 @@
 #include "SpiceUsr.h"
 using namespace std;
 
-int main(){
+int EphemerisManagerTests(int argc, char** argv){
     furnsh_c("naif0012.tls");
     SpiceDouble t0;
     str2et_c("Mon Sep 30 09:59:10 PDT 2023", &t0);

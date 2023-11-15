@@ -110,7 +110,9 @@
       "*.tcc": "cpp",
       "memory_resource": "cpp",
       "__availability": "cpp",
-      "__functional_03": "cpp"
+      "__functional_03": "cpp",
+      "__verbose_abort": "cpp",
+      "*.bak": "cpp"
     },
     "cmake.debugConfig": {
             "cwd": "${workspaceFolder}/bin"

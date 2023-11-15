@@ -1,0 +1,84 @@
+project(APCTests LANGUAGES CXX)
+
+#Include header files
+include_directories(${APC_SOURCE_DIR}/include)
+include_directories(${APC_SOURCE_DIR}/extern/cspice/include)
+#Create binary for the library testing code
+add_executable(TestOrbitClass src/OrbitClassTests.cpp)
+add_executable(TestEphemerisManager src/EphemerisManagerTests.cpp)
+add_executable(TestEphemerisRotation src/EphemerisRotationTests.cpp)
+add_executable(TestConstellation src/ConstellationTest.cpp)
+add_executable(TestGrav src/GravTests.cpp)
+find_package(OpenMP REQUIRED)
+add_executable(TestMain src/test.cpp) #build a an executable using the test src file
+#Link against APC to be able to test code
+target_link_libraries(TestOrbitClass  APC)
+target_link_libraries(TestEphemerisManager  APC)
+target_link_libraries(TestEphemerisRotation  APC)
+# target_link_libraries(TestConstellation APC)
+target_link_libraries(TestGrav APC)
+#LINK CSPICE AGAINST TEST FUNCTIONS
+if (WIN32)
+    target_link_libraries(TestEphemerisManager ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.lib) #link cspice library
+    target_link_libraries(TestEphemerisRotation ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.lib) #link cspice library
+else ()
+    target_link_libraries(TestEphemerisManager ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.a) #link cspice library
+    target_link_libraries(TestEphemerisRotation ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.a) #link cspice library
+endif()
+
+#Set CXX standard
+set_property(TARGET TestOrbitClass TestEphemerisManager TestEphemerisRotation TestGrav PROPERTY CXX_STANDARD 14)
+# set(CMAKE_CXX_STANDARD 14)
+
+
+target_link_libraries(TestMain APC) #link against APC library
+if (WIN32)
+    target_link_libraries(TestGrav ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.lib) #link cspice library
+else ()
+    target_link_libraries(TestGrav ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.a) #link cspice library
+endif()
+target_link_libraries(TestMain OpenMP::OpenMP_CXX)   #link openmp library
+target_link_libraries(TestGrav OpenMP::OpenMP_CXX)   #link openmp library
+
+# #set test bin directory
+# set_target_properties(TestOrbitClass PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${APCTests_SOURCE_DIR}/testbin)
+# set_target_properties(TestEphemerisManager PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${APCTests_SOURCE_DIR}/testbin)
+# set_target_properties(TestEphemerisRotation PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${APCTests_SOURCE_DIR}/testbin)
+# set_target_properties(TestConstellation PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${APCTests_SOURCE_DIR}/testbin)
+# set_target_properties(TestGrav PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${APCTests_SOURCE_DIR}/testbin)
+# set_target_properties(TestMain PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${APCTests_SOURCE_DIR}/testbin)
+
+
+# #Add command to be able to run tests
+# add_test(NAME TestOrbitClass COMMAND TestOrbitClass WORKING_DIRECTORY ${APCTests_SOURCE_DIR}/testbin)
+# add_test(NAME TestEphemerisManager COMMAND TestEphemerisManager WORKING_DIRECTORY ${APCTests_SOURCE_DIR}/testbin)
+# add_test(NAME TestEphemerisRotation COMMAND TestEphemerisRotation WORKING_DIRECTORY ${APCTests_SOURCE_DIR}/testbin)
+# add_test(NAME TestMain COMMAND TestMain WORKING_DIRECTORY ${APCTests_SOURCE_DIR}/testbin)
+# add_test(NAME TestConstellation COMMAND TestConstellation WORKING_DIRECTORY ${APCTests_SOURCE_DIR}/testbin)
+# add_test(NAME TestGrav COMMAND TestGrav WORKING_DIRECTORY ${APCTests_SOURCE_DIR}/testbin)
+
+#copy necessary files to build directory
+# Set the resource directory
+set(RESOURCE_DIR ${CMAKE_SOURCE_DIR}/res)
+
+# Set the build directory
+set(BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR})
+
+# Copy all files from the res directory to the build directory on build if changes have been made to the res directory
+file(GLOB_RECURSE RESOURCES ${RESOURCE_DIR}/*)
+foreach(RESOURCE ${RESOURCES})
+    get_filename_component(RESOURCE_NAME ${RESOURCE} NAME)
+    set(RESOURCE_DESTINATION ${BUILD_DIR}/${RESOURCE_NAME})
+    add_custom_command(
+        TARGET ALL_BUILD PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RESOURCE} ${RESOURCE_DESTINATION}
+        COMMENT "Copying ${RESOURCE_NAME} to build directory"
+    )
+endforeach()
+#print all entries in the resource directory
+message(STATUS "Test Resources Found:")
+foreach(RESOURCE ${RESOURCES})
+    message(STATUS "  ${RESOURCE}")
+endforeach()
+
+

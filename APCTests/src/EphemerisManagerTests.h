@@ -11,6 +11,7 @@
  * @param t0  Beginning of EphemerisManager time interval (s)
  * @param tf End of EphemerisManager time interval (s)
  */
+int EphemerisManagerTests(int argc, char** argv);
 int MPGetTest(EphemerisManager &ephem, double t0, double tf);
 
 #endif

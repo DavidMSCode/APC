@@ -63,6 +63,7 @@ void printState(SatState state, int i){
 }
 
 string vec2prettystring(std::vector<double> vector){
+  //Takes a vector of doubles and returns a string of the form {x,y,z}
   std::stringstream output;
   std::string vecstring;
   std::copy(vector.begin(), vector.end(), std::ostream_iterator<double>(output, ", "));
@@ -115,8 +116,9 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   double* r0 = &r[0];
   double* v0 = &v[0];
   double dt    = 30.0;                              // Soution Output Time Interval (s)
-  double deg   = 120;                               // Gravity Degree (max 100)
-  double tol   = 1.0e-15;                           // Tolerance
+  //FIXME: deg should be user modifiable
+  double deg   = 70;                               // Gravity Degree (max 100)
+  orbit.deg = deg;
   // Initialize Output Variables
   int soln_size = int(ceil((tf/dt)))+1;
   if (soln_size == 1){
@@ -125,7 +127,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   std::vector<double> Soln(soln_size*6,0.0);
   double Feval[2] = {0.0};
   std::vector<std::vector<double> > states;
-  states = adaptive_picard_chebyshev(r0,v0,t0,tf,dt,deg,tol,soln_size,Feval,Soln,orbit,ephem);
+  adaptive_picard_chebyshev(r0,v0,t0,tf,dt,deg,soln_size,Feval,Soln,orbit,ephem);
   int total;
   total = int(ceil(Feval[0] + Feval[1]*pow(6.0,2)/pow(deg,2)));
 

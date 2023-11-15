@@ -22,9 +22,7 @@
 
 #include "GRGM1200b.h"
 #include "GRGM1200b.cc"
-#include "eci2ecef.h"
 #include "const.h"
-#include "EGM2008.h"
 #include "EphemerisRotation.h"
 
 // Declare Needed Variables

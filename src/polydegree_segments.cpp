@@ -45,10 +45,11 @@
 #include "Orbit.h"
 using namespace std;
 //FIXME: remove redundant input parameters, pass and store orbital properties with orbit class
-void polydegree_segments(Orbit &orbit, double deg, double tol, double* Feval){
+void polydegree_segments(Orbit &orbit, double deg, double* Feval){
   double* r0 = &orbit._In_r0[0];    //get input states as pointers to start of vector (acts like array)
   double* v0 = &orbit._In_v0[0];
   double *Period = &orbit.Period;
+  double tol = orbit.tol;
   int *seg = &orbit.seg;
   int *degree = &orbit.N;
   double *tp = &orbit.tp;
@@ -153,9 +154,7 @@ void polydegree_segments(Orbit &orbit, double deg, double tol, double* Feval){
 
     // Loop through different values for N
     std::vector<double> G(300*3,0.0);
-    //memset( G, 0.0, ((300*3)*sizeof(double)));
     std::vector<double> Gprev(300*3,0.0);
-    //memset( Gprev, 0.0, ((300*3)*sizeof(double)));
     for (int j=0; j<=jmax; j++){
       N = Nvec[j];
 
@@ -208,13 +207,9 @@ void polydegree_segments(Orbit &orbit, double deg, double tol, double* Feval){
       int M;
       M = N;
       std::vector<double> T((M+1)*N,0.0);
-      //memset( T, 0.0, (((M+1)*N)*sizeof(double)));
       std::vector<double> A(N*(M+1),0.0);
-      //memset( A, 0.0, (N*(M+1)*sizeof(double)));
       std::vector<double> gamma;
-      //memset( gamma, 0.0, (N*3*sizeof(double)));
       std::vector<double> Gapprox;
-      //memset( Gapprox, 0.0, ((M+1)*3*sizeof(double)));
       lsq_chebyshev_fit(1.0,N-1,M,T,A);
       gamma = matmul(A,Gprev,N,M+1,3,N,M+1);
       Gapprox = matmul(T,gamma,M+1,N,3,M+1,N);
@@ -232,7 +227,7 @@ void polydegree_segments(Orbit &orbit, double deg, double tol, double* Feval){
         if (max_gamma < coeff_tol){
           fit_check = fit_check + 1;
           if (fit_check == coeff){
-            break;    // Break is last 3 coeffs are less than the tolerance
+            break;    // Break if last 3 coeffs are less than the tolerance
           }
         }
       }

@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2023-07-06 13:36:09
+ * @ Modified time: 2023-10-20 11:26:22
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -13,7 +13,7 @@
 #include <vector>
 #include <iostream>
 #include <utility>
-
+#include <unistd.h>
 
 #include <APC.h>
 #include <adaptive_picard_chebyshev.h>
@@ -26,7 +26,19 @@
 #include "EphemerisRotation.h"
 using namespace std;
 
-int main(){
+int main(int argc, char** argv){
+  //PRINT THE CURRENT WORKING DIRECTORY
+  char cwd[1024];
+  if (getcwd(cwd, sizeof(cwd)) != NULL)
+  {
+    printf("Current working dir: %s\n", cwd);
+  }
+  else
+  {
+    perror("getcwd() error");
+    return 1;
+  }
+  
   // MATRICES_LOADED=false;
   //satellite properties
   double mass = 212;                               //sat mass (kg)
@@ -85,7 +97,7 @@ int main(){
   vector<double> v0 = {0.57985191, -1.42445477,  0.58555784}; // Initial Velocity (km/s)
   
   double T = 7690.61;                               //Orbital period (s)
-  double t0 = 386553666.1856561;                                              //initial time (s)
+  double t0 = 0.0;                                              //initial time (s)
   double tf = t0+1*60*60;     
   double dt = 30;
   int steps = tf/dt+1;
@@ -141,4 +153,5 @@ int main(){
 
   // std::pair<int,double> bench = Benchmark1000(8);
   // std::cout << "Benchmark with " << bench.first << " threads finished in " << bench.second << " seconds.\n";
+  return 0;
 }

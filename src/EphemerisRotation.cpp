@@ -36,7 +36,6 @@ void BodyFixedToInertial(vector<double> xF, vector<double> vF, vector<double> &x
     }
     xI.insert(xI.begin(),IState,IState+3);
     vI.insert(vI.begin(),IState+3,IState+6);
-    
 }
 void BodyFixedToInertial(double *xF, double *vF, double *xI, double *vI, double t, Orbit &orbit)
 {

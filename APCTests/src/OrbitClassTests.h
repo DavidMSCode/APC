@@ -8,6 +8,7 @@
  * 
  * @return int, returns the number of failed checks
  */
+int OrbitClassTests(int argc, char** argv);
 int testValidPrimaries();
 
 int testInitOrbit();

@@ -58,29 +58,53 @@ class Orbit
         double _Ephemeris_tf;
         double _Integrator_t0;
         double _Integrator_tf;
-        double _dt;
+        double _dt = 30;
         string _Epochname = "J2000";                //name of Epoch. Defaults to J2000.
         string _IOFrame;
         string _InertFrame;
         string _FixedFrame;
-        vector<double> _In_r0 = {0,0,0};
+        vector<double> _In_r0 = {0,0,0};            //Input state variables
         vector<double> _In_v0 = {0,0,0};
         vector<double> _In_s0 = {0,0,0,0,0,0};
+
+        //Integrator temporary variables
+        double r0_seg[3] = {0.0};           //Current node position and velocity for integrator
+        double v0_seg[3] = {0.0};
+        double z0_seg[6] = {0.0};           //Initial state vector for integrator
+        vector<double> tau;                 //Current segment cosine spaced integration variable from -1 to 1
+        vector<double> times_seg;           //Current segment cosine spaced time vector
+        vector<double> Beta_seg;            //Current segment beta chebyshev coefficents for integrator
+        vector<double> Alpha_seg;           //Current segment alpha chebyshev coefficients for integrator
+        vector<double> X_seg;               //Current segment chebyshev nodes positions for integrator
+        vector<double> V_seg;               //Current segment chebyshev nodes velocities for integrator
+
+        //Integrator flags and options
         bool Compute_Drag = false;
         bool Compute_SRP = false;
         bool Compute_Third_Body = false;
         bool Compute_Hamiltonian = false;
         bool suborbital = false;
+        int prep_HS;
+        double tol = 1e-15;                     //tolerance for APC
+        int deg = 70;                           //Degree of high order spherical harmonic gravity evaluations
         int ID;
         std::vector<double> T;              //user defined time vector
         bool USER_TIME = false;             //flag if user time is used
+        int hot;                            //hot start switch
 
         //Degree segmentation variables
         int seg; //number of segments per complete orbit
         int N; //degree of chebyshev polynomials
+        int M; //number of chebyshev nodes
         double tp; // time of Keplerian perigee passage
         double Period; // Keplerian orbit period (s)
         int coeff_size; //
+        vector<double> segment_times; //segment start and end times (s)
+        vector<double> W1; //timescale factors 1 and 2
+        vector<double> W2;
+        int total_segs = 0; //total number of segments 
+        int k = 0; //current segment number
+        double orb_end; //end time (perigee passage) of current orbit (s)
 
         //Integrator operators and matrices
         vector<double> tvec;    //-- Segment start and end times (s)
@@ -122,7 +146,11 @@ class Orbit
          * @param primary The primary body for integration
          */
         void SetMu(string primary);
-
+        /**
+         * @brief Sets tolerance for APC solutions
+         * @
+        */
+        void SetTolerance(double tolerance){tol=tolerance;};
 
         /// @brief 
         /// @param item 

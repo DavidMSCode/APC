@@ -2,7 +2,7 @@
  * @file ConstellationTest.h
  * @author David Stanley (davidms4@illinois.edu)
  * @ Modified by: Your name
- * @ Modified time: 2023-07-06 12:49:54
+ * @ Modified time: 2023-10-17 14:13:16
  * @date 2023-03-10
  * 
  * @copyright Copyright (c) 2023
@@ -16,3 +16,5 @@
 
 
 #endif
+
+int ConstellationTests(int argc, char** argv);

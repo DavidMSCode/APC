@@ -37,7 +37,16 @@ polydegree_segments.cpp
 prepare_propagator.cpp
 radial_gravity.cpp
 reosc_perigee.cpp
-rv2elm.cpp)
+rv2elm.cpp) 
+
+add_library(Grav
+EGM2008.cc
+EGM2008.cpp
+GRGM1200b.cpp
+GRGM1200b.cc
+radial_gravity.cpp)
+# use c++14
+set_property(TARGET Grav PROPERTY CXX_STANDARD 14)
 
 if (WIN32)
     target_link_libraries(APC ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.lib) #link cspice library
@@ -45,4 +54,7 @@ else ()
     target_link_libraries(APC ${APC_SOURCE_DIR}/extern/cspice/lib/cspice.a) #link cspice library
 endif()
 target_link_libraries(APC OpenMP::OpenMP_CXX)   #link openmp library
-target_link_libraries (APC Eigen3::Eigen)
+# target_link_libraries (APC Eigen3::Eigen)
+
+add_executable(main_bootstrap main_bootstrap.cpp)
+target_link_libraries(main_bootstrap APC)

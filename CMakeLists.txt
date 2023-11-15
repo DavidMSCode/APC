@@ -5,23 +5,26 @@ cmake_minimum_required(VERSION 3.13.0)
 cmake_policy(SET CMP0091 NEW) #allow setting MSVC runtime library instead of using cmake cache
 project(APC VERSION 0.1.0)
 
-add_subdirectory(src)
-add_subdirectory(srcMB)
+add_subdirectory(src)     #SOurce code for library
+add_subdirectory(srcMB)   #SOurce code for quadrature matrix builder
 #Test code
 include(CTest)
-if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-    add_subdirectory(APCTests)
-endif ()
+add_subdirectory(APCTests/src)  #Tests for library
 #Compile Flags
 set(CMAKE_CXX_STANDARD 14)
-set_property(TARGET TestMain APC  PROPERTY CXX_STANDARD 14) #sets C++ standard to c++14 (ignored on Windows)
+set_property(TARGET APC CombinedTests main_bootstrap PROPERTY CXX_STANDARD 14) #sets C++ standard to c++14 (ignored on Windows)
 
 #[[choose runtime library (only Windows). CSPICE is statically linked with the release runtime flags /MT (libcmt.lib) (no debug)
 When compiling for debug on Windows LNK4098 warning will occur but it will still be possible to run the resulting binary.]]
-set_property(TARGET APC TestMain MatrixBuilder PROPERTY
+set_property(TARGET APC CombinedTests MatrixBuilder PROPERTY
   MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 enable_testing()
 
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+message("Setting up sanitizers")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -fsanitize=undefined -fsanitize=address -fno-omit-frame-pointer")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=undefined -fsanitize=address")
+endif()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
@@ -49,3 +52,4 @@ if (DOXYGEN_FOUND)
 else (DOXYGEN_FOUND)
   message("Doxygen needs to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
+

@@ -15,10 +15,9 @@
 /**
  * @brief 
  * 
- * @param tol 
  * @param prep_HS 
  * @param orbit 
  */
-void prepare_propagator(double tol, int* prep_HS, Orbit &orbit);
+void prepare_propagator(Orbit &orbit);
 
 #endif

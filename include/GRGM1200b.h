@@ -3,10 +3,15 @@
 
 #include "Orbit.h"
 
-const int Max_Degree_GRGM1200b = 250;
+const int Max_Degree_GRGM1200b = 251;
 const double Re_GRGM1200b = 1.7380000000000000e+03;                     //Reference radius in km
 const double GM_GRGM1200b = 4.9028001224453001e+03;                     //Grvitational Parameter km^3/s^2
 
+/* Macro for looking up indices using "1" based addressing ( a la fortran and matlab )
+ and column-major array format [Note ld = Num of rows]
+ */
+#define IDX2F(i,j,ld) ((((j)-1)*(ld))+((i)-1))
+#define IDX3F(i,j,k,ld1,ld2) ((((k)-1)*(ld1*ld2))+(((j)-1)*(ld1))+((i)-1))
 
 /*!
 * \brief Gravity Evaluation

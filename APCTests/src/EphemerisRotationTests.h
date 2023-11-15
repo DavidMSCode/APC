@@ -12,6 +12,8 @@
 #ifndef __ROTATIONTEST__
 #define __ROTATIONTEST__
 
-int EphemerisRotationTest();
+int EphemerisRotationTests(int argc, char** argv);
+
+int EphemerisRotationTest(vector<double> r0, vector<double> v0, double rtol=1e-15);
 
 #endif

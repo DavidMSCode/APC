@@ -6,20 +6,20 @@
 *  DESCRIPTION:      Header file
 */
 
-#ifndef __PERT__
-#define __PERT__
- 
- /**
-  * @brief Iteration struct for controlling full or approximate calculations in the pertubed_gravity() function
-  * 
-  */
-struct IterCounters{
-    int ITR1 = 0;
-    int ITR2 = 0;
-    int ITR3 = 0;
-    int ITR4 = 0;
-    int MODEL = 0;
-};
+#ifndef __LUNAR_PERT__
+#define __LUNAR_PERT__
+#include "perturbed_gravity.h"
+//  /**
+//   * @brief Iteration struct for controlling full or approximate calculations in the pertubed_gravity() function
+//   * 
+//   */
+// struct IterCounters{
+//     int ITR1 = 0;
+//     int ITR2 = 0;
+//     int ITR3 = 0;
+//     int ITR4 = 0;
+//     int MODEL = 0;
+// };
 
 /**
  * @brief  Returns the gravitational acceleration at a position to a desired degree of gravity. Uses the full fidelity model or an approximation depending on the current tolerance and iteration count.
