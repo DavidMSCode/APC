@@ -14,4 +14,6 @@
     extern bool g_MATRICES_LOADED;        //Tells APC whether the picard iteration matrices have already been loaded
     extern bool g_DEBUG_MESSAGES;
     extern bool g_KERNELS_LOADED;       //Tells APC whether the spice kernels are currently loaded
+    extern bool g_DEBUG_PICARD;
+    extern bool g_DEBUG_INTERPOLATE;
 #endif

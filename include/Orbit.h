@@ -99,7 +99,7 @@ class Orbit
         double tp; // time of Keplerian perigee passage
         double Period; // Keplerian orbit period (s)
         int coeff_size; //
-        vector<double> segment_times; //segment start and end times (s)
+        vector<double> segment_end_times; //segment start and end times (s)
         vector<double> W1; //timescale factors 1 and 2
         vector<double> W2;
         int total_segs = 0; //total number of segments 

@@ -37,6 +37,7 @@
 #include <math.h>
 
 #include <vector>
+#include <iostream>
 
 #include "picard_iteration.h"
 #include "const.h"
@@ -52,6 +53,7 @@
 #include "matrix_loader.h"
 #include "Ephemeris.hpp"
 #include "EphemerisRotation.h"
+#include "flags.h"
 using namespace std;
 void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
 {
@@ -131,13 +133,22 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
         xI[j - 1] = X[ID2(i, j, M + 1)];
         vI[j - 1] = V[ID2(i, j, M + 1)];
       }
-      // Exit loop early if orbit has crashed
-      // if (!suborbital){
-      //   alt = sqrt(pow(xI[0],2)+pow(xI[1],2)+pow(xI[2],2))-orbit.GetPrimaryRadius();
-      //   if (alt<0){
-      //     suborbital=true;
-      //   }
-      // }
+      //Exit loop early if orbit has crashed
+      if (!suborbital){
+        alt = sqrt(pow(xI[0],2)+pow(xI[1],2)+pow(xI[2],2))-orbit.GetPrimaryRadius();
+        if (alt<0){
+          suborbital=true;
+        }
+      }
+
+      // Exit loop early if xI or vI is NaN
+      if (isnan(xI[0]) || isnan(xI[1]) || isnan(xI[2]) || isnan(vI[0]) || isnan(vI[1]) || isnan(vI[2]))
+      {
+        //print error message
+        cout << "Error: NaN in Picard Iteration" << endl;
+        //goto end of picard iteration
+        goto endPicardIteration;
+      }
       // Convert from ECI to ECEF
       InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
 
@@ -306,6 +317,9 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
     {
       itr = itr - 1;
       break;
+      if(g_DEBUG_PICARD){
+        cout << "Warning: Max iterations reached for current segment" << endl;
+      }
     }
   }
 
@@ -314,4 +328,7 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
     // Set suborbital flag to stop iterations early.
     orbit.SetSubOrbital();
   }
+  //goto label end of picard iteration
+  endPicardIteration:
+    return;
 }

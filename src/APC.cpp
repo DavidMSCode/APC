@@ -176,7 +176,6 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   }
   Solution.push_back(Hs);
   UnloadKernels();        //Unload the kernels from SPICE
-  //free(Soln);
   return Solution;
 }
 

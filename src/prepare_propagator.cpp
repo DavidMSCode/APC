@@ -50,7 +50,7 @@ using namespace std;
 
 void prepare_propagator(Orbit &orbit)
 {
-    // std::cout << "finished loading matrices";
+  // std::cout << "finished loading matrices";
   // orbit.T2 = T2; // [(M+1)x(N+1)]
   // orbit.P2 = P2; // [(N+1)xN]
   // orbit.T1 = T1; // [(M+1)xN]
@@ -223,4 +223,5 @@ void prepare_propagator(Orbit &orbit)
       A[ID2(j, k, N - 1)] = temp6[ID2(j, k, Nmax + 1)]; // Least Squares Operator
     }
   }
+  return;
 }

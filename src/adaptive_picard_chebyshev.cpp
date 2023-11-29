@@ -67,8 +67,8 @@ void adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, doub
   orbit.CC.B.resize((orbit.coeff_size*3),0.0);
   orbit.CC.total_segs = 0;                                    //running count of orbital path segments
   //reserve space in vectors for interpolation and solution
-  int sz = int(ceil(1.0*tf/orbit.Period*orbit.seg))+2;
-  orbit.segment_times.resize(sz,0.0);
+  int sz = int(ceil(tf/orbit.Period)*(orbit.seg+1));              //ensure sufficient space by overestimating the number of segments
+  orbit.segment_end_times.resize(sz,0.0);
   orbit.W1.resize(sz,0.0);
   orbit.W2.resize(sz,0.0);
 

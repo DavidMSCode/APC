@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2023-10-20 11:26:22
+ * @ Modified time: 2023-11-28 20:05:24
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -93,12 +93,12 @@ int main(int argc, char** argv){
   // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s
   // Nan Orbit
   //1000 km Lunar orbit
-  vector<double> r0 = {-550.88475695,  460.26699639, 1652.48226511};                  // Initial Position (km)
-  vector<double> v0 = {0.57985191, -1.42445477,  0.58555784}; // Initial Velocity (km/s)
+  vector<double> r0 = {1771,0,0};                  // Initial Position (km)
+  vector<double> v0 = {0,1.67214333,0}; // Initial Velocity (km/s)
   
-  double T = 7690.61;                               //Orbital period (s)
+  double T = 6789.42232519816;                             //Orbital period (s)
   double t0 = 0.0;                                              //initial time (s)
-  double tf = t0+1*60*60;     
+  double tf = t0+2*T;     
   double dt = 30;
   int steps = tf/dt+1;
   std::vector<double> time_vec;

@@ -56,7 +56,7 @@ std::vector<double> interpolate(Orbit &orbit){
   std::vector<double> &BETA = orbit.CC.B;
   int coeff_size = orbit.coeff_size;
   int N = orbit.N;
-  std::vector<double> &seg_times = orbit.segment_times;
+  std::vector<double> &seg_times = orbit.segment_end_times;
   std::vector<double> &W1 = orbit.W1;
   std::vector<double> &W2 = orbit.W2;
   int total_segs = orbit.total_segs;
@@ -73,7 +73,6 @@ std::vector<double> interpolate(Orbit &orbit){
   double test_time = 0.0;
   // Loop through all segments
   for (int i=1; i<=total_segs; i++){
-
     int sz = count_if(time_out.begin(),time_out.end(),[&](int timestep){return (timestep>=seg_times[i-1] && timestep<= seg_times[i]);});
     // Initialization
     std::vector<double> Beta(N*3);
