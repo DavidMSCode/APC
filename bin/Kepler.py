@@ -125,4 +125,3 @@ def elms2rv(a,e,inc,Om,w,M,mu,tol=1e-10):
   
     return [r_vec, v_vec]
 
-elms2rv(8000,.1,0,0,0,0,muEarth)

@@ -153,7 +153,7 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
       InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
 
       // Compute Variable Fidelity Gravity
-      lunar_perturbed_gravity(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, del_G);
+      lunar_perturbed_gravity(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, del_G, orbit.lowDeg);
       // Calculate acceleration from drag
       Perturbed_Drag(xPrimaryFixed, vPrimaryFixed, orbit, drag_aECEF);
 

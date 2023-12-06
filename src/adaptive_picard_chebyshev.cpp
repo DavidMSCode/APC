@@ -61,7 +61,7 @@ void adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, doub
 
   /* 3. PICARD-CHEBYSHEV PROPAGATOR
   Propagate from t0 to tf, iterating on each segment (Picard Iteration), until
-  completion. */
+  completion. Stores solution as chebyshev nodes for each segment*/
   orbit.M = orbit.N;                                          // Number of Chebyshev nodes
   orbit.CC.A.resize((orbit.coeff_size*3),0.0);
   orbit.CC.B.resize((orbit.coeff_size*3),0.0);
@@ -72,7 +72,7 @@ void adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, doub
   orbit.W1.resize(sz,0.0);
   orbit.W2.resize(sz,0.0);
 
- picard_chebyshev_propagator(soln_size,Feval, orbit, ephem);
+ picard_chebyshev_propagator(orbit.coeff_size,Feval, orbit, ephem);
 
   // /* 4. INTERPOLATE SOLUTION
   // The Chebyshev coefficients from each of the orbit segments are used to compute

@@ -66,7 +66,7 @@ std::vector<double> interpolate(Orbit &orbit){
 
   // User specified output times
   int len;
-  len = time_out.size()-1;
+  len = time_out.size();
   int soln_size = time_out.size();
   std::vector<double> Soln(soln_size*6,0.0);
   //memset( time_out, 0.0, (len*sizeof(double)));
@@ -87,7 +87,7 @@ std::vector<double> interpolate(Orbit &orbit){
     // User desired times for a given segment
     int cnt = 0;
     // printf("seg_times %f\t%f\n",seg_times[i-1],seg_times[i]);
-    for (int j=0; j<=len; j++){
+    for (int j=0; j<len; j++){
       if (time_out[j] == seg_times[i-1]){
         //printf("t1 %f\n",time_out[j]);
         tau[cnt] = -1.0;

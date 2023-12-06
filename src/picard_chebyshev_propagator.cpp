@@ -56,6 +56,10 @@
 #include "flags.h"
 #include "SpiceUsr.h"
 using namespace std;
+//  picard_chebyshev_propagator(double* r0, double* v0, double t0, double t_final,double deg, double tol, double Period,
+//    std::vector<double> &tvec, std::vector<double> &t_orig, int seg, int N, int M, int* prep_HS, int coeff_size, int soln_size, int* total_seg,
+//    std::vector<double> &P1, std::vector<double> &P2, std::vector<double> &T1, std::vector<double> &T2, std::vector<double> &A, std::vector<double> &Ta, std::vector<double> &W1, std::vector<double> &W2, double* Feval,
+//    std::vector<double> &ALPHA, std::vector<double> &BETA, std::vector<double> &segment_times, Orbit &orbit, EphemerisManager ephem){
 
 void picard_chebyshev_propagator(int coeff_size, double *Feval, Orbit &orbit, EphemerisManager &ephem)
 {

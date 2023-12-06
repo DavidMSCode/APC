@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2023-11-28 20:05:24
+ * @ Modified time: 2023-12-06 14:24:32
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -58,7 +58,7 @@ int main(int argc, char** argv){
   string frame = "J2000";
 
   // Initialize Input Variables
-  // LEO
+  //LEO
   // vector<double> r0 = {7000, 0.0, 0.0};         // Initial Position (km)
   // vector<double> v0 = {0.0,  7.54604911, 0.};   // Initial Velocity (km/s)
   // double t0    = 0.0;                                // Initial Times (s)
@@ -119,8 +119,8 @@ int main(int argc, char** argv){
   orbit.SetPosition0(r0);
   orbit.SetVelocity0(v0);
   orbit.SetIntegrationTime(t0,tf);
-  orbit.SetComputeThirdBody();
-  orbit.SetComputeSRP();
+  // orbit.SetComputeThirdBody();
+  // orbit.SetComputeSRP();
   orbit.SetComputeHamiltonian();
   orbit.PrintConfig();
   //run propagation
@@ -128,6 +128,10 @@ int main(int argc, char** argv){
   vector<double> X = orbit.getPositionX();
   vector<double> Y = orbit.getPositionY();
   vector<double> Z = orbit.getPositionZ();
+  //Get Velocities
+  vector<double> VX = orbit.getVelocityX();
+  vector<double> VY = orbit.getVelocityY();
+  vector<double> VZ = orbit.getVelocityZ();
   vector<double> H = orbit.getHamiltonian();
   vector<double> ts = orbit.getTimes();
   std::vector<double> xI;

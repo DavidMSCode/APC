@@ -87,6 +87,7 @@ class Orbit
         int prep_HS;
         double tol = 1e-15;                     //tolerance for APC
         int deg = 70;                           //Degree of high order spherical harmonic gravity evaluations
+        int lowDeg = 4;                         //Degree of low order spherical harmonic gravity evaluations
         int ID;
         std::vector<double> T;              //user defined time vector
         bool USER_TIME = false;             //flag if user time is used
@@ -139,6 +140,7 @@ class Orbit
         void SetComputeThirdBody(bool compute_third_body = true){Compute_Third_Body=compute_third_body;};
         void SetComputeSRP(bool compute_SRP=true){Compute_SRP=compute_SRP;};
         void SetComputeHamiltonian(bool compute_hamiltonian=true){Compute_Hamiltonian=compute_hamiltonian;};
+        void SetGravityApproximationDegree(int degree){lowDeg=degree;};
         void SetCC(std::vector<double> A, std::vector<double> B, std::vector<double> W1, std::vector<double> W2, int N, int coeff_size, std::vector<double> seg_times, double TF, double T0,int total_segs);
         /**
          * @brief Sets gravitational parameter for two body gravity based on the primary body name
