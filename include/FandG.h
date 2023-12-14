@@ -19,6 +19,6 @@ void FandG( const double* z0, double* zf, const double dt, const double mu);
  *  \param[out] Ehat Change in eccentric anomaly
 */
 double newtonFandG( const double a, const double dt, const double rMag,
-                    const double sig0, const double tol, const double mu = C_MU);
+                    const double sig0, const double tol, const double mu);
 
 #endif

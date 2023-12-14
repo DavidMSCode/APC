@@ -110,14 +110,14 @@ void UnloadKernels(){
   }
 }
 
-std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager ephem){
+std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager &ephem){
   LoadKernels();
   //Convert vectors to array since pybind wants vectors but the functions are coded for arrays
   double* r0 = &r[0];
   double* v0 = &v[0];
   double dt    = 30.0;                              // Soution Output Time Interval (s)
   //FIXME: deg should be user modifiable
-  double deg   = 70;                               // Gravity Degree (max 100)
+  double deg   = 200;                               // Gravity Degree (max 100)
   orbit.deg = deg;
   // Initialize Output Variables
   int soln_size = int(ceil((tf/dt)))+1;
@@ -127,7 +127,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   std::vector<double> Soln(soln_size*6,0.0);
   double Feval[2] = {0.0};
   std::vector<std::vector<double> > states;
-  adaptive_picard_chebyshev(r0,v0,t0,tf,dt,deg,soln_size,Feval,Soln,orbit,ephem);
+  adaptive_picard_chebyshev(Feval,Soln,orbit,ephem);
   int total;
   total = int(ceil(Feval[0] + Feval[1]*pow(6.0,2)/pow(deg,2)));
 
@@ -142,8 +142,9 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   std::vector<double> t_vec = orbit.T;
   double t_curr;
   soln_size = t_vec.size();
+  std:string HmaxStr;
   for (int i=1; i<=soln_size; i++){
-    t_curr = t_vec[i-1];
+    t_curr = orbit.et(t_vec[i-1]);
     for (int j=1; j<=6; j++){
       States[j-1].push_back(Soln[ID2(i,j,soln_size)]);
       state[j-1] = Soln[ID2(i,j,soln_size)];
@@ -163,11 +164,9 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
     Hs.push_back(fabs((H-H0)/H0));
   std::ostringstream ss;
   ss << Hmax;
-  std::string HmaxStr(ss.str());
+  HmaxStr = ss.str();
   }
-  //std::cout << to_string(orb.ID)+":\tFunc Evals: " + to_string(total) + "  \t Hmax: " + HmaxStr + "\n";
-  // printf("Func Evals: %i\t",total);
-  // printf("Hmax %1.16E\n",Hmax);
+  std::cout << to_string(orbit.ID)+":\tFunc Evals: " + to_string(total) + "  \t Hmax: " + HmaxStr + "\n";
   //Assemble solution vector
   std::vector<std::vector<double> > Solution;
   Solution.push_back(t_vec);
@@ -180,7 +179,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
 }
 
 //FIXME: This should be an orbit class method
-class Orbit PropagateOrbit(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager ephem){
+class Orbit PropagateOrbit(std::vector<double> r, std::vector<double> v, double t0, double tf, Orbit &orbit, EphemerisManager &ephem){
   //Generates 13 orbits with slight perturbations in state +/- on each coordinate
   std::vector<std::vector<double> > solution;
   solution = PropagateICs(r, v, t0 , tf, orbit, ephem);

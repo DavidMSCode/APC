@@ -88,7 +88,6 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
   double aPrimaryFixed[3] = {0.0};
   double aI[3] = {0.0};
   double del_X[3] = {0.0};
-  double del_aECEF[3] = {0.0};
   double del_aECI[3] = {0.0};
   double drag_aECEF[3] = {0.0};
   double SRP_aI[3] = {0.0};
@@ -101,8 +100,8 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
   std::vector<double> kappa((N + 1) * 3, 0.0);
   std::vector<double> Xorig;
   std::vector<double> Vorig;
-  std::vector<double> Xnew;
-  std::vector<double> Vnew;
+  std::vector<double> Xnew; //temporary per loop storage for X
+  std::vector<double> Vnew; //temporary per loop storage for V
   std::vector<double> xECEFp((M + 1) * 3, 0.0);
   std::vector<double> xECIp((M + 1) * 3, 0.0);
   std::vector<double> del_a((M + 1) * 3, 0.0);
@@ -122,10 +121,10 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
     err = 1e-2; // Prevents low fidelity J2 to J6 computations
   }
 
-  while (err > tol)
+  while (err > tol) //Iterate over same segment until max error at any node (diff between current iteration and previous iteration) meets the tolerance
   {
     suborbital = false;
-    for (int i = 1; i <= M + 1; i++)
+    for (int i = 1; i <= M + 1; i++)    //Get forces at each node on the segment in inertial frame
     {
 
       for (int j = 1; j <= 3; j++)
@@ -178,8 +177,9 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
         G[ID2(i, j, M + 1)] = aI[j - 1];
         xECIp[ID2(i, j, M + 1)] = xI[j - 1];
       }
-    }
+    } //Forces found for each node
 
+    // Perform quadrature for velocity then position in inertial frame
     // Velocity
     std::vector<double> tmp1;
     std::vector<double> tmp2;
@@ -226,11 +226,12 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
       {
         del_X[j - 1] = xI[j - 1] - xECIp[ID2(i, j, M + 1)];
       }
-      // Convert from ECI to ECEF
+      // Convert from inertial to body fixed frame
       InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
-      // eci2ecef(times[i - 1], xI, vI, xPrimaryFixed, vPrimaryFixed);
+      //eci2ecef(times[i - 1], xI, vI, xPrimaryFixed, vPrimaryFixed);
       // Linear Error Correction Acceleration
-      picard_error_feedback_GRGM1200b(xPrimaryFixed,del_X,del_aECEF);
+      double del_aECEF[3] = {0.0};
+      //picard_error_feedback_GRGM1200b(xPrimaryFixed,del_X,del_aECEF);
       // Convert from ECEF to ECI
       // ecef2eci(times[i - 1], del_aECEF, del_aECI);
       BodyFixedAccelerationToInertial(del_aECEF,del_aECI,times[i-1],orbit);

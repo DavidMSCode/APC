@@ -2,7 +2,7 @@
 *  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
 *  DATE WRITTEN:     May 2017
  * @ Modified by: Your name
- * @ Modified time: 2023-12-06 14:24:32
+ * @ Modified time: 2023-12-13 17:44:44
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -23,6 +23,8 @@
 #include <Ephemeris.hpp>
 #include "matrix_loader.h"
 #include "flags.h"
+#include "TwoBody.h"
+#include "const.h"
 #include "EphemerisRotation.h"
 using namespace std;
 
@@ -93,11 +95,19 @@ int main(int argc, char** argv){
   // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s
   // Nan Orbit
   //1000 km Lunar orbit
-  vector<double> r0 = {1771,0,0};                  // Initial Position (km)
-  vector<double> v0 = {0,1.67214333,0}; // Initial Velocity (km/s)
-  
-  double T = 6789.42232519816;                             //Orbital period (s)
-  double t0 = 0.0;                                              //initial time (s)
+  double alt = 1000; //km
+  double a = C_Rmoon+alt;
+  double e = 0.0;
+  double i = 0.0;
+  double raan = 0.0;
+  double aop = 0.0;
+  double ta = 0.0;
+  vector<vector<double>> states = elms2rv(a,e,i,raan,aop,ta,C_MU_MOON);
+
+  vector<double> r0 = states[0];                // Initial Position (km)
+  vector<double> v0 = states[1];
+  double T = sqrt(pow(a,3)/C_MU_MOON);                             //Orbital period (s)
+  double t0 = 0;                                              //initial time (s)
   double tf = t0+2*T;     
   double dt = 30;
   int steps = tf/dt+1;
@@ -134,9 +144,9 @@ int main(int argc, char** argv){
   vector<double> VZ = orbit.getVelocityZ();
   vector<double> H = orbit.getHamiltonian();
   vector<double> ts = orbit.getTimes();
-  std::vector<double> xI;
-  std::vector<double> vI;
-  double t = 3000;
+  //Get approximate position error from the hamiltonian
+  vector<double> H_error = orbit.getHamiltonian();
+  
   // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;

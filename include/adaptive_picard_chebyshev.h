@@ -27,6 +27,6 @@
  * @param ephem the cached ephemeris object for interpolatinf moon and sun positions.
  * @return std::vector<std::vector<double> > Returns a vector of interpolated solution values
  */
-void adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, double dt, double deg, int soln_size, double* Feval, std::vector<double> &Soln, Orbit &orbit, EphemerisManager ephem);
+void adaptive_picard_chebyshev( double* Feval, std::vector<double> &Soln, Orbit &orbit, EphemerisManager ephem);
 
 #endif

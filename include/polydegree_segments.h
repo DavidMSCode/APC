@@ -18,6 +18,6 @@
  * @param deg Gravity Degree (max 100)
  * @param Feval Function evaluation counter
  */
-void polydegree_segments(Orbit &orbit, double deg, double* Feval);
+void polydegree_segments(Orbit &orbit, double* Feval);
 
 #endif

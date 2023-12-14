@@ -274,8 +274,8 @@ void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int M, dou
 // FIXME: Need to change to lunar spherical harmonic coefficicents that best approximate masscons
 void lunar_Grav_Approx(double t, double *X, double *dX, double *Feval)
 {
-  int deg = 4;
-  GRGM1200b(X, dX, 4);
+  int deg = 6;
+  GRGM1200b(X, dX, deg);
 
   Feval[1] = Feval[1] + 1.0;
   return;
@@ -309,7 +309,7 @@ void lunar_Grav_Full(double t, double *Xo, double *acc, double tol, double deg, 
   }
 
   double grav = deg;
-  // FIXME: Radial gravity is written for Earth model assuming that atmospheric drag perturbation dominates at low orbit
+  // FIXME: Radial gravity is written for Earth model assuming that atmospheric drag perturbation dominates at low orbit. Do not use until radial gravity is updated for lunar model.
   //  radial_gravity(Xo,tol,deg,&grav);
   GRGM1200b(state, &dstate[3], grav);
   Feval[0] = Feval[0] + pow(grav, 2) / pow(deg, 2);

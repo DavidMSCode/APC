@@ -87,7 +87,7 @@ class Orbit
         int prep_HS;
         double tol = 1e-15;                     //tolerance for APC
         int deg = 70;                           //Degree of high order spherical harmonic gravity evaluations
-        int lowDeg = 4;                         //Degree of low order spherical harmonic gravity evaluations
+        int lowDeg = 6;                         //Degree of low order spherical harmonic gravity evaluations
         int ID;
         std::vector<double> T;              //user defined time vector
         bool USER_TIME = false;             //flag if user time is used

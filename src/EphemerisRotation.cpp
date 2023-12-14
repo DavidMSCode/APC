@@ -92,11 +92,11 @@ void InertialToBodyFixed(vector<double> xI, vector<double> vI, vector<double> &x
     double inertialPrimaryState[6];
     double lt;
 
-    //Substract moon state from inertial satellite state to get state relative to the moon
-    spkezr_c(fixedCenter.c_str(),et,InertFrame.c_str(),"LT+S",InertCenter.c_str(),inertialPrimaryState,&lt);
-    for(int i=0;i<6;i++){
-    IState[i]-=inertialPrimaryState[i];
-    }
+    // //Substract primary body state from inertial satellite state to get state relative to the primary body
+    // spkezr_c(fixedCenter.c_str(),et,InertFrame.c_str(),"LT+S",InertCenter.c_str(),inertialPrimaryState,&lt);
+    // for(int i=0;i<6;i++){
+    // IState[i]-=inertialPrimaryState[i];
+    // }
     //Get state rotation matrix and rotate from inertial frame to fixed frame.
     sxform_c(InertFrame.c_str(),FixedFrame.c_str(),et, xform);
     mxvg_c(xform,IState,6,6,FState);
@@ -119,11 +119,11 @@ void InertialToBodyFixed(double *xI, double *vI, double *xF, double *vF, double 
     double inertialPrimaryState[6];
     double lt;
 
-    //Substract moon state from inertial satellite state to get state relative to the moon
-    spkezr_c(fixedCenter.c_str(),et,InertFrame.c_str(),"LT+S",InertCenter.c_str(),inertialPrimaryState,&lt);
-    for(int i=0;i<6;i++){
-    IState[i]-=inertialPrimaryState[i];
-    }
+    // //Substract moon state from inertial satellite state to get state relative to the moon
+    // spkezr_c(fixedCenter.c_str(),et,InertFrame.c_str(),"LT+S",InertCenter.c_str(),inertialPrimaryState,&lt);
+    // for(int i=0;i<6;i++){
+    // IState[i]-=inertialPrimaryState[i];
+    // }
     //Get state rotation matrix and rotate from inertial frame to fixed frame.
     sxform_c(InertFrame.c_str(),FixedFrame.c_str(),et, xform);
     mxvg_c(xform,IState,6,6,FState);

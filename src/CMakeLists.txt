@@ -37,7 +37,8 @@ polydegree_segments.cpp
 prepare_propagator.cpp
 radial_gravity.cpp
 reosc_perigee.cpp
-rv2elm.cpp) 
+rv2elm.cpp
+TwoBody.cpp) 
 
 add_library(Grav
 EGM2008.cc
@@ -60,7 +61,11 @@ target_link_libraries(APC OpenMP::OpenMP_CXX)   #link openmp library
 add_executable(main_bootstrap main_bootstrap.cpp)
 target_link_libraries(main_bootstrap APC)
 
-add_executable(main_degree_trade_study main_degree_trade_study.cpp)
+add_executable(main_degree_trade_study main_degree_trade_study.cpp TwoBody.cpp)
 target_link_libraries(main_degree_trade_study APC)
 set_property(TARGET main_degree_trade_study PROPERTY CXX_STANDARD 14)
 target_link_libraries(main_degree_trade_study OpenMP::OpenMP_CXX)   #link openmp library
+
+add_executable(main_hamiltonian_error main_hamiltonian_error.cpp TwoBody.cpp)
+target_link_libraries(main_hamiltonian_error APC)
+set_property(TARGET main_hamiltonian_error PROPERTY CXX_STANDARD 14)

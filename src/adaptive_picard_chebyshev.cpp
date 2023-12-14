@@ -43,13 +43,13 @@
 #include "Orbit.h"
 #include "Ephemeris.hpp"
 
-void adaptive_picard_chebyshev(double* r0,double* v0, double t0, double tf, double dt, double deg, int soln_size, double* Feval, std::vector<double> &Soln, Orbit &orbit, EphemerisManager ephem){
+void adaptive_picard_chebyshev( double* Feval, std::vector<double> &Soln, Orbit &orbit, EphemerisManager ephem){
 
   /* 1. DETERMINE DEGREE/SEGMENTATION SCHEME
   Compute the polynomial degree and number of segments per orbit that will
   result in a solution that satisfies the user specified tolerance. */
-  polydegree_segments(orbit,deg,Feval);
-
+  polydegree_segments(orbit,Feval);
+  double &tf = orbit._Integrator_tf;
   // Array size for coefficients and solution
   orbit.coeff_size = int((tf/orbit.Period + 1.0)*(orbit.seg+2.0)*(orbit.N+1));
   /* 2. PREPARE PROPAGATOR

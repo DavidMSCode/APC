@@ -361,17 +361,10 @@ void jacobiIntegral_GRGM1200b(double t, double* solN, double* H, int Deg, Orbit 
 	// Convert from inertial frame to body fixed frame
 	InertialToBodyFixed(xI,vI,xF,vF,t,orbit);
 
-	solN[0] = xF[0];
-	solN[1] = xF[1];
-	solN[2] = xF[2];
-	solN[3] = vF[0];
-	solN[4] = vF[1];
-	solN[5] = vF[2];
-
 	double KE,PE,RotTerm;
 
 	KE = 0.5*(vI[0]*vI[0] + vI[1]*vI[1] + vI[2]*vI[2]);		//Kinetic energy in inertial frame
-	GRGM1200bPot(solN, &PE, Deg);							//Potential energy from body fixed position
+	GRGM1200bPot(xF, &PE, Deg);							//Potential energy from body fixed position
 	PE = -PE;
 	*H  = PE + KE; // Hamiltonian
 

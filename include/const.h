@@ -29,10 +29,12 @@ using namespace std;
 #define C_ckm 299792.458             // Speed of Light (km/s)
 #define C_Gsc 1362                   // Solar constant (W/m^2 or kg/s^3)
 #define g0 9.8065                    // Earth's Surface Gravity (m/s^2)
-#define C_J2 0.00108263                // Earth's Second Zonal Harmonic
+#define C_J2 0.00108263              // Earth's Second Zonal Harmonic
 #define RS 696000.0                  // Solar Radius [km]
-#define DU C_Req
-#define TU sqrt(pow(DU,3.0)/C_MU_EARTH)
+// #define DU C_Req
+// #define TU sqrt(pow(DU,3.0)/C_MU_EARTH)
+#define DU C_Rmoon
+#define TU sqrt(pow(DU,3.0)/C_MU_MOON)
 #define VU DU/TU
 #define si2can pow(TU,2.0)/(DU*1000.0) // Canonical unit conversion factor
 #define JD2000 2451545.0             // Julian days of J2000

@@ -41,7 +41,7 @@ int EphemerisRotationTest(vector<double> r0, vector<double> v0, double rtol/*=1e
     furnsh_c("moon_pa_de440_200625.bpc");
     furnsh_c("pck00010.tpc");
     furnsh_c("naif0012.tls");
-    string date = "1969-07-22T00:00:00.000000"; // Date of interest
+    string date = "2023-07-22T00:00:00.000000"; // Date of interest
     double et;
     str2et_c(date.c_str(), &et);
 

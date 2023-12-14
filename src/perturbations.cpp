@@ -185,7 +185,6 @@ void Perturbed_SRP(double time, double *X, Orbit &orbit, EphemerisManager &ephem
         double Area_m = orbit.GetArea();        // Sat cannonball area (m^2)
         double Area_km = Area_m / pow(1000, 2); // Sat cannonball area (km^2)
         double Cr = orbit.GetReflectance();     // Coeffecicient of reflectance
-        // FIXME: Replace C_Req with orbit defined primary body radius
         double r_eq = orbit.GetPrimaryRadius(); // Equatorial radius (km)
         double G_sc = C_Gsc;                    // Solar constant (kg/s^3))
         double C = C_ckm;                       // Speed of light (km/s)
