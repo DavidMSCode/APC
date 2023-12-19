@@ -24,4 +24,10 @@ void BodyFixedAccelerationToInertial(double* aF, double* aI, double t, Orbit &or
 void InertialToBodyFixed(vector<double> xI, vector<double> vI, vector<double> &xF, vector<double> &vF, double t, Orbit &orbit);
 void InertialToBodyFixed(double* xI, double* vI, double* xF, double* vF, double t, Orbit &orbit);
 
+vector<double> InertialToMoonPA(vector<double> IState, double t);
+
+vector<double> MoonPAToInertial(vector<double> xF, vector<double> vF, double t);
+
+vector<double> MoonPAAccelerationToInertial(double* aF, double t);
+
 #endif

@@ -133,3 +133,60 @@ void InertialToBodyFixed(double *xI, double *vI, double *xF, double *vF, double 
         vF[i]=FState[i+3];
     }
 }
+
+vector<double> InertialToMoonPA(vector<double> IState, double t)
+{
+    string fixedCenter = "MOON";
+    string InertCenter = "MOON";
+    string FixedFrame = "MOON_PA";
+    string InertFrame = "J2000";
+    double FState[6];
+    double xform[6][6];
+    double inertialPrimaryState[6];
+    double lt;
+
+    //Get state rotation matrix and rotate from inertial frame to fixed frame.
+    sxform_c(InertFrame.c_str(),FixedFrame.c_str(),t, xform);
+    mxvg_c(xform,&IState[0],6,6,FState);
+    //copy state to position and velocity vector
+    return {FState[0],FState[1],FState[2],FState[3],FState[4],FState[5]};
+}
+
+vector<double> MoonPAToInertial(vector<double> xF,vector<double> vF, double t){
+    string fixedCenter = "MOON";
+    string InertCenter = "MOON";
+    string FixedFrame = "MOON_PA";
+    string InertFrame = "J2000";
+    double FState[6] = {xF[0],xF[1],xF[2],vF[0],vF[1],vF[2]};
+    double IState[6];
+    double xform[6][6];
+    double inertialPrimaryState[6];
+    double lt;
+
+    //Get state rotation matrix and rotate from inertial frame to fixed frame.
+    sxform_c(FixedFrame.c_str(),InertFrame.c_str(),t, xform);
+    mxvg_c(xform,FState,6,6,IState);
+    //copy state to position and velocity vector
+    vector<double> xI(IState,IState+3);
+    vector<double> vI(IState+3,IState+6);
+    return xI;
+}
+
+vector<double> MoonPAAccelerationToInertial(double* aF, double t)
+{
+    string fixedCenter = "MOON";
+    string InertCenter = "MOON";
+    string FixedFrame = "MOON_PA";
+    string InertFrame = "J2000";
+    double FState[3] = {aF[0],aF[1],aF[2]};
+    double IState[3];
+    double xform[3][3];
+    double lt;
+
+    //Get state rotation matrix and rotate from inertial frame to fixed frame.
+    pxform_c(FixedFrame.c_str(),InertFrame.c_str(),t, xform);
+    mxvg_c(xform,FState,3,3,IState);
+    //copy state to position and velocity vector
+    vector<double> aI(IState,IState+3);
+    return aI;
+}

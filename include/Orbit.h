@@ -30,6 +30,23 @@ struct ChebyshevCoefficients{
             int total_segs;                 //Total number of segs
         };
 
+struct segment{
+    std::vector<double> t;      //-- node times
+    std::vector<double> et;     //-- ephemeris times
+    std::vector<double> x;      //-- node x positions
+    std::vector<double> y;      //-- node y positions
+    std::vector<double> z;      //-- node z positions
+    std::vector<double> vx;     //-- node x velocities
+    std::vector<double> vy;     //-- node y velocities
+    std::vector<double> vz;     //-- node z velocities
+    std::vector<double> dH;     //-- node Hamiltonian error
+};
+
+struct debugData{
+    std::vector<segment> segments; //list of segments with the solutions at each node
+    double H0;                      //initial Hamiltonian value
+};
+
 class Orbit
 {
     private:
@@ -292,6 +309,11 @@ class Orbit
          * 
          */
         struct ChebyshevCoefficients CC;
+
+        /**
+         *  @brief Struct that stores segment debug data when needed
+        */
+        struct debugData DebugData;
 
         /**
          * Runs a propagation for this single orbit

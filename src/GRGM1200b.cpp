@@ -23,7 +23,8 @@
 #include "GRGM1200b.h"
 #include "GRGM1200b.cc"
 #include "const.h"
-#include "EphemerisRotation.h"
+#include "eci2ecef.h"
+// #include "EphemerisRotation.h"
 
 // Declare Needed Variables
 /*!
@@ -94,7 +95,7 @@ void GRGM1200b( double* p, double* Gxyz, int DEG)
 
 	loc_gravityPCPF_GRGM1200b( p, P_priv, DEG, smlambda, cmlambda, r, scaleFactor_priv, Gxyz );
 
-
+return;
 }
 
 /*!
@@ -359,14 +360,16 @@ void jacobiIntegral_GRGM1200b(double t, double* solN, double* H, int Deg, Orbit 
 	vI[2] = solN[5];
 
 	// Convert from inertial frame to body fixed frame
-	InertialToBodyFixed(xI,vI,xF,vF,t,orbit);
-
+	//InertialToBodyFixed(xI,vI,xF,vF,t,orbit);
+	eci2ecef(t,xI,vI,xF,vF);
 	double KE,PE,RotTerm;
 
-	KE = 0.5*(vI[0]*vI[0] + vI[1]*vI[1] + vI[2]*vI[2]);		//Kinetic energy in inertial frame
-	GRGM1200bPot(xF, &PE, Deg);							//Potential energy from body fixed position
+	KE = 0.5*(vF[0]*vF[0] + vF[1]*vF[1] + vF[2]*vF[2]);		//Kinetic energy in inertial frame
+	GRGM1200bPot(xF, &PE, Deg);								//Potential energy from body fixed position
 	PE = -PE;
-	*H  = PE + KE; // Hamiltonian
+	RotTerm = 0.5*C_omega*C_omega*(xF[0]*xF[0] + xF[1]*xF[1]);
+
+	*H  = PE + KE - RotTerm; // Hamiltonian
 
 	// printf("KE: %e\tPE: %e\tRT: %e\tSum: %e\n ",KE,PE,RotTerm,*H);
 	// getchar();

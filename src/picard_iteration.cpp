@@ -49,10 +49,10 @@
 #include "picard_error_feedback.h"
 #include "perturbations.h"
 #include "Orbit.h"
-#include "EGM2008.h"
+#include "GRGM1200b.h"
 #include "matrix_loader.h"
 #include "Ephemeris.hpp"
-#include "EphemerisRotation.h"
+// #include "EphemerisRotation.h"
 #include "flags.h"
 using namespace std;
 void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
@@ -82,7 +82,7 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
   bool suborbital = false;
   double alt = 0.0;
   double xI[3] = {0.0};
-  double vI[3] = {0.0};
+  double vI[3] = {0.0}; 
   double xPrimaryFixed[3] = {0.0};
   double vPrimaryFixed[3] = {0.0};
   double aPrimaryFixed[3] = {0.0};
@@ -145,12 +145,12 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
       {
         //print error message
         cout << "Error: NaN in Picard Iteration" << endl;
-        //goto end of picard iteration
-        goto endPicardIteration;
+        //end picard iteration
+        return;
       }
       // Convert from ECI to ECEF
-      InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
-
+      // InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);  
+      eci2ecef(times[i - 1], xI, vI, xPrimaryFixed, vPrimaryFixed);
       // Compute Variable Fidelity Gravity
       lunar_perturbed_gravity(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, del_G, orbit.lowDeg);
       // Calculate acceleration from drag
@@ -162,8 +162,9 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
         aPrimaryFixed[k] = aPrimaryFixed[k] + drag_aECEF[k];
       }
 
-      // Convert from ECEF to ECI
-      BodyFixedAccelerationToInertial(aPrimaryFixed,aI,times[i-1],orbit);
+      // Convert acceleration vector from ECEF to ECI
+      // BodyFixedAccelerationToInertial(aPrimaryFixed,aI,times[i-1],orbit);
+      ecef2eci(times[i - 1], aPrimaryFixed, aI);
       // calculate SRP and Third Body
       Perturbed_SRP(times[i - 1], xI, orbit, ephem, SRP_aI);
       Perturbed_three_body_moon(times[i - 1], xI, orbit, ephem, third_body_aI);
@@ -227,14 +228,14 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
         del_X[j - 1] = xI[j - 1] - xECIp[ID2(i, j, M + 1)];
       }
       // Convert from inertial to body fixed frame
-      InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
-      //eci2ecef(times[i - 1], xI, vI, xPrimaryFixed, vPrimaryFixed);
+      //InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
+      eci2ecef(times[i - 1], xI, vI, xPrimaryFixed, vPrimaryFixed);
       // Linear Error Correction Acceleration
       double del_aECEF[3] = {0.0};
-      //picard_error_feedback_GRGM1200b(xPrimaryFixed,del_X,del_aECEF);
+      picard_error_feedback_GRGM1200b(xPrimaryFixed,del_X,del_aECEF);
       // Convert from ECEF to ECI
-      // ecef2eci(times[i - 1], del_aECEF, del_aECI);
-      BodyFixedAccelerationToInertial(del_aECEF,del_aECI,times[i-1],orbit);
+      ecef2eci(times[i - 1], del_aECEF, del_aECI);
+      //BodyFixedAccelerationToInertial(del_aECEF,del_aECI,times[i-1],orbit);
 
       for (int j = 1; j <= 3; j++)
       {
@@ -329,7 +330,38 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
     // Set suborbital flag to stop iterations early.
     orbit.SetSubOrbital();
   }
-  //goto label end of picard iteration
-  endPicardIteration:
-    return;
+
+//DEBUG: Store segment data
+if(g_DEBUG_SEGMENTS){
+  struct segment Segment;
+
+  //iterate through the X array
+  for (int i = 1; i <= M + 1; i++)
+  {
+      //
+      double state[6] = {X[ID2(i, 1, M + 1)],X[ID2(i, 2, M + 1)],X[ID2(i, 3, M + 1)],V[ID2(i, 1, M + 1)],V[ID2(i, 2, M + 1)],V[ID2(i, 3, M + 1)]};
+      //Calculate hamiltonian
+      double H;
+      double r[3] = {X[ID2(i, 1, M + 1)],X[ID2(i, 2, M + 1)],X[ID2(i, 3, M + 1)]};
+      double v[3] = {V[ID2(i, 1, M + 1)],V[ID2(i, 2, M + 1)],V[ID2(i, 3, M + 1)]};
+      jacobiIntegral_GRGM1200b(times[i-1],state,&H,orbit.deg,orbit);
+      if (orbit.DebugData.segments.empty() && i==1){
+        orbit.DebugData.H0 = H;
+      }
+      //Store Data
+      Segment.x.push_back(state[0]);
+      Segment.y.push_back(state[1]);
+      Segment.z.push_back(state[2]);
+      Segment.vx.push_back(state[3]);
+      Segment.vy.push_back(state[4]);
+      Segment.vz.push_back(state[5]);
+      Segment.t.push_back(times[i-1]);
+      Segment.et.push_back(times[i-1+orbit._Ephemeris_t0]);
+      Segment.dH.push_back((H-orbit.DebugData.H0)/orbit.DebugData.H0);
+  }
+  orbit.DebugData.segments.push_back(Segment);
+}
+
+
+  return;
 }

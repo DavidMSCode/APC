@@ -23,23 +23,26 @@ void eci2ecef(double t, double* X, double* V, double* xB, double* vB){
   double th       = t*C_omega;
   double cos_th   = cos(th);
   double sin_th   = sin(th);
-
+  double vB_temp[3];
   // Convert to Position to Rotating Frame
   xB[0]   =  cos_th*X[0] + sin_th*X[1];
   xB[1]   = -sin_th*X[0] + cos_th*X[1];
   xB[2]   = X[2];
 
-  // Convert Velocity to the Rotating Frame
+  // find velocity in rotating frame (aligned with inertial axes)
   if (V[0]+V[1]+V[2] != 0.0){
-    vB[0]   = V[0] + C_omega*X[1];
-    vB[1]   = V[1] - C_omega*X[0];
-    vB[2]   = V[2];
+    vB_temp[0]   = V[0] + C_omega*X[1];
+    vB_temp[1]   = V[1] - C_omega*X[0];
+    vB_temp[2]   = V[2];
   }
   if (V[0]+V[1]+V[2] == 0.0){
-    vB[0] = 0.0;
-    vB[1] = 0.0;
-    vB[2] = 0.0;
+    vB_temp[0] = 0.0;
+    vB_temp[1] = 0.0;
+    vB_temp[2] = 0.0;
   }
-
+  // Now rotate the relative velocity into the body frame
+  vB[0]   =  cos_th*vB_temp[0] + sin_th*vB_temp[1];
+  vB[1]   = -sin_th*vB_temp[0] + cos_th*vB_temp[1];
+  vB[2]   = vB_temp[2];
   return;
 }

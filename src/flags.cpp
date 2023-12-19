@@ -15,3 +15,4 @@ bool g_DEBUG_MESSAGES = false;
 bool g_KERNELS_LOADED = false;
 bool g_DEBUG_PICARD = false;
 bool g_DEBUG_INTERPOLATE = false;
+bool g_DEBUG_SEGMENTS = true;       //Tells APC whether to store the integrators segment solutions

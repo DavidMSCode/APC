@@ -69,3 +69,7 @@ target_link_libraries(main_degree_trade_study OpenMP::OpenMP_CXX)   #link openmp
 add_executable(main_hamiltonian_error main_hamiltonian_error.cpp TwoBody.cpp)
 target_link_libraries(main_hamiltonian_error APC)
 set_property(TARGET main_hamiltonian_error PROPERTY CXX_STANDARD 14)
+
+add_executable(RK45 RK45.cpp)
+target_link_libraries(RK45 APC)
+set_property(TARGET RK45 PROPERTY CXX_STANDARD 14)

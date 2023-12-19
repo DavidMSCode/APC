@@ -16,4 +16,5 @@
     extern bool g_KERNELS_LOADED;       //Tells APC whether the spice kernels are currently loaded
     extern bool g_DEBUG_PICARD;
     extern bool g_DEBUG_INTERPOLATE;
+    extern bool g_DEBUG_SEGMENTS;       //Tells aAPC whether to store the integrators segment solutions
 #endif

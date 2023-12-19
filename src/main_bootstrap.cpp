@@ -95,7 +95,7 @@ int main(int argc, char** argv){
   // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s
   // Nan Orbit
   //1000 km Lunar orbit
-  double alt = 1000; //km
+  double alt = 200 ; //km
   double a = C_Rmoon+alt;
   double e = 0.0;
   double i = 0.0;

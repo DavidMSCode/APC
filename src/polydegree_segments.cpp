@@ -58,8 +58,8 @@ void polydegree_segments(Orbit &orbit, double *Feval)
   // Get gravitational parameter for primary body
   const double mu = orbit.GetPrimaryGravitationalParameter();
   // Tolerances
-  double coeff_tol = tol / 100.0;
-  double fit_tol = tol / 10.0;
+  double coeff_tol = tol / 1000.0;
+  double fit_tol = tol / 100.0;
 
   // Compute Keplerian Orbit Period
   double a, e;
