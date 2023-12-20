@@ -150,7 +150,7 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
       }
       // Convert from ECI to ECEF
       // InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);  
-      eci2ecef(times[i - 1], xI, vI, xPrimaryFixed, vPrimaryFixed);
+      eci2ecef(orbit.et(times[i - 1]), xI, vI, xPrimaryFixed, vPrimaryFixed);
       // Compute Variable Fidelity Gravity
       lunar_perturbed_gravity(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, del_G, orbit.lowDeg);
       // Calculate acceleration from drag
@@ -164,7 +164,7 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
 
       // Convert acceleration vector from ECEF to ECI
       // BodyFixedAccelerationToInertial(aPrimaryFixed,aI,times[i-1],orbit);
-      ecef2eci(times[i - 1], aPrimaryFixed, aI);
+      ecef2eci(orbit.et(times[i - 1]), aPrimaryFixed, aI);
       // calculate SRP and Third Body
       Perturbed_SRP(times[i - 1], xI, orbit, ephem, SRP_aI);
       Perturbed_three_body_moon(times[i - 1], xI, orbit, ephem, third_body_aI);
@@ -229,12 +229,12 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
       }
       // Convert from inertial to body fixed frame
       //InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
-      eci2ecef(times[i - 1], xI, vI, xPrimaryFixed, vPrimaryFixed);
+      eci2ecef(orbit.et(times[i - 1]), xI, vI, xPrimaryFixed, vPrimaryFixed);
       // Linear Error Correction Acceleration
       double del_aECEF[3] = {0.0};
       picard_error_feedback_GRGM1200b(xPrimaryFixed,del_X,del_aECEF);
       // Convert from ECEF to ECI
-      ecef2eci(times[i - 1], del_aECEF, del_aECI);
+      ecef2eci(orbit.et(times[i - 1]), del_aECEF, del_aECI);
       //BodyFixedAccelerationToInertial(del_aECEF,del_aECI,times[i-1],orbit);
 
       for (int j = 1; j <= 3; j++)
@@ -342,9 +342,10 @@ if(g_DEBUG_SEGMENTS){
       double state[6] = {X[ID2(i, 1, M + 1)],X[ID2(i, 2, M + 1)],X[ID2(i, 3, M + 1)],V[ID2(i, 1, M + 1)],V[ID2(i, 2, M + 1)],V[ID2(i, 3, M + 1)]};
       //Calculate hamiltonian
       double H;
+      double et = orbit.et(times[i-1]);
       double r[3] = {X[ID2(i, 1, M + 1)],X[ID2(i, 2, M + 1)],X[ID2(i, 3, M + 1)]};
       double v[3] = {V[ID2(i, 1, M + 1)],V[ID2(i, 2, M + 1)],V[ID2(i, 3, M + 1)]};
-      jacobiIntegral_GRGM1200b(times[i-1],state,&H,orbit.deg,orbit);
+      jacobiIntegral_GRGM1200b(et,state,&H,orbit.deg,orbit);
       if (orbit.DebugData.segments.empty() && i==1){
         orbit.DebugData.H0 = H;
       }
@@ -356,7 +357,7 @@ if(g_DEBUG_SEGMENTS){
       Segment.vy.push_back(state[4]);
       Segment.vz.push_back(state[5]);
       Segment.t.push_back(times[i-1]);
-      Segment.et.push_back(times[i-1+orbit._Ephemeris_t0]);
+      Segment.et.push_back(et);
       Segment.dH.push_back((H-orbit.DebugData.H0)/orbit.DebugData.H0);
   }
   orbit.DebugData.segments.push_back(Segment);

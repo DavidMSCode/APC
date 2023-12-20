@@ -103,11 +103,11 @@ int main(int argc, char** argv){
   double aop = 0.0;
   double ta = 0.0;
   vector<vector<double>> states = elms2rv(a,e,i,raan,aop,ta,C_MU_MOON);
-
+  double followtime = 30;
   vector<double> r0 = states[0];                // Initial Position (km)
   vector<double> v0 = states[1];
   double T = sqrt(pow(a,3)/C_MU_MOON);                             //Orbital period (s)
-  double t0 = 0;                                              //initial time (s)
+  double t0 = 1000;                                              //initial time (s)
   double tf = t0+2*T;     
   double dt = 30;
   int steps = tf/dt+1;
@@ -134,6 +134,7 @@ int main(int argc, char** argv){
   orbit.SetComputeHamiltonian();
   orbit.PrintConfig();
   //run propagation
+  BootstrapOrbit bootstrap(orbit, followtime);
   orbit.SinglePropagate();
   vector<double> X = orbit.getPositionX();
   vector<double> Y = orbit.getPositionY();
@@ -151,21 +152,9 @@ int main(int argc, char** argv){
   // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;
   
+  std::cout << "Bootstrap orbit test starting" << std::endl << "====================================" << std::endl;
   
-  // std::vector<SatState> sigma13 = GenSigma13(r0,v0,10,.1);
-  // int j = 0;
-  // std::vector<SatState> largelist;
-  // for (int i=0;i<100;i++){
-  //   if (j>12){
-  //     j=0;
-  //   }
-  //   largelist.push_back(sigma13[j]);
-  //   j++;
-  // }
-  // std::vector<Orbit> orbits = ParallelPropagate(largelist, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body, compute_hamiltonian);
-  // std::cout << "Parallel Propagation Test Complete" << std::endl << "====================================" << std::endl;
 
-  // std::pair<int,double> bench = Benchmark1000(8);
-  // std::cout << "Benchmark with " << bench.first << " threads finished in " << bench.second << " seconds.\n";
+  std::cout << "Bootstrap orbit test complete" << std::endl << "====================================" << std::endl;
   return 0;
 }

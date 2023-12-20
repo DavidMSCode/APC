@@ -116,7 +116,7 @@ std::vector<std::vector<double> > PropagateICs(std::vector<double> r, std::vecto
   double* v0 = &v[0];
   double dt    = 30.0;                              // Soution Output Time Interval (s)
   //FIXME: deg should be user modifiable
-  double deg   = 250;                               // Gravity Degree (max 100)
+  double deg   = 200;                               // Gravity Degree (max 100)
   orbit.deg = deg;
   // Initialize Output Variables
   int soln_size = int(ceil((tf/dt)))+1;

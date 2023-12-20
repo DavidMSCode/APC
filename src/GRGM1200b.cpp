@@ -346,7 +346,6 @@ void loc_gravityPot_GRGM1200b( double* p, double* P, int DEG, double* smlambda, 
 }
 
 void jacobiIntegral_GRGM1200b(double t, double* solN, double* H, int Deg, Orbit &orbit){
-	double et = orbit.et(t);
 	double xI[3]    = {0.0};
 	double vI[3]    = {0.0};
 	double xF[3] = {0.0};
