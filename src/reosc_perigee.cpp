@@ -38,6 +38,7 @@
 #include "c_functions.h"
 #include "rv2elm.h"
 #include "Orbit.h"
+#include "flags.h"
 using namespace std;
 
 void reosc_perigee(double tf, Orbit &orbit)
@@ -99,7 +100,7 @@ void reosc_perigee(double tf, Orbit &orbit)
     //FIXME: Reosculating the perigee is necessary to prevent the segment breaks from drifting from the true perigee because we want short segments near perigee and long segments near apigee. The problem is that
     // the large gravitational perturbations can create a large change in the osculated true anomaly when the initial eccentricity is small. This can cause the re-osculated perigee to be outside the segment and completely
     // mess up the segment timing.
-    if (fabs(e) > 1e-6)
+    if (fabs(e) > 1e-6 && !g_DISABLE_REOSCULATION)
     { // Skip for zero eccentricity (no need to re-osculate as perigee is undefined)
    
       for (int i = 1; i <= M + 1; i++)

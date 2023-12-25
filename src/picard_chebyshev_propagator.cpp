@@ -116,12 +116,12 @@ void picard_chebyshev_propagator(int coeff_size, double *Feval, Orbit &orbit, Ep
     //  Compute cosine time vector for the current segment
     double t0 = orbit.tvec[k];
     tf = orbit.tvec[k + 1];
-    while (tf == 0.0)
-    {
-      k = k + 1;
-      t0 = orbit.tvec[k];
-      tf = orbit.tvec[k + 1];
-    }
+    // while (tf == 0.0)
+    // {
+    //   k = k + 1;
+    //   t0 = orbit.tvec[k];
+    //   tf = orbit.tvec[k + 1];
+    // }
     if (tf > orbit._Integrator_tf)
     {
       tf = orbit._Integrator_tf;
@@ -131,7 +131,7 @@ void picard_chebyshev_propagator(int coeff_size, double *Feval, Orbit &orbit, Ep
     orbit.W1[seg_cnt] = w1;
     orbit.W2[seg_cnt] = w2;
 
-    double z[6] = {0.0};
+    
 
     orbit.tau.resize(M + 1, 0.0);
     orbit.times_seg.resize(M + 1, 0.0);
@@ -153,6 +153,7 @@ void picard_chebyshev_propagator(int coeff_size, double *Feval, Orbit &orbit, Ep
       orbit.z0_seg[j] = orbit.r0_seg[j];
       orbit.z0_seg[j + 3] = orbit.v0_seg[j];
     }
+    double z[6] = {0.0};            // Future F and G state
     for (int cnt = 0; cnt <= M; cnt++)
     {
       // Warm start
@@ -174,20 +175,20 @@ void picard_chebyshev_propagator(int coeff_size, double *Feval, Orbit &orbit, Ep
 
     // PICARD ITERATION
     picard_iteration(Feval, orbit, ephem);
-    for (int cnt = 0; cnt <= M; cnt++)
-    {
-      // GET STATE OF PRIMARY BODY RELATIVE TO INERTIAL FRAME CENTER
-      orbit.times_seg[cnt] = orbit.tau[cnt] * w2 + w1;
-      et = orbit.et(orbit.times_seg[cnt]);
-      // spkezr_c(primary.c_str(),et,InertFrame.c_str(),"LT+S",InertCenter.c_str(),p_state,&lt);
-      // Add two body to primary body state to get the inertial state for the satellite relative to the primary body
-      X[ID2(cnt + 1, 1, M + 1)] -= p_state[0];
-      X[ID2(cnt + 1, 2, M + 1)] -= p_state[1];
-      X[ID2(cnt + 1, 3, M + 1)] -= p_state[2];
-      V[ID2(cnt + 1, 1, M + 1)] -= p_state[3];
-      V[ID2(cnt + 1, 2, M + 1)] -= p_state[4];
-      V[ID2(cnt + 1, 3, M + 1)] -= p_state[5];
-    }
+    // for (int cnt = 0; cnt <= M; cnt++)
+    // {
+    //   // GET STATE OF PRIMARY BODY RELATIVE TO INERTIAL FRAME CENTER
+    //   orbit.times_seg[cnt] = orbit.tau[cnt] * w2 + w1;
+    //   et = orbit.et(orbit.times_seg[cnt]);
+    //   spkezr_c(primary.c_str(),et,InertFrame.c_str(),"LT+S",InertCenter.c_str(),p_state,&lt);
+    //   // Add two body to primary body state to get the inertial state for the satellite relative to the primary body
+    //   X[ID2(cnt + 1, 1, M + 1)] -= p_state[0];
+    //   X[ID2(cnt + 1, 2, M + 1)] -= p_state[1];
+    //   X[ID2(cnt + 1, 3, M + 1)] -= p_state[2];
+    //   V[ID2(cnt + 1, 1, M + 1)] -= p_state[3];
+    //   V[ID2(cnt + 1, 2, M + 1)] -= p_state[4];
+    //   V[ID2(cnt + 1, 3, M + 1)] -= p_state[5];
+    // }
     // Loop exit condition (if tf is within 1e-12 of the final time)
     if (fabs(tf - orbit._Integrator_tf) / tf < 1e-12)
     {

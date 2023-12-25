@@ -14,6 +14,9 @@
 #include <string>
 #include <vector>
 
+#include "Ephemeris.hpp"
+#include "perturbed_gravity.h"
+
 using namespace std;
 
 struct ChebyshevCoefficients
@@ -32,6 +35,9 @@ struct ChebyshevCoefficients
 
 struct segment
 {
+    int itrs;               //-- number of iterations
+    double err;             //-- error  (normalized truncation error)
+    bool converged;         //-- convergence flag
     std::vector<double> t;  //-- node times
     std::vector<double> et; //-- ephemeris times
     std::vector<double> x;  //-- node x positions
@@ -54,6 +60,15 @@ class Orbit
 private:
 public:
     std::vector<std::vector<double>> Soln;
+    vector<double> _X;
+    vector<double> _Y;
+    vector<double> _Z;
+    vector<double> _Vx;
+    vector<double> _Vy;
+    vector<double> _Vz;
+    vector<vector<double> > _y; //output vector of states
+    vector<double> _dH;         // Hamiltonian error
+    double dHmax;               // Maximum Hamiltonian error
     struct SatProperties
     {
         double _Area;
@@ -62,6 +77,7 @@ public:
         double _Cd;
     };
     double _mu;               // Gravitational parameter of primary body
+    string name;              // Name of orbit object
     string _primary;          // Primary body
     double _Req;              // Reference radius for primary body
     string _frame;            // frame for input
@@ -105,10 +121,11 @@ public:
     bool suborbital = false;
     int prep_HS;
     double tol = 1e-15; // tolerance for APC
-    int deg = 70;       // Degree of high order spherical harmonic gravity evaluations
+    int deg = 100;       // Degree of high order spherical harmonic gravity evaluations
     int lowDeg = 6;     // Degree of low order spherical harmonic gravity evaluations
     int ID;
     std::vector<double> T;  // user defined time vector
+    std::vector<double> _Integrator_T; // first integration operator
     bool USER_TIME = false; // flag if user time is used
     int hot;                // hot start switch
 
@@ -136,6 +153,15 @@ public:
     vector<double> A;      //-- Least squares operator
     vector<double> Ta;     //-- Chebyshev acceleration matrix
 
+    // Variables for the picard iteration
+    std::vector<double> G;                  // Gravity at each node in segment
+    std::vector<double> del_G;              // Gravity at each node in segment
+    IterCounters ITRs;                      // Iteration counters
+    int itr;                                // iteration counter
+    double err;                             // Normalized truncation error
+    bool converged;                         // Convergence flag
+
+    double TotalFuncEvals;                // Total number of full gravity function evaluations
     // Constructors
     Orbit();
     Orbit(string primary, string frame, string epoch = "J2000");
@@ -162,6 +188,7 @@ public:
     void SetComputeHamiltonian(bool compute_hamiltonian = true) { Compute_Hamiltonian = compute_hamiltonian; };
     void SetGravityApproximationDegree(int degree) { lowDeg = degree; };
     void SetCC(std::vector<double> A, std::vector<double> B, std::vector<double> W1, std::vector<double> W2, int N, int coeff_size, std::vector<double> seg_times, double TF, double T0, int total_segs);
+    void SetMaxDegree(int degree) { deg = degree; };
     /**
      * @brief Sets gravitational parameter for two body gravity based on the primary body name
      *
@@ -173,6 +200,11 @@ public:
      * @
      */
     void SetTolerance(double tolerance) { tol = tolerance; };
+
+    /**
+     * @brief Sets the name of the orbit object
+    */
+    void SetName(string in_name){name = in_name;};
 
     /// @brief
     /// @param item
@@ -324,18 +356,35 @@ public:
     void SinglePropagate();
 
     void PrintConfig();
+    void Interpolate();
+    vector<double> UserIntegratorTimevec();
+    vector<double> DefaultIntegratorTimeVec();
+    vector<double> DefaultTimeVec();
+    vector<double> GetTime();
+    void HamiltonianCheck();
+    void StoreSolution();
 };
 
 // Bootstap orbit class
 class BootstrapOrbit : public Orbit
 {
 public:
-    Orbit forOrbit;         //forward orbit object
-    Orbit aftOrbit;         //aft orbit object
+    bool Bootstrap_On = true;                              // flag to indicate bootstrap orbit
+    bool Bootstrap_To_Convergence = false;                 // flag to indicate bootstrap orbit
+    Orbit forOrbit;                                        // forward orbit object
+    Orbit aftOrbit;                                        // aft orbit object
+    vector<Orbit*> orbitslist;                             // list of orbit orbject references                           
     BootstrapOrbit(const Orbit &orbit, double followTime); // Copy orbit config and generate the for anfd aft orbits
     // construct bootstrap orbit from a predefined orbit
     BootstrapOrbit();
-    BootstrapPropagate();
+    void BootstrapPropagate(); // Runs integrator on all 3 orbits but uses approximations of gravity calcs from the for and aft orbits for the bootstrap orbit
+    void Bootstrap_Adaptive_Picard_Chebyshev(double *Feval, EphemerisManager ephem);
+    void Bootstrap_Picard_Chebyshev_Propagator(double *Feval, EphemerisManager ephem);
+    void Bootstrap_Picard_Iteration(double *Feval, EphemerisManager &ephem);
+    void DisableBootstrap(){Bootstrap_On = false;};
+    void EnableBootstrap(){Bootstrap_On = true;};
+    void SetBootstrapHotFinish(bool input){Bootstrap_To_Convergence = input;};
 };
 
 #endif
+

@@ -173,12 +173,7 @@ void Perturbed_SRP(double time, double *X, Orbit &orbit, EphemerisManager &ephem
     double primarystate[6];
     double owlt;
     double sunstate[6];
-    spkezr_c(primary.c_str(), et, frame.c_str(), "LT+S", center.c_str(), primarystate, &owlt);
-    for (int i = 0; i < 3; i++)
-    {
-        SRP_aI[i] = 0.0;
-        satvec[i] = X[i] - primarystate[i];
-    }
+
     if (orbit.Compute_SRP)
     {
         double Mass = orbit.GetMass();          // Sat mass (kg)
@@ -188,7 +183,12 @@ void Perturbed_SRP(double time, double *X, Orbit &orbit, EphemerisManager &ephem
         double r_eq = orbit.GetPrimaryRadius(); // Equatorial radius (km)
         double G_sc = C_Gsc;                    // Solar constant (kg/s^3))
         double C = C_ckm;                       // Speed of light (km/s)
-
+        spkezr_c(primary.c_str(), et, frame.c_str(), "LT+S", center.c_str(), primarystate, &owlt);
+        for (int i = 0; i < 3; i++)
+        {
+            SRP_aI[i] = 0.0;
+            satvec[i] = X[i] - primarystate[i];
+        }
         // Get Earth to Sun vector
         //  ConstSpiceChar target[4] = "Sun";
         //  ConstSpiceChar observer[6] = "Earth";

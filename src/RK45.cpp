@@ -243,12 +243,13 @@ vector<double> J2EarthOrbit::f(double t, vector<double> y)
 class HOLunarOrbit : public integrator
 {
 public:
+    double Feval[2]={0.0};
     vector<double> f(double t, vector<double> y);
 };
 double gravdegree=100;
 vector<double> HOLunarOrbit::f(double t, vector<double> y)
 {
-    double Feval[2] = {0.0};
+    // double Feval[2] = {0.0};
     double acc[3] = {0.0};
     double tol = 1e-15;
     double deg = gravdegree;
@@ -311,7 +312,7 @@ vector<double> calcHamiltonians(pair<vector<vector<double>>, vector<double>> sol
             H0 = H;
         }
         // store the hamiltonian
-        Hs.push_back(fabs(H - H0) / H0);
+        Hs.push_back(fabs((H - H0) / H0));
     }
     return Hs;
 }
@@ -331,12 +332,15 @@ int main()
     vector<double> v0 = states[1];
     vector<double> y0 = {r0[0], r0[1], r0[2], v0[0], v0[1], v0[2]};
     double t0 = 0;
-    double tf = 1000;
+    double T = 2*C_PI*sqrt(pow(a,3)/C_MU_MOON);                             //Orbital period (s)
+    double tf = t0+T;
     // Integrate the orbit without any perturbations
     LoadKernels();
     HOLunarOrbit HO;
     pair<vector<vector<double>>, vector<double>> sol = HO.integrate(t0, tf, y0);
     vector<double> Hs = calcHamiltonians(sol);
+    cout<<"Hmax:  "<<*max_element(Hs.begin(), Hs.end())<<endl;
+    cout<<"Total Full Gravity Evaluations: "<<HO.Feval[0]<<endl;
     UnloadKernels();
     return 0;
 }

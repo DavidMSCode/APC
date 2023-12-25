@@ -49,8 +49,9 @@ void adaptive_picard_chebyshev( double* Feval, std::vector<double> &Soln, Orbit 
   Compute the polynomial degree and number of segments per orbit that will
   result in a solution that satisfies the user specified tolerance. */
   polydegree_segments(orbit,Feval);
-  double &tf = orbit._Integrator_tf;
+  
   // Array size for coefficients and solution
+  double &tf = orbit._Integrator_tf;
   orbit.coeff_size = int((tf/orbit.Period + 1.0)*(orbit.seg+2.0)*(orbit.N+1));
   /* 2. PREPARE PROPAGATOR
   Compute and store the begin and end times for each segment (based on true

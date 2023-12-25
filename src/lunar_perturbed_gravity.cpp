@@ -43,11 +43,11 @@ void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int M, dou
 
   double Gapprox[3] = {0.0};
   // retrieve iteration counter values
-  int ITR1 = ITRs.ITR1;
-  int ITR2 = ITRs.ITR2;
-  int ITR3 = ITRs.ITR3;
-  int ITR4 = ITRs.ITR4;
-  int MODEL = ITRs.MODEL;
+  int &ITR1 = ITRs.ITR1;
+  int &ITR2 = ITRs.ITR2;
+  int &ITR3 = ITRs.ITR3;
+  int &ITR4 = ITRs.ITR4;
+  int &MODEL = ITRs.MODEL;
   // Initialization
   if (*itr == 0 && hot == 0)
   {
@@ -59,7 +59,7 @@ void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int M, dou
   }
 
   // Initialization with hot start
-  if (*itr == 0 && hot == 1)
+  else if (*itr == 0 && hot == 1)
   {
     ITR1 = -1;
     ITR2 = -1;
@@ -257,17 +257,7 @@ void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int M, dou
     }
   }
 
-  if (i == M + 1)
-  {
-    *itr = *itr + 1;
-  }
 
-  // store iteration coutners in struct
-  ITRs.ITR1 = ITR1;
-  ITRs.ITR2 = ITR2;
-  ITRs.ITR3 = ITR3;
-  ITRs.ITR4 = ITR4;
-  ITRs.MODEL = MODEL;
   return;
 }
 

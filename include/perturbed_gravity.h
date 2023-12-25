@@ -15,11 +15,12 @@
  */
 struct IterCounters
 {
-  int ITR1 = 0;
-  int ITR2 = 0;
-  int ITR3 = 0;
-  int ITR4 = 0;
-  int MODEL = 0;
+  int ITR1;
+  int ITR2;
+  int ITR3;
+  int ITR4;
+  int MODEL;
+  IterCounters(): ITR1(0), ITR2(0), ITR3(0), ITR4(0), MODEL(0){};
 };
 
 /**

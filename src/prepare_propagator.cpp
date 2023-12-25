@@ -107,16 +107,19 @@ void prepare_propagator(Orbit &orbit)
   tvec[0] = 0.0;
   df = 2.0 * C_PI / seg;
   f = 0.0;
+  double E_prev = -INFINITY;
   E = 0.0;
   MA = 0.0;
   for (int i = 1; i <= seg; i++)
   {
-    f = f + df;
+    f = df*i;
+    double test = f-2.0*C_PI;
     E = 2.0 * atan2(tan(0.5 * f) * sqrt(1.0 - e), sqrt(1.0 + e));
-    if (E < 0)
+    if (E < E_prev || E < 0.0)
     {
       E = 2.0 * C_PI + E;
     }
+    E_prev = E;
     MA = E - e * sin(E);
     t_orig[i] = MA / n;
     tvec[i] = MA / n;

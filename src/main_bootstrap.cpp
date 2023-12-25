@@ -94,8 +94,8 @@ int main(int argc, char** argv){
   // double t0    = 0.0;                                            // Initial Times (s)
   // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s
   // Nan Orbit
-  //1000 km Lunar orbit
-  double alt = 200 ; //km
+  //Lunar orbit
+  double alt = 30 ; //km
   double a = C_Rmoon+alt;
   double e = 0.0;
   double i = 0.0;
@@ -103,25 +103,12 @@ int main(int argc, char** argv){
   double aop = 0.0;
   double ta = 0.0;
   vector<vector<double>> states = elms2rv(a,e,i,raan,aop,ta,C_MU_MOON);
-  double followtime = 30;
+  double followtime = 5;
   vector<double> r0 = states[0];                // Initial Position (km)
   vector<double> v0 = states[1];
-  double T = sqrt(pow(a,3)/C_MU_MOON);                             //Orbital period (s)
-  double t0 = 1000;                                              //initial time (s)
-  double tf = t0+2*T;     
-  double dt = 30;
-  int steps = tf/dt+1;
-  std::vector<double> time_vec;
-  for(int jj=0;jj<steps;jj++)
-  {
-    double time = jj*dt;
-    if(time>tf)
-    {
-      time=tf;
-    }
-    time_vec.push_back(time);
-  }
-
+  double T = 2*C_PI*sqrt(pow(a,3)/C_MU_MOON);                             //Orbital period (s)
+  double t0 = 0;                                              //initial time (s)
+  double tf = t0+T;                                         //final time (s)
 
   //Orbit orb = SinglePropagate(r0, v0, time_vec,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   Orbit orbit("MOON","MOON_PA","J2000");
@@ -132,28 +119,20 @@ int main(int argc, char** argv){
   // orbit.SetComputeThirdBody();
   // orbit.SetComputeSRP();
   orbit.SetComputeHamiltonian();
+  orbit.SetMaxDegree(100);
   orbit.PrintConfig();
   //run propagation
   BootstrapOrbit bootstrap(orbit, followtime);
-  orbit.SinglePropagate();
-  vector<double> X = orbit.getPositionX();
-  vector<double> Y = orbit.getPositionY();
-  vector<double> Z = orbit.getPositionZ();
-  //Get Velocities
-  vector<double> VX = orbit.getVelocityX();
-  vector<double> VY = orbit.getVelocityY();
-  vector<double> VZ = orbit.getVelocityZ();
-  vector<double> H = orbit.getHamiltonian();
-  vector<double> ts = orbit.getTimes();
-  //Get approximate position error from the hamiltonian
-  vector<double> H_error = orbit.getHamiltonian();
-  
+  // orbit.SinglePropagate();
   // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
   std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;
   
   std::cout << "Bootstrap orbit test starting" << std::endl << "====================================" << std::endl;
-  
+  bootstrap.DisableBootstrap();
+  // bootstrap.SetBootstrapHotFinish(true);
+  bootstrap.BootstrapPropagate();
+  bootstrap.PrintConfig();
 
   std::cout << "Bootstrap orbit test complete" << std::endl << "====================================" << std::endl;
   return 0;

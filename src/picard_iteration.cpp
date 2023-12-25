@@ -58,31 +58,30 @@ using namespace std;
 void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
 {
   // Load constants
-  int N = orbit.N;  // Degree of Chebyshev polynomial
-  int M = orbit.M;  // Number of sample points
-  int hot = orbit.hot;  // Hot start on/off switch condition
-  double tol = orbit.tol;  // Tolerance
-  int deg = orbit.deg;      // Gravity degree
-  vector<double> &times = orbit.times_seg;  // Time array for current segment
-  vector<double> &P1 = orbit.P1;  // First integration operator (Acceleration to Velocity)
-  vector<double> &P2 = orbit.P2;  // Second integration operator (Velocity to Position)
-  vector<double> &T1 = orbit.T1;  // First Chebyshev matrix
-  vector<double> &T2 = orbit.T2;  // Second Chebyshev matrix
-  vector<double> &A = orbit.A;  // Least squares operator
-  double *Xint = orbit.r0_seg; // initial position of segment
-  double *Vint = orbit.v0_seg; // initial velocity of segment
+  int N = orbit.N;                         // Degree of Chebyshev polynomial
+  int M = orbit.M;                         // Number of sample points
+  int hot = orbit.prep_HS;                     // Hot start on/off switch condition
+  double tol = orbit.tol;                  // Tolerance
+  int deg = orbit.deg;                     // Gravity degree
+  vector<double> &times = orbit.times_seg; // Time array for current segment
+  vector<double> &P1 = orbit.P1;           // First integration operator (Acceleration to Velocity)
+  vector<double> &P2 = orbit.P2;           // Second integration operator (Velocity to Position)
+  vector<double> &T1 = orbit.T1;           // First Chebyshev matrix
+  vector<double> &T2 = orbit.T2;           // Second Chebyshev matrix
+  vector<double> &A = orbit.A;             // Least squares operator
+  double *Xint = orbit.r0_seg;             // initial position of segment
+  double *Vint = orbit.v0_seg;             // initial velocity of segment
 
-  //Output solution variables
-  vector<double> &Beta = orbit.Beta_seg;  // Velocity coefficients for current segment
-  vector<double> &Alpha = orbit.Alpha_seg;  // Position coefficients for current segment
-  vector<double> &X = orbit.X_seg; // Position warm start for current segment
-  vector<double> &V = orbit.V_seg; // Velocity warm start for current segment
+  // Output solution variables
+  vector<double> &Beta = orbit.Beta_seg;   // Velocity coefficients for current segment
+  vector<double> &Alpha = orbit.Alpha_seg; // Position coefficients for current segment
+  vector<double> &X = orbit.X_seg;         // Position warm start for current segment
+  vector<double> &V = orbit.V_seg;         // Velocity warm start for current segment
 
   // Initialization
-  bool suborbital = false;
   double alt = 0.0;
   double xI[3] = {0.0};
-  double vI[3] = {0.0}; 
+  double vI[3] = {0.0};
   double xPrimaryFixed[3] = {0.0};
   double vPrimaryFixed[3] = {0.0};
   double aPrimaryFixed[3] = {0.0};
@@ -100,14 +99,14 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
   std::vector<double> kappa((N + 1) * 3, 0.0);
   std::vector<double> Xorig;
   std::vector<double> Vorig;
-  std::vector<double> Xnew; //temporary per loop storage for X
-  std::vector<double> Vnew; //temporary per loop storage for V
+  std::vector<double> Xnew; // temporary per loop storage for X
+  std::vector<double> Vnew; // temporary per loop storage for V
   std::vector<double> xECEFp((M + 1) * 3, 0.0);
   std::vector<double> xECIp((M + 1) * 3, 0.0);
   std::vector<double> del_a((M + 1) * 3, 0.0);
   // Perturbed Gravity iteration storage
   IterCounters ITRs;
-  double del_G[3 * (Nmax + 1)]={0.0};
+  vector<double> del_G(3 * (Nmax + 1),0.0);
 
   int itr, MaxIt;
   double err, w2;
@@ -121,10 +120,9 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
     err = 1e-2; // Prevents low fidelity J2 to J6 computations
   }
 
-  while (err > tol) //Iterate over same segment until max error at any node (diff between current iteration and previous iteration) meets the tolerance
+  while (err > tol) // Iterate over same segment until max error at any node (diff between current iteration and previous iteration) meets the tolerance
   {
-    suborbital = false;
-    for (int i = 1; i <= M + 1; i++)    //Get forces at each node on the segment in inertial frame
+    for (int i = 1; i <= M + 1; i++) // Get forces at each node on the segment in inertial frame
     {
 
       for (int j = 1; j <= 3; j++)
@@ -132,27 +130,20 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
         xI[j - 1] = X[ID2(i, j, M + 1)];
         vI[j - 1] = V[ID2(i, j, M + 1)];
       }
-      //Exit loop early if orbit has crashed
-      if (!suborbital){
-        alt = sqrt(pow(xI[0],2)+pow(xI[1],2)+pow(xI[2],2))-orbit.GetPrimaryRadius();
-        if (alt<0){
-          suborbital=true;
-        }
-      }
 
       // Exit loop early if xI or vI is NaN
       if (isnan(xI[0]) || isnan(xI[1]) || isnan(xI[2]) || isnan(vI[0]) || isnan(vI[1]) || isnan(vI[2]))
       {
-        //print error message
+        // print error message
         cout << "Error: NaN in Picard Iteration" << endl;
-        //end picard iteration
+        // end picard iteration
         return;
       }
       // Convert from ECI to ECEF
-      // InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);  
+      // InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
       eci2ecef(orbit.et(times[i - 1]), xI, vI, xPrimaryFixed, vPrimaryFixed);
       // Compute Variable Fidelity Gravity
-      lunar_perturbed_gravity(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, del_G, orbit.lowDeg);
+      lunar_perturbed_gravity(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, &del_G[0], orbit.lowDeg);
       // Calculate acceleration from drag
       Perturbed_Drag(xPrimaryFixed, vPrimaryFixed, orbit, drag_aECEF);
 
@@ -178,7 +169,7 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
         G[ID2(i, j, M + 1)] = aI[j - 1];
         xECIp[ID2(i, j, M + 1)] = xI[j - 1];
       }
-    } //Forces found for each node
+    } // Forces found for each node
 
     // Perform quadrature for velocity then position in inertial frame
     // Velocity
@@ -228,14 +219,14 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
         del_X[j - 1] = xI[j - 1] - xECIp[ID2(i, j, M + 1)];
       }
       // Convert from inertial to body fixed frame
-      //InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
+      // InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
       eci2ecef(orbit.et(times[i - 1]), xI, vI, xPrimaryFixed, vPrimaryFixed);
       // Linear Error Correction Acceleration
       double del_aECEF[3] = {0.0};
-      picard_error_feedback_GRGM1200b(xPrimaryFixed,del_X,del_aECEF);
+      picard_error_feedback_GRGM1200b(xPrimaryFixed, del_X, del_aECEF);
       // Convert from ECEF to ECI
       ecef2eci(orbit.et(times[i - 1]), del_aECEF, del_aECI);
-      //BodyFixedAccelerationToInertial(del_aECEF,del_aECI,times[i-1],orbit);
+      // BodyFixedAccelerationToInertial(del_aECEF,del_aECI,times[i-1],orbit);
 
       for (int j = 1; j <= 3; j++)
       {
@@ -317,52 +308,65 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
     // Iteration Counter
     if (itr == MaxIt)
     {
-      itr = itr - 1;
       break;
-      if(g_DEBUG_PICARD){
+      if (g_DEBUG_PICARD)
+      {
         cout << "Warning: Max iterations reached for current segment" << endl;
       }
     }
+    itr++;
   }
 
-  if (suborbital)
+  if (g_DEBUG_PICARD)
   {
-    // Set suborbital flag to stop iterations early.
-    orbit.SetSubOrbital();
+    cout << "Segment " << orbit.DebugData.segments.size() << " converged in " << itr << " iterations." << endl;
   }
 
-//DEBUG: Store segment data
-if(g_DEBUG_SEGMENTS){
-  struct segment Segment;
-
-  //iterate through the X array
-  for (int i = 1; i <= M + 1; i++)
+  // DEBUG: Store segment data
+  if (g_DEBUG_SEGMENTS)
   {
+    struct segment Segment;
+
+    // iterate through the X array
+    for (int i = 1; i <= M + 1; i++)
+    {
       //
-      double state[6] = {X[ID2(i, 1, M + 1)],X[ID2(i, 2, M + 1)],X[ID2(i, 3, M + 1)],V[ID2(i, 1, M + 1)],V[ID2(i, 2, M + 1)],V[ID2(i, 3, M + 1)]};
-      //Calculate hamiltonian
+      double state[6] = {X[ID2(i, 1, M + 1)], X[ID2(i, 2, M + 1)], X[ID2(i, 3, M + 1)], V[ID2(i, 1, M + 1)], V[ID2(i, 2, M + 1)], V[ID2(i, 3, M + 1)]};
+      // Calculate hamiltonian
       double H;
-      double et = orbit.et(times[i-1]);
-      double r[3] = {X[ID2(i, 1, M + 1)],X[ID2(i, 2, M + 1)],X[ID2(i, 3, M + 1)]};
-      double v[3] = {V[ID2(i, 1, M + 1)],V[ID2(i, 2, M + 1)],V[ID2(i, 3, M + 1)]};
-      jacobiIntegral_GRGM1200b(et,state,&H,orbit.deg,orbit);
-      if (orbit.DebugData.segments.empty() && i==1){
+      double et = orbit.et(times[i - 1]);
+      double r[3] = {X[ID2(i, 1, M + 1)], X[ID2(i, 2, M + 1)], X[ID2(i, 3, M + 1)]};
+      double v[3] = {V[ID2(i, 1, M + 1)], V[ID2(i, 2, M + 1)], V[ID2(i, 3, M + 1)]};
+      jacobiIntegral_GRGM1200b(et, state, &H, orbit.deg, orbit);
+      if (orbit.DebugData.segments.empty() && i == 1)
+      {
         orbit.DebugData.H0 = H;
       }
-      //Store Data
+      // Store Data
       Segment.x.push_back(state[0]);
       Segment.y.push_back(state[1]);
       Segment.z.push_back(state[2]);
       Segment.vx.push_back(state[3]);
       Segment.vy.push_back(state[4]);
       Segment.vz.push_back(state[5]);
-      Segment.t.push_back(times[i-1]);
+      Segment.t.push_back(times[i - 1]);
       Segment.et.push_back(et);
-      Segment.dH.push_back((H-orbit.DebugData.H0)/orbit.DebugData.H0);
+      Segment.dH.push_back((H - orbit.DebugData.H0) / orbit.DebugData.H0);
+    }
+    orbit.DebugData.segments.push_back(Segment);
   }
-  orbit.DebugData.segments.push_back(Segment);
-}
 
-
+  // calculate altitude at each node
+  for (int i = 1; i <= M + 1; i++)
+  {
+    double r[3] = {X[ID2(i, 1, M + 1)], X[ID2(i, 2, M + 1)], X[ID2(i, 3, M + 1)]};
+    double R = sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
+    double alt = R - orbit.GetPrimaryRadius();
+    if (alt < 0.0)
+    {
+      orbit.suborbital = true;
+      break;
+    }
+  }
   return;
 }

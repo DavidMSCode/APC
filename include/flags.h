@@ -17,4 +17,7 @@
     extern bool g_DEBUG_PICARD;
     extern bool g_DEBUG_INTERPOLATE;
     extern bool g_DEBUG_SEGMENTS;       //Tells aAPC whether to store the integrators segment solutions
+    extern bool g_BOOTSTRAP_DISABLED;   //Tells APC whether to use the bootstrap method
+    extern bool g_DEBUG_BOOTSRAP;
+    extern bool g_DISABLE_REOSCULATION;
 #endif
