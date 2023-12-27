@@ -8,7 +8,7 @@ import itertools as it
 
 def spheres(size,pos=[0,0,0],res=100):
     #angular coordinates
-    theta = np.linspace(0,2*np.pi,res)
+    theta = np.(0,2*np.pi,res)
     phi = np.linspace(0,np.pi,res)
     #cartesian coordinates
     x0 = pos[0]+size*np.outer(np.cos(theta),np.sin(phi))

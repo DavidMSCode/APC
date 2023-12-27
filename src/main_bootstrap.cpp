@@ -1,8 +1,8 @@
 /*
-*  AUTHORS:          Robyn Woollands (robyn.woollands@gmail.com)
-*  DATE WRITTEN:     May 2017
+*  AUTHORS:          David Stanley (DavidMS4@Illinois.edu)
+*  DATE WRITTEN:     Nov 2023
  * @ Modified by: Your name
- * @ Modified time: 2023-12-13 17:44:44
+ * @ Modified time: 2023-12-24 17:44:44
 *  DESCRIPTION:      Set up an Adaptive-Picard-Chebyshev integration test case
 *  REFERENCE:        Woollands, R., and Junkins, J., "Nonlinear Differential Equation Solvers
 *                    via Adaptive Picard-Chebyshev Iteration: Applications in Astrodynamics", JGCD, 2016.
@@ -59,43 +59,7 @@ int main(int argc, char** argv){
   string center = "MOON";
   string frame = "J2000";
 
-  // Initialize Input Variables
-  //LEO
-  // vector<double> r0 = {7000, 0.0, 0.0};         // Initial Position (km)
-  // vector<double> v0 = {0.0,  7.54604911, 0.};   // Initial Velocity (km/s)
-  // double t0    = 0.0;                                // Initial Times (s)
-  // double tf    = 10*5059.648765;                     // Final Time (s)
-
-  // //SSO
-  // vector<double> r0 = {6678,  0,  0};                  // Initial Position (km)
-  // vector<double> v0 = {0,  0,  7.7451257}; // Initial Velocity (km/s)
-  // double T = 5431.013011331035;                               //Orbital period (s)
-  // double t0 = 0;                                              //initial time (s)
-  // double tf = 10*T;                                              //final time (s)
-       
-  // MEO
-  //std::vector<double> r0 = {9000.0, 0.0, 0.0};                                // Initial Position (km)
-  //std::vector<double> v0 = {0.0, 6.7419845635570, 1.806509319188210};         // Initial Velocity (km/s)
-  // double t0    = 0.0;                                               // Initial Times (s)
-  // double tf    = 3.0*9.952014050491189e+03;                         // Final Time (s)
-  // GEO
-  // double r0[3] = {42000, 0.0, 0.0};                              // Initial Position (km)
-  // double v0[3] = {0.0, 3.080663355435613, 0.0};                  // Initial Velocity (km/s)
-  // double t0    = 0.0;                                            // Initial Times (s)
-  // double tf    = 3.0*8.566135031791795e+04;                      // Final Time (s)
-  // GTO
-  // double r0[3] = {8064, 0.0, 0.0};                               // Initial Position (km)
-  // double v0[3] = {0.0, 9.112725097814229, 0.0};                  // Initial Velocity (km/s)
-  // double t0    = 0.0;                                            // Initial Times (s)
-  // double tf    = 3.0*3.981179798339227e+04;                      // Final Time (s)
-  // Molniya
-  // double r0[3] = {7435.12, 0.0, 0.0};                            // Initial Position (km)
-  // double v0[3] = {0.0, 4.299654205302486, 8.586211043023614};    // Initial Velocity (km/s)
-  // double t0    = 0.0;                                            // Initial Times (s)
-  // double tf    = 5.0*4.306316113361824e+04;                      // Final Time (s
-  // Nan Orbit
-  //Lunar orbit
-  double alt = 30 ; //km
+  double alt = 120 ; //km
   double a = C_Rmoon+alt;
   double e = 0.0;
   double i = 0.0;
@@ -103,7 +67,7 @@ int main(int argc, char** argv){
   double aop = 0.0;
   double ta = 0.0;
   vector<vector<double>> states = elms2rv(a,e,i,raan,aop,ta,C_MU_MOON);
-  double followtime = 5;
+  double followtime = 0;
   vector<double> r0 = states[0];                // Initial Position (km)
   vector<double> v0 = states[1];
   double T = 2*C_PI*sqrt(pow(a,3)/C_MU_MOON);                             //Orbital period (s)
@@ -120,7 +84,6 @@ int main(int argc, char** argv){
   // orbit.SetComputeSRP();
   orbit.SetComputeHamiltonian();
   orbit.SetMaxDegree(100);
-  orbit.PrintConfig();
   //run propagation
   BootstrapOrbit bootstrap(orbit, followtime);
   // orbit.SinglePropagate();
@@ -130,9 +93,8 @@ int main(int argc, char** argv){
   
   std::cout << "Bootstrap orbit test starting" << std::endl << "====================================" << std::endl;
   bootstrap.DisableBootstrap();
-  // bootstrap.SetBootstrapHotFinish(true);
+  //bootstrap.SetBootstrapHotFinish(true);
   bootstrap.BootstrapPropagate();
-  bootstrap.PrintConfig();
 
   std::cout << "Bootstrap orbit test complete" << std::endl << "====================================" << std::endl;
   return 0;

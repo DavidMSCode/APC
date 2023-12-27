@@ -73,3 +73,7 @@ set_property(TARGET main_hamiltonian_error PROPERTY CXX_STANDARD 14)
 add_executable(RK45 RK45.cpp)
 target_link_libraries(RK45 APC)
 set_property(TARGET RK45 PROPERTY CXX_STANDARD 14)
+
+add_executable(main_bootstrap_tradestudy main_bootstrap_tradestudy.cpp)
+target_link_libraries(main_bootstrap_tradestudy APC)
+set_property(TARGET main_bootstrap_tradestudy PROPERTY CXX_STANDARD 14) 

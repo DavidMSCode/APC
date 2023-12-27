@@ -121,7 +121,7 @@ public:
     bool suborbital = false;
     int prep_HS;
     double tol = 1e-15; // tolerance for APC
-    int deg = 100;       // Degree of high order spherical harmonic gravity evaluations
+    int deg = 200;       // Degree of high order spherical harmonic gravity evaluations
     int lowDeg = 6;     // Degree of low order spherical harmonic gravity evaluations
     int ID;
     std::vector<double> T;  // user defined time vector

@@ -516,7 +516,6 @@ void Orbit::Interpolate()
         // printf("tfdt %f\t%f\n",tf,dt);
         prev_cnt = prev_cnt + cnt; // Counter to track position in Soln array
     }
-    cout << "Interpolation Complete" << endl;
     return;
 }
 
@@ -614,7 +613,9 @@ void Orbit::HamiltonianCheck()
             dHmax = _dH[i];
         }
     }
+    if(g_VERBOSE){
     cout << name << ": Maximum Hamiltonian Error: " << dHmax << endl;
+    }
     return;
 }
 
@@ -671,7 +672,9 @@ void BootstrapOrbit::BootstrapPropagate()
     double *v0 = &_In_v0[0];
     Bootstrap_Adaptive_Picard_Chebyshev(Feval, ephem);
     TotalFuncEvals = Feval[0] + Feval[1] * pow(lowDeg, 2) / pow(deg, 2);
+    if(g_VERBOSE){
     cout << "Total Function Evaluations: " << TotalFuncEvals << endl;
+    }
     if (Compute_Hamiltonian)
     {
         for (Orbit *orbitRef : orbitslist)

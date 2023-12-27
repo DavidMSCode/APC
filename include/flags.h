@@ -20,4 +20,5 @@
     extern bool g_BOOTSTRAP_DISABLED;   //Tells APC whether to use the bootstrap method
     extern bool g_DEBUG_BOOTSRAP;
     extern bool g_DISABLE_REOSCULATION;
+    extern bool g_VERBOSE;
 #endif
