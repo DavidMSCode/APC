@@ -246,10 +246,9 @@ public:
     double Feval[2]={0.0};
     vector<double> f(double t, vector<double> y);
 };
-double gravdegree=100;
+double gravdegree=200;
 vector<double> HOLunarOrbit::f(double t, vector<double> y)
 {
-    // double Feval[2] = {0.0};
     double acc[3] = {0.0};
     double tol = 1e-15;
     double deg = gravdegree;
@@ -306,7 +305,7 @@ vector<double> calcHamiltonians(pair<vector<vector<double>>, vector<double>> sol
         vector<double> SolN = ys[i];
         // calculate the hamiltonian
         double H = 0.0;
-        jacobiIntegral_GRGM1200b(t, SolN, &H, 100);
+        jacobiIntegral_GRGM1200b(t, SolN, &H,200);
         if (i == 0)
         {
             H0 = H;
@@ -319,7 +318,7 @@ vector<double> calcHamiltonians(pair<vector<vector<double>>, vector<double>> sol
 
 int main()
 {
-    double alt = 100; // km
+    double alt = 30; // km
     double a = C_Rmoon + alt;
     double e = 0.0;
     double i = 0.0;

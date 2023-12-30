@@ -613,8 +613,9 @@ void Orbit::HamiltonianCheck()
             dHmax = _dH[i];
         }
     }
-    if(g_VERBOSE){
-    cout << name << ": Maximum Hamiltonian Error: " << dHmax << endl;
+    if (g_VERBOSE)
+    {
+        cout << name << ": Maximum Hamiltonian Error: " << dHmax << endl;
     }
     return;
 }
@@ -666,14 +667,23 @@ void BootstrapOrbit::BootstrapPropagate()
     double t0 = _Integrator_t0;
     double tf = _Integrator_tf;
     EphemerisManager ephem = cacheEphemeris(t0, tf + 3600);
-    double Feval[2] = {0.0}; // Number of full gravity evaluations Feval[0] counts the full evaluations and Feval[1] counts the low order approximations
     // Initialize orbit object
     double *r0 = &_In_r0[0];
     double *v0 = &_In_v0[0];
-    Bootstrap_Adaptive_Picard_Chebyshev(Feval, ephem);
-    TotalFuncEvals = Feval[0] + Feval[1] * pow(lowDeg, 2) / pow(deg, 2);
-    if(g_VERBOSE){
-    cout << "Total Function Evaluations: " << TotalFuncEvals << endl;
+    Bootstrap_Adaptive_Picard_Chebyshev(ephem);
+    double FullEvals = 0; // Total number of full function evaluations
+    double PartialEvals = 0;    // Total number of partial function evaluations
+    //Sum up all function evaluations
+    for(Orbit *orbitRef : orbitslist)
+    {
+        FullEvals += orbitRef->Feval.Prepare[0]+orbitRef->Feval.PicardIteration[0]+orbitRef->Feval.Bootstrap[0];
+        PartialEvals += orbitRef->Feval.Prepare[1]+orbitRef->Feval.PicardIteration[1]+orbitRef->Feval.Bootstrap[1];
+    }
+    double partialRatio = pow(lowDeg, 2) / pow(deg, 2);
+    TotalFuncEvals = FullEvals + PartialEvals* partialRatio;
+    if (g_VERBOSE)
+    {
+        cout << "Total Function Evaluations: " << TotalFuncEvals << endl;
     }
     if (Compute_Hamiltonian)
     {
@@ -686,11 +696,12 @@ void BootstrapOrbit::BootstrapPropagate()
     return;
 }
 
-void BootstrapOrbit::Bootstrap_Adaptive_Picard_Chebyshev(double *Feval, class EphemerisManager ephem)
+void BootstrapOrbit::Bootstrap_Adaptive_Picard_Chebyshev(class EphemerisManager ephem)
 {
     // 1. DETERMINE DEGREE/SEGMENTATION SCHEME
     // Compute the polynomial degree and number of segments per orbit that will
     // result in a solution that satisfies the user specified tolerance.
+    double* Feval = &this->Feval.Prepare[0];
     polydegree_segments(*this, Feval);
     // copy scheme to forward and aft orbits
     aftOrbit.seg = seg;
@@ -756,7 +767,7 @@ void BootstrapOrbit::Bootstrap_Adaptive_Picard_Chebyshev(double *Feval, class Ep
     forOrbit.segment_end_times.resize(sz, 0.0);
     forOrbit.W1.resize(sz, 0.0);
     forOrbit.W2.resize(sz, 0.0);
-    Bootstrap_Picard_Chebyshev_Propagator(Feval, ephem);
+    Bootstrap_Picard_Chebyshev_Propagator(ephem);
 
     // 4. INTERPOLATE SOLUTION
     // The Chebyshev coefficients from each of the orbit segments are used to compute
@@ -771,7 +782,7 @@ void BootstrapOrbit::Bootstrap_Adaptive_Picard_Chebyshev(double *Feval, class Ep
     return;
 }
 
-void BootstrapOrbit::Bootstrap_Picard_Chebyshev_Propagator(double *Feval, EphemerisManager ephem)
+void BootstrapOrbit::Bootstrap_Picard_Chebyshev_Propagator(EphemerisManager ephem)
 {
 
     if (g_DEBUG_PICARD)
@@ -877,7 +888,7 @@ void BootstrapOrbit::Bootstrap_Picard_Chebyshev_Propagator(double *Feval, Epheme
             // End orbit list iteration
         }
         // Perform picard iteration for each orbit and move on when for and aft orbits converge
-        Bootstrap_Picard_Iteration(Feval, ephem);
+        Bootstrap_Picard_Iteration(ephem);
 
         //  STORE TRAJECTORY COEFFICIENTS
         for (Orbit *orbitRef : orbitslist)
@@ -915,7 +926,7 @@ void BootstrapOrbit::Bootstrap_Picard_Chebyshev_Propagator(double *Feval, Epheme
 
         // Reosc at next if current segment passes through perigee
         orb_end = 0.0;
-        //FIXME: Modify forward and aft next initial conditions when the perigee reosculates. If the bootstrap orbit reosculates then the time vector is modified as is the next segments initial conditions.
+        // FIXME: Modify forward and aft next initial conditions when the perigee reosculates. If the bootstrap orbit reosculates then the time vector is modified as is the next segments initial conditions.
         reosc_perigee(tf, *this);
         if (orb_end != 0.0)
         {
@@ -945,7 +956,7 @@ void BootstrapOrbit::Bootstrap_Picard_Chebyshev_Propagator(double *Feval, Epheme
  * Each iteration, all orbits are computed before moving on to the next iteration. This is done to ensure that
  * the gravity calculations from the for and aft orbit can be used with the bootstrap orbit.
  */
-void BootstrapOrbit::Bootstrap_Picard_Iteration(double *Feval, EphemerisManager &ephem)
+void BootstrapOrbit::Bootstrap_Picard_Iteration(EphemerisManager &ephem)
 {
     int MaxIt = 300; // Maximum number of iterations
     // Propagator values that are consistent between each orbit object
@@ -994,7 +1005,7 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(double *Feval, EphemerisManager 
     vector<double> del_G_normal;
     if (g_DEBUG_BOOTSRAP)
     {
-    del_G_normal.resize((Nmax + 1) * 3, 0.0);
+        del_G_normal.resize((Nmax + 1) * 3, 0.0);
     }
     // Initialize orbit specific variables
     for (Orbit *orbitRef : orbitslist)
@@ -1015,6 +1026,7 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(double *Feval, EphemerisManager 
         }
         orbit.converged = false;
     }
+    this -> Exit_Bootstrap = false;
     bool notConverged = true;
     // Start the iteration loop
     while (notConverged)
@@ -1038,6 +1050,17 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(double *Feval, EphemerisManager 
             IterCounters &ITRs = currOrbit.ITRs;
             int &itr = currOrbit.itr;
             double &err = currOrbit.err;
+            double* Feval;
+            if(&currOrbit == this && Bootstrap_On && !this->Exit_Bootstrap)
+            {
+                //point to the counter for the bootstrap orbit
+                Feval = &currOrbit.Feval.Bootstrap[0];
+            }
+            else
+            {
+                // point to the counter for the picard iteration counter
+                Feval = &currOrbit.Feval.PicardIteration[0];
+            }
             // cout << currOrbit.name << " Iteration  " << itr << " error:" << err << endl;
             for (int i = 1; i <= M + 1; i++) // Get forces at each node on the segment in inertial frame
             {
@@ -1061,7 +1084,7 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(double *Feval, EphemerisManager 
                 eci2ecef(et(times[i - 1]), xI, vI, xPrimaryFixed, vPrimaryFixed);
                 // Compute Variable Fidelity Gravity for the for and aft satellites only
 
-                if (!aftOrbit.converged && !forOrbit.converged && orbitRef == this && Bootstrap_On)
+                if (orbitRef == this && Bootstrap_On && !this->Exit_Bootstrap)
                 {
                     // Compute low fidelity
                     lunar_Grav_Approx_Function(times[i - 1], xPrimaryFixed, aPrimaryFixed, Feval, lowDeg);
@@ -1073,42 +1096,42 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(double *Feval, EphemerisManager 
                         del_G[ID2(i, j + 1, Nmax + 1)] = 0.5 * aftOrbit.del_G[ID2(i, j + 1, Nmax + 1)] + 0.5 * forOrbit.del_G[ID2(i, j + 1, Nmax + 1)];
                         aPrimaryFixed[j] += del_G[ID2(i, j + 1, Nmax + 1)];
                     }
-                    if (g_DEBUG_BOOTSRAP)
-                    {
-                        double aPrimaryFixed_normal[3] = {0.0};
-                        lunar_perturbed_gravity(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed_normal, tol, &itr, Feval, ITRs, &del_G_normal[0], lowDeg);
-                        
-                        double delg_G_mag = 0.0;
-                        double del_G_err_norm[3] = {0.0};
-                        for (int j = 0; j < 3; j++)
-                        {
-                            delg_G_mag += del_G[j] * del_G[j];
-                            
-                        }
-                        delg_G_mag = sqrt(delg_G_mag);
-                        for (int j = 0; j < 3; j++)
-                        {
-                            double  del_G_err = (del_G[j] - del_G_normal[j]);
-                            if (delg_G_mag ==0.0 && del_G_err != 0.0)
-                            {
-                                del_G_err_norm[j] = INFINITY;
-                            }
-                            else if (delg_G_mag ==0.0 && del_G_err == 0.0)
-                            {
-                                del_G_err_norm[j] = 0.0;
-                            }
-                        
-                            else
-                            {
-                            del_G_err_norm[j] =  del_G_err / delg_G_mag;
-                            }
-                        }
-                        cout << "del_G_err: " << del_G_err_norm[0] << "\t" << del_G_err_norm[1] << "\t" << del_G_err_norm[2] << endl;
-                    }
+                    // if (g_DEBUG_BOOTSRAP)
+                    // {
+                    //     double aPrimaryFixed_normal[3] = {0.0};
+                    //     lunar_perturbed_gravity(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed_normal, tol, &itr, Feval, ITRs, &del_G_normal[0], lowDeg);
+
+                    //     double delg_G_mag = 0.0;
+                    //     double del_G_err_norm[3] = {0.0};
+                    //     for (int j = 0; j < 3; j++)
+                    //     {
+                    //         delg_G_mag += del_G[j] * del_G[j];
+                    //     }
+                    //     delg_G_mag = sqrt(delg_G_mag);
+                    //     for (int j = 0; j < 3; j++)
+                    //     {
+                    //         double del_G_err = (del_G[j] - del_G_normal[j]);
+                    //         if (delg_G_mag == 0.0 && del_G_err != 0.0)
+                    //         {
+                    //             del_G_err_norm[j] = INFINITY;
+                    //         }
+                    //         else if (delg_G_mag == 0.0 && del_G_err == 0.0)
+                    //         {
+                    //             del_G_err_norm[j] = 0.0;
+                    //         }
+
+                    //         else
+                    //         {
+                    //             del_G_err_norm[j] = del_G_err / delg_G_mag;
+                    //         }
+                    //     }
+                    //     cout << "del_G_err: " << del_G_err_norm[0] << "\t" << del_G_err_norm[1] << "\t" << del_G_err_norm[2] << endl;
+                    // }
                 }
                 else
                 {
-                    lunar_perturbed_gravity(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, del_G, lowDeg);
+                    // run normal APC procedures
+                    lunar_perturbed_gravity_error(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, del_G, lowDeg);
                 }
 
                 // Calculate acceleration from drag
@@ -1271,15 +1294,14 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(double *Feval, EphemerisManager 
             // check for convergence
             if (err < tol)
             {
-                currOrbit.converged = true;
-                if(&currOrbit!=this && aftOrbit.converged && forOrbit.converged && this->Bootstrap_On && Bootstrap_To_Convergence){
-                    //Ensure the bootstrap orbit finishes converging when set to do so after the other two orbits converge.
-                    this->err = 10;
-                    this->converged = false;
-                }
-                if (g_DEBUG_PICARD)
+                if (ITRs.DID_FULL)
+                // if(true)
                 {
-                    cout << currOrbit.name << " converged in " << itr << " iterations." << endl;
+                    currOrbit.converged = true;
+                    if (g_DEBUG_PICARD)
+                    {
+                        cout << currOrbit.name << " converged in " << itr << " iterations." << endl;
+                    }
                 }
             }
             // Update
@@ -1287,25 +1309,31 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(double *Feval, EphemerisManager 
             V = Vnew;
             itr++;
             // Iteration Counter
-            if (aftOrbit.converged && forOrbit.converged && (this->converged || !Bootstrap_To_Convergence))
+
+
+            // End of orbit object for loop
+        }
+        if (aftOrbit.converged && forOrbit.converged && (this->converged || !Bootstrap_To_Convergence))
             {
                 notConverged = false;
             }
-            
-            // End of orbit object for loop
+        if(aftOrbit.converged && forOrbit.converged)
+        {
+            this->Exit_Bootstrap = true;
         }
         // End of iteration while loop
-        
     }
-    if(g_DEBUG_PICARD){
-            for(Orbit *orbitRef : orbitslist){
-                Orbit &orbit = *orbitRef;
-                segment seg;
-                seg.itrs = orbit.itr;
-                seg.err = orbit.err;
-                seg.converged = orbit.converged;
-                orbit.DebugData.segments.push_back(seg);
-            }
+    if (g_DEBUG_PICARD)
+    {
+        for (Orbit *orbitRef : orbitslist)
+        {
+            Orbit &orbit = *orbitRef;
+            segment seg;
+            seg.itrs = orbit.itr;
+            seg.err = orbit.err;
+            seg.converged = orbit.converged;
+            orbit.DebugData.segments.push_back(seg);
         }
+    }
     return;
 }

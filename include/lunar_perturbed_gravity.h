@@ -38,7 +38,8 @@
  * @param ITRs Iteration struct for controlling full or approx calculations
  * @param del_G Difference between full and approximate gravity evaluation (km/s^2)
  */
-void lunar_perturbed_gravity(double t, double* Xo, double err, int i, int N, double deg, int hot, double* G, double tol, int* itr, double* Feval, IterCounters& ITRs, double* del_G, int lowDeg);
+void lunar_perturbed_gravity_error(double t, double *Xo, double err, int i, int M, double deg, int hot, double *G, double tol, int *itr, double *Feval, IterCounters &ITRs, double *del_G, int lowDeg);
+void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int N, double deg, int hot, double *G, double tol, int *itr, double *Feval, IterCounters &ITRs, double *del_G, int lowDeg);
 
 /**
  * @brief Returns the approximate gravity acceleration through the J6 zonal harmonic.
@@ -64,5 +65,7 @@ void lunar_Grav_Approx_Function(double t, double *X, double *dX, double *Feval, 
  * @param Feval Function evaluations counter
  */
 void lunar_Grav_Full(double t, double *Xo, double *acc, double tol, double deg, double *Feval);
+
+void lunar_Grav_Med(double t, double *Xo, double *acc, double tol, double deg, double *Feval);
 
 #endif

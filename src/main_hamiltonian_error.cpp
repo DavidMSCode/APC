@@ -34,11 +34,12 @@ int main(int argc, char **argv)
     // Print help message with default values
     if (cmdOptionExists(argv, argv + argc, "-help") || cmdOptionExists(argv, argv + argc, "-h"))
     {
-        cout << "Usage: ./main_hamiltonian_error [-alt_min <altitude in km>] [-alt_max <altitude in km>] [-steps <number of steps>] [-body <earth or moon>] [-filename <filename>]" << endl;
+        cout << "Usage: ./main_hamiltonian_error [-alt_min <altitude in km>] [-alt_max <altitude in km>] [-steps <number of steps>] [-alts <alt1,alt2,...,altN>] [-body <earth or moon>] [-filename <filename>]" << endl;
         cout << "Default values:" << endl;
         cout << "alt_min = 200 km" << endl;
         cout << "alt_max = alt_min" << endl;
         cout << "steps = 10 if alt_max is different from alt_min, else 1" << endl;
+        cout << "alts = [alt_min, alt_min + (alt_max - alt_min) / (steps - 1), ..., alt_max]" << endl;
         cout << "body = earth" << endl;
         cout << "filename = H_error_<body>_<alt_min>km_to_<alt_max>km_<steps>.csv" << endl;
         return 0;
@@ -89,6 +90,22 @@ int main(int argc, char **argv)
     {
         steps = steps_default;
     }
+    //check for alts argument
+    vector<double> alts;
+    if (cmdOptionExists(argv, argv + argc, "-alts"))
+    {
+        char *alts_arg = getCmdOption(argv, argv + argc, "-alts");
+        char *p = strtok(alts_arg, ",");
+        while (p != 0)
+        {
+            alts.push_back(atof(p));
+            p = strtok(NULL, ",");
+        }
+        alt_min = alts[0];
+        alt_max = alts[alts.size() - 1];
+        steps = alts.size();
+    }
+
     // check for body argument
     if (cmdOptionExists(argv, argv + argc, "-body"))
     {
@@ -133,7 +150,10 @@ int main(int argc, char **argv)
 
     // Calculate altitudes vector
     vector<double> altitudes;
-    if (steps == 1)
+    if(cmdOptionExists(argv, argv + argc, "-alts")){
+    altitudes=alts;
+    }
+    else if (steps == 1)
     {
         altitudes.push_back(alt_min);
     }
@@ -175,23 +195,29 @@ int main(int argc, char **argv)
 
     ofstream myfile;
     myfile.open(filename);
-    //set precision
+    // set precision
     myfile.precision(16);
     myfile << "Altitude Offset(km),";
     for (double alt : altitudes)
     {
         myfile << alt;
-        if(alt<alt_max) {myfile<< ",";}
+        if (alt < alt_max)
+        {
+            myfile << ",";
+        }
     }
     myfile << endl;
     for (int i = 0; i < r_offset.size(); i++)
     {
-        myfile << r_offset[i]<<",";
-        
+        myfile << r_offset[i] << ",";
+
         for (int j = 0; j < altitudes.size(); j++)
         {
             myfile << dH[j][i];
-            if(j<altitudes.size()-1) {myfile<< ",";}
+            if (j < altitudes.size() - 1)
+            {
+                myfile << ",";
+            }
         }
         myfile << endl;
     }

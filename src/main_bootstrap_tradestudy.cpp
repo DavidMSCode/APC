@@ -31,8 +31,12 @@ using namespace std;
 
 struct outputs
 {
-    double Fevals;
+    double TotalFevals;
     double Hmax;
+    double PrepFevals;
+    double ForPIFevals;
+    double AftPIFevals;
+    double BootstrapFevals;
 };
 
 vector<double> linspace(double a, double b, int n)
@@ -90,15 +94,26 @@ outputs run_trade_study(double alt, double d, bool hot_finish, bool DisableBoots
     orbit.SetVelocity0(v0);
     orbit.SetIntegrationTime(t0, tf);
     orbit.SetComputeHamiltonian();
-    orbit.SetMaxDegree(100);
+    orbit.SetMaxDegree(200);
+    orbit.SetTolerance(1e-15);
     BootstrapOrbit bootstrap(orbit, followtime);
     if(DisableBootstrap)
     {
         bootstrap.DisableBootstrap();
     }
+    
+
     bootstrap.SetBootstrapHotFinish(hot_finish);
     bootstrap.BootstrapPropagate();
-    outputs output = {bootstrap.TotalFuncEvals, bootstrap.dHmax};
+
+    //get fevals as catergories
+    double partialFevalRatio = pow(bootstrap.lowDeg,2)/pow(bootstrap.deg,2);
+    double PrepFevals = bootstrap.Feval.Prepare[0]+bootstrap.Feval.Prepare[1]*partialFevalRatio;
+    double ForPIFevals = bootstrap.forOrbit.Feval.PicardIteration[0]+bootstrap.forOrbit.Feval.PicardIteration[1]*partialFevalRatio;
+    double AftPIFevals = bootstrap.aftOrbit.Feval.PicardIteration[0]+bootstrap.aftOrbit.Feval.PicardIteration[1]*partialFevalRatio;
+    double BootstrapFevals = bootstrap.Feval.Bootstrap[0]+bootstrap.Feval.Bootstrap[1]*partialFevalRatio+ bootstrap.Feval.PicardIteration[0]+bootstrap.Feval.PicardIteration[1]*partialFevalRatio;
+
+    outputs output = {bootstrap.TotalFuncEvals, bootstrap.dHmax, PrepFevals, ForPIFevals, AftPIFevals, BootstrapFevals};
     return output;
 }
 
@@ -116,8 +131,10 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    vector<double> alts = {30, 120, 1000};
-    vector<double> spacings = linspace(0, 10, 20);
+    vector<double> alts = {30};
+    // vector<double> alts = {960};
+    vector<double> spacings = linspace(0, 10, 101);
+    // vector<double> spacings = {0.26};
     map<pair<double, double>, outputs> DataBootstrap;
     map<pair<double, double>, outputs> DataFinish;
     map<pair<double, double>, outputs> DataDisabled;
@@ -135,32 +152,33 @@ int main(int argc, char **argv)
         }
     }
     // write Data to csv
-    string filename = "bootstrap_tradestudy.csv";
+    string headers = "Altitude,Spacing,Fevals,Hmax,Prepare Segmentation,Forward Satellite,Aftward Satellite,Bootstrapped Satellite";
+    string filename = "bootstrap_tradestudy_medium.csv";
     ofstream myfile;
     myfile.open(filename);
-    myfile << "Altitude,Spacing,Fevals,Hmax\n";
+    myfile << headers<<"\n";
     myfile << std::setprecision(15);
     for (auto const &x : DataBootstrap)
     {
-        myfile << x.first.first << "," << x.first.second << "," << x.second.Fevals << "," << x.second.Hmax << "\n";
+        myfile << x.first.first << "," << x.first.second << "," << x.second.TotalFevals << "," << x.second.Hmax << "," << x.second.PrepFevals << "," << x.second.ForPIFevals << "," << x.second.AftPIFevals << ","  << x.second.BootstrapFevals << "\n";
     }
     myfile.close();
-    filename = "bootstrap_finish_tradestudy.csv";
+    filename = "bootstrap_finish_tradestudy_medium.csv";
     myfile.open(filename);
-    myfile << "Altitude,Spacing,Fevals,Hmax\n";
+    myfile << headers<<"\n";
     myfile << std::setprecision(15);
     for (auto const &x : DataFinish)
     {
-        myfile << x.first.first << "," << x.first.second << "," << x.second.Fevals << "," << x.second.Hmax << "\n";
+        myfile << x.first.first << "," << x.first.second << "," << x.second.TotalFevals << "," << x.second.Hmax << "," << x.second.PrepFevals << "," << x.second.ForPIFevals << "," << x.second.AftPIFevals << "," << x.second.BootstrapFevals << "\n";
     }
     myfile.close();
-    filename = "bootstrap_disabled_tradestudy.csv";
+    filename = "bootstrap_disabled_tradestudy_medium.csv";
     myfile.open(filename);
-    myfile << "Altitude,Spacing,Fevals,Hmax\n";
+    myfile << headers<<"\n";
     myfile << std::setprecision(15);
     for (auto const &x : DataDisabled)
     {
-        myfile << x.first.first << "," << x.first.second << "," << x.second.Fevals << "," << x.second.Hmax << "\n";
+        myfile << x.first.first << "," << x.first.second << "," << x.second.TotalFevals << "," << x.second.Hmax << "," << x.second.PrepFevals << "," << x.second.ForPIFevals << "," << x.second.AftPIFevals << "," << x.second.BootstrapFevals << "\n";
     }
     myfile.close();
 

@@ -20,7 +20,11 @@ struct IterCounters
   int ITR3;
   int ITR4;
   int MODEL;
-  IterCounters(): ITR1(0), ITR2(0), ITR3(0), ITR4(0), MODEL(0){};
+  bool NEXT_FULL;
+  bool DID_FULL;
+  double TOL_SCALE;
+  double SF;
+  IterCounters(): ITR1(0), ITR2(0), ITR3(0), ITR4(0), MODEL(0), NEXT_FULL(false), DID_FULL(false), TOL_SCALE(1e-2), SF(1){};
 };
 
 /**

@@ -48,6 +48,7 @@ void perturbed_gravity(double t, double *Xo, double err, int i, int M, double de
   int ITR3 = ITRs.ITR3;
   int ITR4 = ITRs.ITR4;
   int MODEL = ITRs.MODEL;
+  bool NEXT_FULL = ITRs.NEXT_FULL;
   // Initialization
   if (*itr == 0 && hot == 0)
   {
@@ -68,8 +69,28 @@ void perturbed_gravity(double t, double *Xo, double err, int i, int M, double de
     MODEL = 0;
   }
 
+  if(NEXT_FULL){
+    NEXT_FULL = false;
+    { // 1e-1 1e-4
+    // FULL Gravity
+    if (debug_grav == 1)
+    {
+      if (i == 1)
+      {
+        printf("Forced Full Gravity 1\n");
+      }
+    }
+    Grav_Full(t, Xo, G, tol, deg, Feval);
+    Grav_Approx(t, Xo, Gapprox, Feval);
+    for (int j = 0; j <= 2; j++)
+    {
+      del_G[ID2(i, j + 1, Nmax + 1)] = G[j] - Gapprox[j];
+    }
+    MODEL = MODEL + 3;
+  }
+  }
   //////////////////////////////// J2-J6 ///////////////////////////////
-  if (err > 1.0e-1)
+  else if (err > 1.0e-1)
   {
     // J2-J6
     if (debug_grav == 1)

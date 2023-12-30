@@ -18,6 +18,12 @@
 #include "perturbed_gravity.h"
 
 using namespace std;
+struct FunctionEvals
+{
+double Prepare[2] = {0,0};
+double PicardIteration[2] = {0,0};
+double Bootstrap[2]  = {0,0};
+};
 
 struct ChebyshevCoefficients
 {
@@ -161,6 +167,7 @@ public:
     double err;                             // Normalized truncation error
     bool converged;                         // Convergence flag
 
+    FunctionEvals Feval;                    // Function evaluation counters
     double TotalFuncEvals;                // Total number of full gravity function evaluations
     // Constructors
     Orbit();
@@ -189,6 +196,7 @@ public:
     void SetGravityApproximationDegree(int degree) { lowDeg = degree; };
     void SetCC(std::vector<double> A, std::vector<double> B, std::vector<double> W1, std::vector<double> W2, int N, int coeff_size, std::vector<double> seg_times, double TF, double T0, int total_segs);
     void SetMaxDegree(int degree) { deg = degree; };
+    void SetIterationTolerance(double tolerance) { tol = tolerance; };
     /**
      * @brief Sets gravitational parameter for two body gravity based on the primary body name
      *
@@ -371,6 +379,7 @@ class BootstrapOrbit : public Orbit
 public:
     bool Bootstrap_On = true;                              // flag to indicate bootstrap orbit
     bool Bootstrap_To_Convergence = false;                 // flag to indicate bootstrap orbit
+    bool Exit_Bootstrap = false;                           // flag to exit bootstrap gravitty eval for a segment
     Orbit forOrbit;                                        // forward orbit object
     Orbit aftOrbit;                                        // aft orbit object
     vector<Orbit*> orbitslist;                             // list of orbit orbject references                           
@@ -378,9 +387,9 @@ public:
     // construct bootstrap orbit from a predefined orbit
     BootstrapOrbit();
     void BootstrapPropagate(); // Runs integrator on all 3 orbits but uses approximations of gravity calcs from the for and aft orbits for the bootstrap orbit
-    void Bootstrap_Adaptive_Picard_Chebyshev(double *Feval, EphemerisManager ephem);
-    void Bootstrap_Picard_Chebyshev_Propagator(double *Feval, EphemerisManager ephem);
-    void Bootstrap_Picard_Iteration(double *Feval, EphemerisManager &ephem);
+    void Bootstrap_Adaptive_Picard_Chebyshev(EphemerisManager ephem);
+    void Bootstrap_Picard_Chebyshev_Propagator(EphemerisManager ephem);
+    void Bootstrap_Picard_Iteration(EphemerisManager &ephem);
     void DisableBootstrap(){Bootstrap_On = false;};
     void EnableBootstrap(){Bootstrap_On = true;};
     void SetBootstrapHotFinish(bool input){Bootstrap_To_Convergence = input;};

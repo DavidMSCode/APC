@@ -59,7 +59,7 @@ int main(int argc, char** argv){
   string center = "MOON";
   string frame = "J2000";
 
-  double alt = 120 ; //km
+  double alt = 30 ; //km
   double a = C_Rmoon+alt;
   double e = 0.0;
   double i = 0.0;
@@ -67,7 +67,7 @@ int main(int argc, char** argv){
   double aop = 0.0;
   double ta = 0.0;
   vector<vector<double>> states = elms2rv(a,e,i,raan,aop,ta,C_MU_MOON);
-  double followtime = 0;
+  double followtime = 3;
   vector<double> r0 = states[0];                // Initial Position (km)
   vector<double> v0 = states[1];
   double T = 2*C_PI*sqrt(pow(a,3)/C_MU_MOON);                             //Orbital period (s)
@@ -83,7 +83,8 @@ int main(int argc, char** argv){
   // orbit.SetComputeThirdBody();
   // orbit.SetComputeSRP();
   orbit.SetComputeHamiltonian();
-  orbit.SetMaxDegree(100);
+  orbit.SetMaxDegree(200);
+  orbit.SetTolerance(1e-15);
   //run propagation
   BootstrapOrbit bootstrap(orbit, followtime);
   // orbit.SinglePropagate();
@@ -92,8 +93,8 @@ int main(int argc, char** argv){
   std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;
   
   std::cout << "Bootstrap orbit test starting" << std::endl << "====================================" << std::endl;
-  bootstrap.DisableBootstrap();
-  //bootstrap.SetBootstrapHotFinish(true);
+  //bootstrap.DisableBootstrap();
+  bootstrap.SetBootstrapHotFinish(true);
   bootstrap.BootstrapPropagate();
 
   std::cout << "Bootstrap orbit test complete" << std::endl << "====================================" << std::endl;

@@ -37,10 +37,40 @@
 
 #define debug_grav 0
 #define debug_grav_itr 0
+void lunar_perturbed_gravity_error(double t, double *Xo, double err, int i, int M, double deg, int hot, double *G, double tol, int *itr, double *Feval, IterCounters &ITRs, double *del_G, int lowDeg)
+{
+  double& SF = ITRs.SF;
+  double Gapprox[3] = {0.0};
+  if(err<tol/ITRs.TOL_SCALE){
+    //adjust tolerance
+    if(ITRs.TOL_SCALE*SF<1){
+      ITRs.TOL_SCALE = ITRs.TOL_SCALE*SF;
+    }
+    else{
+      ITRs.TOL_SCALE = 1;
+    }
+    ITRs.DID_FULL = true;
+    lunar_Grav_Full(t, Xo, G, tol, deg, Feval);
+    lunar_Grav_Approx_Function(t, Xo, Gapprox, Feval, lowDeg);
+    for (int j = 0; j <= 2; j++)
+    {
+      del_G[ID2(i, j + 1, Nmax + 1)] = G[j] - Gapprox[j];
+    }
+  }
+  else{
+    ITRs.DID_FULL = false;
+    lunar_Grav_Approx_Function(t, Xo, Gapprox, Feval, lowDeg);
+    for (int j = 0; j <= 2; j++)
+    {
+      G[j] = Gapprox[j] + del_G[ID2(i, j + 1, Nmax + 1)];
+    }
+  }
+  return;
+}
 
 void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int M, double deg, int hot, double *G, double tol, int *itr, double *Feval, IterCounters &ITRs, double *del_G, int lowDeg)
 {
-
+  ITRs.DID_FULL = false;
   double Gapprox[3] = {0.0};
   // retrieve iteration counter values
   int &ITR1 = ITRs.ITR1;
@@ -48,6 +78,7 @@ void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int M, dou
   int &ITR3 = ITRs.ITR3;
   int &ITR4 = ITRs.ITR4;
   int &MODEL = ITRs.MODEL;
+  bool &NEXT_FULL = ITRs.NEXT_FULL;
   // Initialization
   if (*itr == 0 && hot == 0)
   {
@@ -67,9 +98,29 @@ void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int M, dou
     ITR4 = -1;
     MODEL = 0;
   }
+  //////////////////////////////// Force full Grav ///////////////////////////////
+  if (NEXT_FULL)
+  { 
+    if (debug_grav == 1)
+    {
+      if (i == 1)
+      {
+        printf("Force Full Gravity 1\n");
+      }
+    }
 
+    lunar_Grav_Full(t, Xo, G, tol, deg, Feval);
+    lunar_Grav_Approx_Function(t, Xo, Gapprox, Feval, lowDeg);
+    ITRs.DID_FULL = true;
+    NEXT_FULL = false;
+    for (int j = 0; j <= 2; j++)
+    {
+      del_G[ID2(i, j + 1, Nmax + 1)] = G[j] - Gapprox[j];
+    }
+    MODEL = MODEL + 3;
+  }
   //////////////////////////////// J2-J6 ///////////////////////////////
-  if (err > 1.0e-1)
+  else if (err > 1.0e-1)
   {
     // J2-J6
     if (debug_grav == 1)
@@ -106,6 +157,7 @@ void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int M, dou
     }
     lunar_Grav_Full(t, Xo, G, tol, deg, Feval);
     lunar_Grav_Approx_Function(t, Xo, Gapprox, Feval, lowDeg);
+    ITRs.DID_FULL = true;
     for (int j = 0; j <= 2; j++)
     {
       del_G[ID2(i, j + 1, Nmax + 1)] = G[j] - Gapprox[j];
@@ -147,6 +199,7 @@ void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int M, dou
   //   }
   //   lunar_Grav_Full(t,Xo,G,tol,deg,Feval);
   //   Grav_Approx(t,Xo,Gapprox,Feval);
+  //   ITRs.DID_FULL = true;
   //   for (int j=0; j<=2; j++){
   //      del_G[ID2(i,j+1,Nmax+1)] = G[j] - Gapprox[j];
   //   }
@@ -189,6 +242,7 @@ void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int M, dou
     }
     lunar_Grav_Full(t, Xo, G, tol, deg, Feval);
     lunar_Grav_Approx_Function(t, Xo, Gapprox, Feval, lowDeg);
+    ITRs.DID_FULL = true;
     for (int j = 0; j <= 2; j++)
     {
       del_G[ID2(i, j + 1, Nmax + 1)] = G[j] - Gapprox[j];
@@ -222,8 +276,7 @@ void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int M, dou
 
   //////////////////////////////// 1e-10 1e-12 ///////////////////////////////
   // else if (err <= 1.0e-10 && err > 1.0e-12 && ITR4 == *itr - 1){ // 1e-10 1e-12
-  else if (MODEL == 3 && err > tol)
-  { // 1e-10 1e-12
+  else if (MODEL == 3 && err > tol){ // 1e-10 1e-12
     // FULL Gravity
     if (debug_grav == 1)
     {
@@ -234,6 +287,7 @@ void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int M, dou
     }
     lunar_Grav_Full(t, Xo, G, tol, deg, Feval);
     lunar_Grav_Approx_Function(t, Xo, Gapprox, Feval, lowDeg);
+    ITRs.DID_FULL = true;
     for (int j = 0; j <= 2; j++)
     {
       del_G[ID2(i, j + 1, Nmax + 1)] = G[j] - Gapprox[j];
