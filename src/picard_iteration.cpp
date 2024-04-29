@@ -35,10 +35,9 @@
  *    JGCD, submitted 2017.
  */
 #include <math.h>
-
 #include <vector>
 #include <iostream>
-
+#include <omp.h>
 #include "picard_iteration.h"
 #include "const.h"
 #include "c_functions.h"
@@ -60,7 +59,7 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
   // Load constants
   int N = orbit.N;                         // Degree of Chebyshev polynomial
   int M = orbit.M;                         // Number of sample points
-  int hot = orbit.prep_HS;                     // Hot start on/off switch condition
+  int hot = orbit.prep_HS;                 // Hot start on/off switch condition
   double tol = orbit.tol;                  // Tolerance
   int deg = orbit.deg;                     // Gravity degree
   vector<double> &times = orbit.times_seg; // Time array for current segment
@@ -106,8 +105,27 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
   std::vector<double> del_a((M + 1) * 3, 0.0);
   // Perturbed Gravity iteration storage
   IterCounters ITRs;
-  vector<double> del_G(3 * (Nmax + 1),0.0);
+  // Initialization
+  if (hot == 0)
+  {
+    ITRs.ITR1 = 0;
+    ITRs.ITR2 = 0;
+    ITRs.ITR3 = 0;
+    ITRs.ITR4 = 0;
+    ITRs.MODEL = 0;
+  }
 
+  // Initialization with hot start
+  if (hot == 1)
+  {
+    ITRs.ITR1 = -1;
+    ITRs.ITR2 = -1;
+    ITRs.ITR3 = -1;
+    ITRs.ITR4 = -1;
+    ITRs.MODEL = 0;
+  }
+
+  vector<double> del_G(3 * (Nmax + 1), 0.0);
   int itr, MaxIt;
   double err, w2;
   itr = 0;
@@ -122,10 +140,20 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
 
   while (err > tol) // Iterate over same segment until max error at any node (diff between current iteration and previous iteration) meets the tolerance
   {
-    for (int i = 1; i <= M + 1; i++) // Get forces at each node on the segment in inertial frame
-    {
 
-      for (int j = 1; j <= 3; j++)
+    vector<double> G_copy = G;
+    vector<double> del_G_copy = del_G;
+    double Feval_copy[2];
+    Feval_copy[0] = Feval[0];
+    Feval_copy[1] = Feval[1];
+    IterCounters ITRs_copy = ITRs;
+    int itr_copy = itr;
+    // prefetch the current iteration's gravities using
+    picardSegmentGravity(times, X, G_copy, del_G, err, M, deg, orbit.lowDeg, hot, tol, itr, Feval, ITRs, orbit);
+    
+    for (int i = 1; i <= M + 1; i++) // Loop over each node and get forces in inertial frame
+    {
+      for (int j = 1; j <= 3; j++) // Get current nodes position and velocity
       {
         xI[j - 1] = X[ID2(i, j, M + 1)];
         vI[j - 1] = V[ID2(i, j, M + 1)];
@@ -139,7 +167,7 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
         // end picard iteration
         return;
       }
-      // Convert from ECI to ECEF
+
       // InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
       eci2ecef(orbit.et(times[i - 1]), xI, vI, xPrimaryFixed, vPrimaryFixed);
       // Compute Variable Fidelity Gravity
@@ -157,8 +185,8 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
       // BodyFixedAccelerationToInertial(aPrimaryFixed,aI,times[i-1],orbit);
       ecef2eci(orbit.et(times[i - 1]), aPrimaryFixed, aI);
       // calculate SRP and Third Body
-      Perturbed_SRP(times[i - 1], xI, orbit, ephem, SRP_aI);
-      Perturbed_three_body_moon(times[i - 1], xI, orbit, ephem, third_body_aI);
+      // Perturbed_SRP(times[i - 1], xI, orbit, ephem, SRP_aI);
+      // Perturbed_three_body_moon(times[i - 1], xI, orbit, ephem, third_body_aI);
       // Add perturbations to acceleration.
       for (int k = 0; k < 3; k++)
       {
@@ -170,6 +198,15 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
         xECIp[ID2(i, j, M + 1)] = xI[j - 1];
       }
     } // Forces found for each node
+    // Compare the output of G and G_copy
+    // If they are the same parallel gravity works
+    for (int i = 1; i <= 3 * (M + 1) + 1; i++)
+    {
+      if(G[i]!= G_copy[i])
+      {
+        string error_string= "Parallel gravity differs at node: " + to_string(i)+ " in segment: " + to_string(orbit.DebugData.segments.size());
+      }
+    }
 
     // Perform quadrature for velocity then position in inertial frame
     // Velocity
@@ -356,7 +393,7 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
     orbit.DebugData.segments.push_back(Segment);
   }
 
-  // calculate altitude at each node
+  // calculate altcitude at each node
   for (int i = 1; i <= M + 1; i++)
   {
     double r[3] = {X[ID2(i, 1, M + 1)], X[ID2(i, 2, M + 1)], X[ID2(i, 3, M + 1)]};
@@ -366,6 +403,43 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
     {
       orbit.suborbital = true;
       break;
+    }
+  }
+  return;
+}
+
+void picardSegmentGravity(vector<double> times, vector<double> X, vector<double> &accel, vector<double> &del_G, double err, int M, int deg, int lowdeg, int hot, double tol, int itr, double *Feval, IterCounters ITRs, Orbit &orbit)
+{
+  // print threads being used
+  // cout << "Threads: " << omp_get_num_threads() << endl;
+
+  //determine which gravity model to use
+  
+
+#pragma omp parallel for
+  for (int i = 1; i <= M + 1; i++)
+  {
+    // print thread number
+    // cout << "Thread: " << omp_get_thread_num() << endl;
+    double xI[3] = {0.0};
+    double vI[3] = {0.0};
+    double xECEF[3] = {0.0};
+    double vECEF[3] = {0.0};
+    double aI[3] = {0.0};
+    double aECEF[3] = {0.0};
+    for (int j = 1; j <= 3; j++) // Get current nodes position and velocity
+    {
+      xI[j - 1] = X[ID2(i, j, M + 1)];
+    }
+    eci2ecef(orbit.et(times[i - 1]), xI, vI, xECEF, vECEF);
+
+    lunar_perturbed_gravity(times[i - 1], xECEF, err, i, M, deg, hot, aECEF, tol, &itr, Feval, ITRs, &del_G[0], lowdeg);
+
+    ecef2eci(orbit.et(times[i - 1]), aECEF, aI);
+
+    for (int j = 1; j <= 3; j++)
+    {
+      accel[ID2(i, j, M + 1)] = aI[j - 1];
     }
   }
   return;

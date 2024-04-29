@@ -34,9 +34,11 @@
 #include "c_functions.h"
 #include "matrix_loader.h"
 #include "radial_gravity.h"
+#include "Orbit.h"
+#include "lunar_perturbed_gravity.h"
 
-#define debug_grav 0
-#define debug_grav_itr 0
+#define debug_grav 1
+#define debug_grav_itr 1
 
 void perturbed_gravity(double t, double *Xo, double err, int i, int M, double deg, int hot, double *G, double tol, int *itr, double *Feval, IterCounters &ITRs, double *del_G)
 {
@@ -49,45 +51,27 @@ void perturbed_gravity(double t, double *Xo, double err, int i, int M, double de
   int ITR4 = ITRs.ITR4;
   int MODEL = ITRs.MODEL;
   bool NEXT_FULL = ITRs.NEXT_FULL;
-  // Initialization
-  if (*itr == 0 && hot == 0)
-  {
-    ITR1 = 0;
-    ITR2 = 0;
-    ITR3 = 0;
-    ITR4 = 0;
-    MODEL = 0;
-  }
 
-  // Initialization with hot start
-  if (*itr == 0 && hot == 1)
+  if (NEXT_FULL)
   {
-    ITR1 = -1;
-    ITR2 = -1;
-    ITR3 = -1;
-    ITR4 = -1;
-    MODEL = 0;
-  }
-
-  if(NEXT_FULL){
     NEXT_FULL = false;
     { // 1e-1 1e-4
-    // FULL Gravity
-    if (debug_grav == 1)
-    {
-      if (i == 1)
+      // FULL Gravity
+      if (debug_grav == 1)
       {
-        printf("Forced Full Gravity 1\n");
+        if (i == 1)
+        {
+          printf("Forced Full Gravity 1\n");
+        }
       }
+      Grav_Full(t, Xo, G, tol, deg, Feval);
+      Grav_Approx(t, Xo, Gapprox, Feval);
+      for (int j = 0; j <= 2; j++)
+      {
+        del_G[ID2(i, j + 1, Nmax + 1)] = G[j] - Gapprox[j];
+      }
+      MODEL = MODEL + 3;
     }
-    Grav_Full(t, Xo, G, tol, deg, Feval);
-    Grav_Approx(t, Xo, Gapprox, Feval);
-    for (int j = 0; j <= 2; j++)
-    {
-      del_G[ID2(i, j + 1, Nmax + 1)] = G[j] - Gapprox[j];
-    }
-    MODEL = MODEL + 3;
-  }
   }
   //////////////////////////////// J2-J6 ///////////////////////////////
   else if (err > 1.0e-1)
@@ -397,5 +381,190 @@ void Grav_Full(double t, double *Xo, double *acc, double tol, double deg, double
     acc[jj] = dstate[jj + 3];
   }
 
+  return;
+}
+
+bool fullgravswitch(double err, double tol, int hot, int itr, IterCounters &ITRs)
+{
+
+  double Gapprox[3] = {0.0};
+  // retrieve iteration counter values
+  int &ITR1 = ITRs.ITR1;
+  int &ITR2 = ITRs.ITR2;
+  int &ITR3 = ITRs.ITR3;
+  int &ITR4 = ITRs.ITR4;
+  int &MODEL = ITRs.MODEL;
+  bool grav_switch = false; // flag to switch to full gravity
+
+  //////////////////////////////// J2-J6 ///////////////////////////////
+  if (err > 1.0e-1)
+  {
+    // J2-J6
+    grav_switch = false;
+    if (debug_grav == 1)
+    {
+      printf("J2-J6\n");
+    }
+    ITR1 = itr;
+    ITR2 = itr;
+    ITR3 = itr;
+    ITR4 = itr;
+    if (debug_grav_itr == 1)
+    {
+      printf("ITR1 %i\n", ITR1);
+    }
+  }
+
+  //////////////////////////////// 1e-1 1e-4 ///////////////////////////////
+  else if (err <= 1.0e-1 && err > 1.0e-4 && ITR1 == itr - 1)
+  //If the error is less than 1e-1 and greater than 1e-4 and the previous iteration was an approximate gravity iteration then switch to full gravity
+  { // 1e-1 1e-4
+    // FULL Gravity
+    grav_switch = true;
+    if (debug_grav == 1)
+    {
+      printf("Full Gravity 1\n");
+    }
+    MODEL = MODEL + 3;
+  }
+  else if (err <= 1.0e-1 && err > 1.0e-4)
+  { // 1e-1 1e-4
+  //If the error is less than 1e-1 and greater than 1e-4 and the first full gravity iteration has been performed then switch to approximate gravity
+    // Approximate Gravity
+    grav_switch = false;
+    if (debug_grav == 1)
+    {
+      printf("Approx Gravity 1\n");
+    }
+    {
+      ITR2 = itr;
+      if (debug_grav_itr == 1)
+      {
+        printf("ITR2 %i\n", ITR2);
+      }
+    }
+  }
+
+  //////////////////////////////// 1e-4 1e-7 ///////////////////////////////
+  // else if (err <= 1.0e-4 && err > 1.0e-7 && ITR2 == itr - 1){ // 1e-4 1e-7
+  //   // FULL Gravity
+  //   grav_switch = true;
+  //   if (debug_grav == 1){
+  //     printf("Full Gravity 2\n");
+
+  //   }
+  // }
+  else if (err <= 1.0e-4 && err > 1.0e-7)
+  { // 1e-4 1e-7
+  //If the error is less than 1e-4 and greater than 1e-7 and the second full gravity iteration has been performed  (or skipped) then switch to approximate gravity
+    // Approximate Gravity
+    grav_switch = false;
+    if (debug_grav == 1)
+    {
+      printf("Approx Gravity 2\n");
+    }
+
+    ITR3 = itr;
+    if (debug_grav_itr == 1)
+    {
+      printf("ITR3 %i\n", ITR3);
+    }
+  }
+
+  //////////////////////////////// 1e-7 1e-10 ///////////////////////////////
+  else if (err <= 1.0e-7 && err > 1.0e-10 && ITR3 == itr - 1)
+  //If the error is less than 1e-7 and greater than 1e-10 and the previous iteration was an approximate gravity iteration then switch to full gravity
+  { // 1e-7 1e-10
+    // FULL Gravity
+    grav_switch = true;
+    if (debug_grav == 1)
+    {
+    printf("Full Gravity 3\n");
+    }
+    MODEL = MODEL + 3;
+  }
+
+  else if (err <= 1.0e-7 && err > 1.0e-10)
+  { // 1e-7 1e-10
+  //If the error is less than 1e-7 and greater than 1e-10 and the third full gravity iteration has been performed then switch to approximate gravity
+    // Approximate Gravity
+    grav_switch = false;
+    if (debug_grav == 1)
+    {
+
+      printf("Approx Gravity 3\n");
+    }
+
+    ITR4 = itr;
+
+    printf("ITR4 %i", ITR4);
+  }
+
+  //////////////////////////////// 1e-10 1e-12 ///////////////////////////////
+  // else if (err <= 1.0e-10 && err > 1.0e-12 && ITR4 == *itr - 1){ // 1e-10 1e-12
+  else if (MODEL == 3 && err > tol)
+  { // 1e-10 1e-12
+  //If the error is less than 1e-10 and the previous iteration was an approximate gravity iteration then switch to full gravity
+    // FULL Gravity
+    grav_switch = true;
+    if (debug_grav == 1)
+    {
+
+      printf("Full Gravity 4\n");
+    }
+    MODEL = MODEL + 3;
+  }
+  else if (err > tol)
+  {
+  //If the error is less than 1e-10 and the previous iteration was an approximate gravity iteration then switch to full gravity
+    // Approximate Gravity
+    grav_switch = false;
+    if (debug_grav == 1)
+    {
+
+      printf("Approx Gravity 4\n");
+    }
+  }
+
+  return grav_switch;
+}
+
+
+void variableGrav(double t, double *Xo, double *G, double *del_G, double tol, int i, double deg, double *Feval, bool fullgravswitch, Orbit orbit){
+//Calculate the approximate or full gravity depending on the fullgravswitch flag
+//set ode functions
+  void (*ode_full)(double t, double *Xo, double *G, double tol, double deg, double *Feval);
+  void (*ode_approx)(double t, double *Xo, double *G, double *Feval);
+  if (orbit.GetPrimaryBody()=="earth"){
+      ode_full=&Grav_Full;
+      ode_approx=&Grav_Approx;
+
+  }
+  else if (orbit.GetPrimaryBody()=="moon"){
+      ode_full=&lunar_Grav_Full;
+      ode_approx=&lunar_Grav_Approx;
+  }
+  else{
+    printf("Primary Body not recognized\n");
+  }
+
+  double Gapprox[3] = {0.0};
+  if (fullgravswitch)
+  {
+    ode_full(t, Xo, G, tol, deg, Feval);
+    ode_approx(t, Xo, Gapprox, Feval);
+    for (int j = 0; j <= 2; j++)
+    {
+      del_G[ID2(i, j + 1, Nmax + 1)] = G[j] - Gapprox[j];
+    }
+  }
+  else
+  {
+    ode_approx(t, Xo, Gapprox, Feval);
+    for (int j = 0; j <= 2; j++)
+    {
+      G[j] = Gapprox[j] + del_G[ID2(i, j + 1, Nmax + 1)];
+    }
+    }
   return;
 }

@@ -35,7 +35,7 @@
 #include "matrix_loader.h"
 #include "radial_gravity.h"
 
-#define debug_grav 0
+#define debug_grav 1
 #define debug_grav_itr 0
 void lunar_perturbed_gravity_error(double t, double *Xo, double err, int i, int M, double deg, int hot, double *G, double tol, int *itr, double *Feval, IterCounters &ITRs, double *del_G, int lowDeg)
 {
@@ -269,7 +269,7 @@ void lunar_perturbed_gravity(double t, double *Xo, double err, int i, int M, dou
       ITR4 = *itr;
       if (debug_grav_itr == 1)
       {
-        printf("ITR4 %i", ITR4);
+        printf("ITR4 %i\n", ITR4);
       }
     }
   }
@@ -330,6 +330,14 @@ void lunar_Grav_Approx_Function(double t, double *X, double *dX, double *Feval, 
 {
   GRGM1200b(X, dX, deg);
 
+  Feval[1] = Feval[1] + 1.0;
+  return;
+}
+
+void lunar_Grav_Approx_Function(double t, double *X, double *dX, double *Feval)
+{
+  //Low degree uses a 6x6 gravity field for lunar orbits
+  GRGM1200b(X, dX, 6);
   Feval[1] = Feval[1] + 1.0;
   return;
 }

@@ -15,6 +15,7 @@
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
+#include <algorithm>
 #include <math.h>
 #include "Orbit.h"
 #include "const.h"

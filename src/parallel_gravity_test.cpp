@@ -60,9 +60,14 @@ vector<bool> compareGrav(vector<vector<double>> grav1, vector<vector<double>> gr
 
 int main(int argc, char **argv)
 {
+    //Limit numpber of threads to n
+    int n = 12;
+    omp_set_num_threads(n);
+    //Print number of threads being used
+    cout << "Number of threads: " << omp_get_max_threads() << endl;
     int deg = 200;
     // generate random test points around the Earth
-    auto Earth_test_points = randomP(40, 6372.0, 6371.0 + 1000.0);
+    auto Earth_test_points = randomP(1000, 6372.0, 6371.0 + 1000.0);
     // empty grav vector of size Earth_test_points,3
     vector<vector<double>> grav;
     grav.resize(Earth_test_points.size());

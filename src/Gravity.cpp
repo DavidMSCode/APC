@@ -9,6 +9,7 @@
  * 
  */
 #include <string>
+#include <algorithm>
 #include "Gravity.h"
 using namespace std;
 

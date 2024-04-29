@@ -53,6 +53,7 @@ void lunar_Grav_Approx(double t, double* X, double* dX, double* Feval);
 
 void lunar_Grav_Approx_Function(double t, double *X, double *dX, double *Feval, int deg);
 
+void lunar_Grav_Approx_Function(double t, double *X, double *dX, double *Feval);
 
 /**
  * @brief Returns the full gravity acceleration through the input degree
