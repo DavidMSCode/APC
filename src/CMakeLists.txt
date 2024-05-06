@@ -89,6 +89,3 @@ add_executable(parallel_gravity_test parallel_gravity_test.cpp)
 target_link_libraries(parallel_gravity_test Grav)
 set_property(TARGET parallel_gravity_test PROPERTY CXX_STANDARD 14)
 target_link_libraries(parallel_gravity_test OpenMP::OpenMP_CXX)   #link openmp library
-
-add_executable(hello_world_parallel "hello world parallel.cpp")
-target_link_libraries(hello_world_parallel OpenMP::OpenMP_CXX)   #link openmp library
