@@ -22,11 +22,9 @@
  */
 void picard_iteration(double* Feval, Orbit &orbit, EphemerisManager &ephem);
 
-void picardSegmentGravity(vector<double> times, vector<double> X, vector<double> &accel, vector<double> &del_G, double err, int M, int deg, int lowdeg, int hot, double tol, int itr, double *Feval, IterCounters ITRs, Orbit &orbit);
-
+void picardSegmentGravity(vector<double> times, vector<double> X, vector<double> &accel, vector<double> &del_G, double err, int M, int deg, int lowdeg, int hot, double tol, int itr, double *Feval, IterCounters &ITRs, Orbit &orbit);
 /**
  * @brief Computes the gravity acceleration for the whole segment in parallel
 */
-void picardSegmentGravity(vector<double> times, vector<double> X, vector<double> &accel, vector<double> &del_G, double err, int M, int deg, int lowdeg, int hot, double tol, int itr, double *Feval, IterCounters ITRs);
 
 #endif

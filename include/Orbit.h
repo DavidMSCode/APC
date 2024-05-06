@@ -25,6 +25,12 @@ double PicardIteration[2] = {0,0};
 double Bootstrap[2]  = {0,0};
 };
 
+struct PolyDegreeParams
+{
+    int min_seg = 3; // minimum number of segments
+    int jmax = 2;   // maximum number of of node doublings (jmax = 3 is max 80 nodes)
+};
+
 struct ChebyshevCoefficients
 {
     std::vector<double> A;  // Position coefficients
@@ -197,6 +203,7 @@ public:
     void SetCC(std::vector<double> A, std::vector<double> B, std::vector<double> W1, std::vector<double> W2, int N, int coeff_size, std::vector<double> seg_times, double TF, double T0, int total_segs);
     void SetMaxDegree(int degree) { deg = degree; };
     void SetIterationTolerance(double tolerance) { tol = tolerance; };
+    void SetPolyDegreeParams(int min_seg, int jmax) { polyDegreeParams.min_seg = min_seg; polyDegreeParams.jmax = jmax; };
     /**
      * @brief Sets gravitational parameter for two body gravity based on the primary body name
      *
@@ -352,6 +359,8 @@ public:
      *
      */
     struct ChebyshevCoefficients CC;
+
+    struct PolyDegreeParams polyDegreeParams;
 
     /**
      *  @brief Struct that stores segment debug data when needed

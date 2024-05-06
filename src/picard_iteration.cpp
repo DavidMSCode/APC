@@ -45,6 +45,7 @@
 #include "eci2ecef.h"
 #include "ecef2eci.h"
 #include "lunar_perturbed_gravity.h"
+#include "perturbed_gravity.h"
 #include "picard_error_feedback.h"
 #include "perturbations.h"
 #include "Orbit.h"
@@ -141,16 +142,16 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
   while (err > tol) // Iterate over same segment until max error at any node (diff between current iteration and previous iteration) meets the tolerance
   {
 
-    vector<double> G_copy = G;
-    vector<double> del_G_copy = del_G;
-    double Feval_copy[2];
-    Feval_copy[0] = Feval[0];
-    Feval_copy[1] = Feval[1];
-    IterCounters ITRs_copy = ITRs;
-    int itr_copy = itr;
+    // vector<double> G_copy = G;
+    // vector<double> del_G_copy = del_G;
+    // double Feval_copy[2];
+    // Feval_copy[0] = Feval[0];
+    // Feval_copy[1] = Feval[1];
+    // IterCounters ITRs_copy = ITRs;
+    // int itr_copy = itr;
     // prefetch the current iteration's gravities using
-    picardSegmentGravity(times, X, G_copy, del_G, err, M, deg, orbit.lowDeg, hot, tol, itr, Feval, ITRs, orbit);
-    
+    picardSegmentGravity(times, X, G, del_G, err, M, deg, orbit.lowDeg, hot, tol, itr, Feval, ITRs, orbit);
+
     for (int i = 1; i <= M + 1; i++) // Loop over each node and get forces in inertial frame
     {
       for (int j = 1; j <= 3; j++) // Get current nodes position and velocity
@@ -158,55 +159,59 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
         xI[j - 1] = X[ID2(i, j, M + 1)];
         vI[j - 1] = V[ID2(i, j, M + 1)];
       }
-
-      // Exit loop early if xI or vI is NaN
-      if (isnan(xI[0]) || isnan(xI[1]) || isnan(xI[2]) || isnan(vI[0]) || isnan(vI[1]) || isnan(vI[2]))
-      {
-        // print error message
-        cout << "Error: NaN in Picard Iteration" << endl;
-        // end picard iteration
-        return;
-      }
-
-      // InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
-      eci2ecef(orbit.et(times[i - 1]), xI, vI, xPrimaryFixed, vPrimaryFixed);
-      // Compute Variable Fidelity Gravity
-      lunar_perturbed_gravity(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, &del_G[0], orbit.lowDeg);
-      // Calculate acceleration from drag
-      Perturbed_Drag(xPrimaryFixed, vPrimaryFixed, orbit, drag_aECEF);
-
-      // sum pertubed gravity and drag accelerations
-      for (int k = 0; k < 3; k++)
-      {
-        aPrimaryFixed[k] = aPrimaryFixed[k] + drag_aECEF[k];
-      }
-
-      // Convert acceleration vector from ECEF to ECI
-      // BodyFixedAccelerationToInertial(aPrimaryFixed,aI,times[i-1],orbit);
-      ecef2eci(orbit.et(times[i - 1]), aPrimaryFixed, aI);
-      // calculate SRP and Third Body
-      // Perturbed_SRP(times[i - 1], xI, orbit, ephem, SRP_aI);
-      // Perturbed_three_body_moon(times[i - 1], xI, orbit, ephem, third_body_aI);
-      // Add perturbations to acceleration.
-      for (int k = 0; k < 3; k++)
-      {
-        aI[k] = aI[k] + SRP_aI[k] + third_body_aI[k];
-      }
       for (int j = 1; j <= 3; j++)
       {
-        G[ID2(i, j, M + 1)] = aI[j - 1];
+        // G[ID2(i, j, M + 1)] = aI[j - 1];
         xECIp[ID2(i, j, M + 1)] = xI[j - 1];
       }
     } // Forces found for each node
-    // Compare the output of G and G_copy
-    // If they are the same parallel gravity works
-    for (int i = 1; i <= 3 * (M + 1) + 1; i++)
-    {
-      if(G[i]!= G_copy[i])
-      {
-        string error_string= "Parallel gravity differs at node: " + to_string(i)+ " in segment: " + to_string(orbit.DebugData.segments.size());
-      }
-    }
+
+
+    // // Compare the output of G and G_copy
+    // // If they are the same parallel gravity works
+    // for (int i = 0; i <= 3 * (M + 1) - 1; i++)
+    // {
+    //   if (G[i] != G_copy[i])
+    //   {
+    //     string error_string = "Parallel gravity differs at node: " + to_string(i) + "\n";
+    //     error_string += "iteration: " + to_string(itr) + "\n";
+    //     error_string += " G: " + to_string(G[i]) + "\nG_copy: " + to_string(G_copy[i])+"\n";
+    //     cout << error_string;
+    //   }
+    // }
+    // //check if Del_G and Del_G_copy are the same
+    // for (int i = 0; i <= 3 * (M + 1) - 1; i++)
+    // {
+    //   if (del_G[i] != del_G_copy[i])
+    //   {
+    //     string error_string = "Parallel del_G differs at node: " + to_string(i) + "\n";
+    //     error_string += "iteration: " + to_string(itr) + "\n";
+    //     error_string += " del_G: " + to_string(del_G[i]) + "\n del_G_copy: " + to_string(del_G_copy[i])+"\n";
+    //     cout << error_string;
+    //   }
+    // }
+
+
+    // // cehck if Feval[0] and [1] are the same as they're copy
+    // if (Feval[0] != Feval_copy[0] || Feval[1] != Feval_copy[1])
+    // {
+    //   string error_string = "Parallel Feval differs\n";
+    //   error_string += "iteration: " + to_string(itr) + "\n";
+    //   error_string += " Feval[0]: " + to_string(Feval[0]) + " Feval_copy[0]: " + to_string(Feval_copy[0])+"\n";
+    //   error_string += " Feval[1]: " + to_string(Feval[1]) + " Feval_copy[1]: " + to_string(Feval_copy[1])+"\n";
+    //   cout << error_string;
+    // }
+
+  // //Check if the IterCounters are the same
+  //   if(ITRs.ITR1!=ITRs_copy.ITR1 || ITRs.ITR2 != ITRs_copy.ITR2 || ITRs.ITR3 != ITRs_copy.ITR3 || ITRs.ITR4 != ITRs_copy.ITR4){
+  //     string error_string = "Parallel ITRs differs\n";
+  //     error_string += "iteration: " + to_string(itr) + "\n";
+  //     error_string += " ITR1: " + to_string(ITRs.ITR1) + " ITRs_copy.ITR1: " + to_string(ITRs_copy.ITR1)+"\n";
+  //     error_string += " ITR2: " + to_string(ITRs.ITR2) + " ITRs_copy.ITR2: " + to_string(ITRs_copy.ITR2)+"\n";
+  //     error_string += " ITR3: " + to_string(ITRs.ITR3) + " ITRs_copy.ITR3: " + to_string(ITRs_copy.ITR3)+"\n";
+  //     error_string += " ITR4: " + to_string(ITRs.ITR4) + " ITRs_copy.ITR4: " + to_string(ITRs_copy.ITR4)+"\n";
+  //     cout << error_string;
+  //   }
 
     // Perform quadrature for velocity then position in inertial frame
     // Velocity
@@ -408,19 +413,16 @@ void picard_iteration(double *Feval, Orbit &orbit, EphemerisManager &ephem)
   return;
 }
 
-void picardSegmentGravity(vector<double> times, vector<double> X, vector<double> &accel, vector<double> &del_G, double err, int M, int deg, int lowdeg, int hot, double tol, int itr, double *Feval, IterCounters ITRs, Orbit &orbit)
+void picardSegmentGravity(vector<double> times, vector<double> X, vector<double> &accel, vector<double> &del_G, double err, int M, int deg, int lowdeg, int hot, double tol, int itr, double *Feval, IterCounters &ITRs, Orbit &orbit)
 {
-  // print threads being used
-  // cout << "Threads: " << omp_get_num_threads() << endl;
+  // determine which gravity model to use
+  bool fullGrav = fullgravswitch(err, tol, hot, itr, ITRs);
 
-  //determine which gravity model to use
-  
 
-#pragma omp parallel for
+  // Calculate the acceleration at each node of the segment in parallel. F
+  #pragma omp parallel for reduction(+:Feval[0] , Feval[1])
   for (int i = 1; i <= M + 1; i++)
   {
-    // print thread number
-    // cout << "Thread: " << omp_get_thread_num() << endl;
     double xI[3] = {0.0};
     double vI[3] = {0.0};
     double xECEF[3] = {0.0};
@@ -433,7 +435,8 @@ void picardSegmentGravity(vector<double> times, vector<double> X, vector<double>
     }
     eci2ecef(orbit.et(times[i - 1]), xI, vI, xECEF, vECEF);
 
-    lunar_perturbed_gravity(times[i - 1], xECEF, err, i, M, deg, hot, aECEF, tol, &itr, Feval, ITRs, &del_G[0], lowdeg);
+    variableGrav(times[i - 1], xECEF, aECEF, &del_G[0], tol, i, deg, Feval, fullGrav, orbit.GetPrimaryBody());
+    // lunar_perturbed_gravity(times[i - 1], xECEF, err, i, M, deg, hot, aECEF, tol, &itr, Feval, ITRs, &del_G[0], lowdeg);
 
     ecef2eci(orbit.et(times[i - 1]), aECEF, aI);
 

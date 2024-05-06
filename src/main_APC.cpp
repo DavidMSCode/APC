@@ -85,6 +85,7 @@ int main(int argc, char** argv){
   orbit.SetComputeHamiltonian();
   orbit.SetMaxDegree(200);
   orbit.SetTolerance(1e-15);
+  orbit.SetPolyDegreeParams(3,3);
   //run propagation
   orbit.SinglePropagate();
   // orb = SinglePropagate(r0, v0, t0 , tf,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);

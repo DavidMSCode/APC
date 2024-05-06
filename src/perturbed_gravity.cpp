@@ -37,8 +37,8 @@
 #include "Orbit.h"
 #include "lunar_perturbed_gravity.h"
 
-#define debug_grav 1
-#define debug_grav_itr 1
+#define debug_grav 0
+#define debug_grav_itr 0
 
 void perturbed_gravity(double t, double *Xo, double err, int i, int M, double deg, int hot, double *G, double tol, int *itr, double *Feval, IterCounters &ITRs, double *del_G)
 {
@@ -496,8 +496,10 @@ bool fullgravswitch(double err, double tol, int hot, int itr, IterCounters &ITRs
     }
 
     ITR4 = itr;
-
-    printf("ITR4 %i", ITR4);
+    if (debug_grav_itr == 1)
+    {
+      printf("ITR4 %i\n", ITR4);
+    }
   }
 
   //////////////////////////////// 1e-10 1e-12 ///////////////////////////////
@@ -530,22 +532,24 @@ bool fullgravswitch(double err, double tol, int hot, int itr, IterCounters &ITRs
 }
 
 
-void variableGrav(double t, double *Xo, double *G, double *del_G, double tol, int i, double deg, double *Feval, bool fullgravswitch, Orbit orbit){
+void variableGrav(double t, double *Xo, double *G, double *del_G, double tol, int i, double deg, double *Feval, bool fullgravswitch, string primary){
 //Calculate the approximate or full gravity depending on the fullgravswitch flag
 //set ode functions
   void (*ode_full)(double t, double *Xo, double *G, double tol, double deg, double *Feval);
   void (*ode_approx)(double t, double *Xo, double *G, double *Feval);
-  if (orbit.GetPrimaryBody()=="earth"){
+
+
+  if (primary=="EARTH"){
       ode_full=&Grav_Full;
       ode_approx=&Grav_Approx;
 
   }
-  else if (orbit.GetPrimaryBody()=="moon"){
+  else if (primary=="MOON"){
       ode_full=&lunar_Grav_Full;
       ode_approx=&lunar_Grav_Approx;
   }
   else{
-    printf("Primary Body not recognized\n");
+    printf("function variableGrav: Primary Body not recognized\n");
   }
 
   double Gapprox[3] = {0.0};

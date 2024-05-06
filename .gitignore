@@ -13,7 +13,7 @@ __pycache__
 
 #executables
 bin/*
-!bin/matrices
+bin/matrices
 !bin/*.ipynb
 bin/de440.bsp
 !bin/*.py

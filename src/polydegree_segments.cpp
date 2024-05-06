@@ -50,7 +50,7 @@ void polydegree_segments(Orbit &orbit, double *Feval)
   double *r0 = &orbit._In_r0[0]; // get input states as pointers to start of vector (acts like array)
   double *v0 = &orbit._In_v0[0];
   double &Period = orbit.Period;
-  int &deg = orbit.deg;
+  int deg = orbit.deg;
   double tol = orbit.tol;
   int &seg = orbit.seg;
   int &degree = orbit.N;
@@ -72,14 +72,14 @@ void polydegree_segments(Orbit &orbit, double *Feval)
   // Compute F&G Analytical Solution for 1 Orbit
   int n = 100;
   double w1, w2, z0[6], z[6];
-  double tau[300];
-  memset(tau, 0.0, (300 * sizeof(double)));
-  double times[300];
-  memset(times, 0.0, (300 * sizeof(double)));
-  double X[300 * 6];
-  memset(X, 0.0, ((300 * 6) * sizeof(double)));
-  double normX[300];
-  memset(normX, 0.0, (300 * sizeof(double)));
+  double tau[340];
+  memset(tau, 0.0, (340 * sizeof(double)));
+  double times[340];
+  memset(times, 0.0, (340 * sizeof(double)));
+  double X[340 * 6];
+  memset(X, 0.0, ((340 * 6) * sizeof(double)));
+  double normX[340];
+  memset(normX, 0.0, (340 * sizeof(double)));
   w1 = Period / 2.0;
   w2 = Period / 2.0;
   z0[0] = r0[0];
@@ -106,13 +106,13 @@ void polydegree_segments(Orbit &orbit, double *Feval)
   perigee_approx(X, normX, times, n, rp, vp, &tp, &ind);
 
   /* If user specified ICs were not at perigee (i.e. ind!=0) then we need a
-    finer grid to find perigee. I put 100 sample points in the vacinity of
+    finer grid to find perigee. I put 100 sample points in the vicinity of
     the perigee point and search again for a more accurate value. */
   if (ind != 0)
   {
     double diff;
-    double tnew[300];
-    memset(tnew, 0.0, (300 * sizeof(double)));
+    double tnew[340];
+    memset(tnew, 0.0, (340 * sizeof(double)));
     diff = (times[ind + 1] - times[ind - 1]) / 99.0;
     tnew[0] = times[ind - 1];
     for (int cnt = 1; cnt <= n; cnt++)
@@ -131,9 +131,9 @@ void polydegree_segments(Orbit &orbit, double *Feval)
   // Prepare for loop
   int fit_check, coeff, N, Nprev, jmax;
   fit_check = 0; // Loop check condition
-  seg = 3;       // Minimum number of segments per orbit
+  seg = orbit.polyDegreeParams.min_seg;       // Minimum number of segments per orbit
   coeff = 3;     // Value of last 3 coefficients must be below tolerance
-  jmax = 2;      // Loop Maximum (corresponds to Nmax = 80)
+  jmax = orbit.polyDegreeParams.jmax;      // Loop Maximum (3 corresponds to Nmax = 80)
 
   // Perigee initial conditions
   z0[0] = rp[0];
@@ -143,7 +143,7 @@ void polydegree_segments(Orbit &orbit, double *Feval)
   z0[4] = vp[1];
   z0[5] = vp[2];
 
-  double Nvec[4] = {0.0};
+  double Nvec[6] = {0.0};
   Nvec[0] = 10;
   for (int i = 1; i <= jmax; i++)
   {
@@ -171,8 +171,8 @@ void polydegree_segments(Orbit &orbit, double *Feval)
     w2 = (tf1 - t0) / 2.0;
 
     // Loop through different values for N
-    std::vector<double> G(300 * 3, 0.0);
-    std::vector<double> Gprev(300 * 3, 0.0);
+    std::vector<double> G(340 * 3, 0.0);
+    std::vector<double> Gprev(340 * 3, 0.0);
     for (int j = 0; j <= jmax; j++)
     {
       N = Nvec[j];
@@ -283,9 +283,9 @@ void polydegree_segments(Orbit &orbit, double *Feval)
 
       // Reinitialize
       Nprev = N;
-      memset(tau, 0.0, ((300) * sizeof(double)));
-      memset(times, 0.0, ((300) * sizeof(double)));
-      memset(X, 0.0, ((300 * 6) * sizeof(double)));
+      memset(tau, 0.0, ((340) * sizeof(double)));
+      memset(times, 0.0, ((340) * sizeof(double)));
+      memset(X, 0.0, ((340 * 6) * sizeof(double)));
     }
     seg = seg + 2;
     if (fit_check == coeff)

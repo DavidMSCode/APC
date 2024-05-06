@@ -115,8 +115,15 @@
     "*.bak": "cpp"
   },
   "cmake.debugConfig": {
-    "cwd": "${workspaceFolder}/bin"
-  },
+        
+    "type": "lldb",
+    "request": "launch",
+    "name": "Launch",
+    "program": "${command:cmake.launchTargetPath}",
+    "args": [],
+    "preLaunchTask": "CMake: build",
+    "cwd": "${workspaceFolder}/bin",
+},
   "python.testing.pytestArgs": [
     "."
   ],

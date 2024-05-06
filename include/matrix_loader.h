@@ -10,7 +10,7 @@
 #define __ML__
 
 # define Nmin 10
-# define Nmax 80
+# define Nmax 320
 
 extern double arr_T2[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
 extern double arr_P2[(Nmax-Nmin+1)][(Nmax+1)*(Nmax+1)];
