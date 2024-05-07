@@ -89,3 +89,8 @@ add_executable(parallel_gravity_test parallel_gravity_test.cpp)
 target_link_libraries(parallel_gravity_test Grav)
 set_property(TARGET parallel_gravity_test PROPERTY CXX_STANDARD 14)
 target_link_libraries(parallel_gravity_test OpenMP::OpenMP_CXX)   #link openmp library
+
+add_executable(main_Parallel_Seg main_Parallel_Seg.cpp)
+target_link_libraries(main_Parallel_Seg APC)
+set_property(TARGET main_Parallel_Seg PROPERTY CXX_STANDARD 14)
+target_link_libraries(main_Parallel_Seg OpenMP::OpenMP_CXX)   #link openmp library

@@ -113,7 +113,7 @@ outputs run_trade_study(double alt, double d, bool hot_finish, bool DisableBoots
     double AftPIFevals = bootstrap.aftOrbit.Feval.PicardIteration[0]+bootstrap.aftOrbit.Feval.PicardIteration[1]*partialFevalRatio;
     double BootstrapFevals = bootstrap.Feval.Bootstrap[0]+bootstrap.Feval.Bootstrap[1]*partialFevalRatio+ bootstrap.Feval.PicardIteration[0]+bootstrap.Feval.PicardIteration[1]*partialFevalRatio;
 
-    outputs output = {bootstrap.TotalFuncEvals, bootstrap.dHmax, PrepFevals, ForPIFevals, AftPIFevals, BootstrapFevals};
+    outputs output = {bootstrap.TotalFuncEvals, bootstrap.Hmax, PrepFevals, ForPIFevals, AftPIFevals, BootstrapFevals};
     return output;
 }
 

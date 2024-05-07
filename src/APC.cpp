@@ -138,6 +138,7 @@ std::vector<std::vector<double>> PropagateICs(std::vector<double> r, std::vector
   adaptive_picard_chebyshev(Feval, Soln, orbit, ephem);
   double total;
   total = Feval[0] + Feval[1] * pow(orbit.lowDeg, 2) / pow(orbit.deg, 2);
+  orbit.TotalFuncEvals = total;
 
   // Assemble solution vector from solution array
   std::vector<std::vector<double>> States(6);
@@ -150,8 +151,7 @@ std::vector<std::vector<double>> PropagateICs(std::vector<double> r, std::vector
   std::vector<double> t_vec = orbit.T;
   double t_curr;
   soln_size = t_vec.size();
-std:
-  string HmaxStr;
+  std::string HmaxStr;
   for (int i = 1; i <= soln_size; i++)
   {
     t_curr = orbit.et(t_vec[i - 1]);
@@ -176,10 +176,12 @@ std:
     // Store hamiltonian
     Hs.push_back(fabs((H - H0) / H0));
     std::ostringstream ss;
+    
     ss << Hmax;
     HmaxStr = ss.str();
   }
-  std::cout << to_string(orbit.ID) + ":\tFunc Evals: " + to_string(total) + "  \t Hmax: " + HmaxStr + "\n";
+  orbit.Hmax = Hmax;
+  // std::cout << to_string(orbit.ID) + ":\tFunc Evals: " + to_string(total) + "  \t Hmax: " + HmaxStr + "\n";
   // Assemble solution vector
   std::vector<std::vector<double>> Solution;
   Solution.push_back(t_vec);

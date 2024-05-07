@@ -80,7 +80,7 @@ public:
     vector<double> _Vz;
     vector<vector<double> > _y; //output vector of states
     vector<double> _dH;         // Hamiltonian error
-    double dHmax;               // Maximum Hamiltonian error
+    double Hmax;               // Maximum Hamiltonian error
     struct SatProperties
     {
         double _Area;

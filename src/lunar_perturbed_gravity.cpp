@@ -320,7 +320,7 @@ void lunar_Grav_Approx(double t, double *X, double *dX, double *Feval)
 {
   int deg = 6;
   GRGM1200b(X, dX, deg);
-  Feval[1] = Feval[1] + 1.0;
+  Feval[1] += 1.0;
   return;
 }
 

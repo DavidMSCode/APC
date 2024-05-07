@@ -419,8 +419,8 @@ void picardSegmentGravity(vector<double> times, vector<double> X, vector<double>
   bool fullGrav = fullgravswitch(err, tol, hot, itr, ITRs);
 
 
-  // Calculate the acceleration at each node of the segment in parallel. F
-  #pragma omp parallel for reduction(+:Feval[0] , Feval[1])
+  // Calculate the acceleration at each node of the segment in parallel. Feval is a counter for the number of function evaluations and uses a reduction to sum the values from each thread
+  #pragma omp parallel for reduction(+:Feval[:2])
   for (int i = 1; i <= M + 1; i++)
   {
     double xI[3] = {0.0};

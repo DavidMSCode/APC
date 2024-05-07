@@ -555,8 +555,8 @@ void variableGrav(double t, double *Xo, double *G, double *del_G, double tol, in
   double Gapprox[3] = {0.0};
   if (fullgravswitch)
   {
-    ode_full(t, Xo, G, tol, deg, Feval);
-    ode_approx(t, Xo, Gapprox, Feval);
+    lunar_Grav_Full(t, Xo, G, tol, deg, Feval);
+    lunar_Grav_Approx(t, Xo, Gapprox, Feval);
     for (int j = 0; j <= 2; j++)
     {
       del_G[ID2(i, j + 1, Nmax + 1)] = G[j] - Gapprox[j];
@@ -564,7 +564,7 @@ void variableGrav(double t, double *Xo, double *G, double *del_G, double tol, in
   }
   else
   {
-    ode_approx(t, Xo, Gapprox, Feval);
+    lunar_Grav_Approx(t, Xo, Gapprox, Feval);
     for (int j = 0; j <= 2; j++)
     {
       G[j] = Gapprox[j] + del_G[ID2(i, j + 1, Nmax + 1)];

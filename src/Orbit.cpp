@@ -597,7 +597,7 @@ void Orbit::HamiltonianCheck()
     int len = _y.size();
     double H;
     double H0;
-    dHmax = 0;
+    Hmax = 0;
     _dH.resize(len, 0.0);
     vector<double> ts = GetTime();
     for (int i = 0; i < len; i++)
@@ -609,14 +609,14 @@ void Orbit::HamiltonianCheck()
             H0 = H;
         }
         _dH[i] = abs((H - H0) / H0); // Normalized hamiltonian error
-        if (_dH[i] > dHmax)
+        if (_dH[i] > Hmax)
         {
-            dHmax = _dH[i];
+            Hmax = _dH[i];
         }
     }
     if (g_VERBOSE)
     {
-        cout << name << ": Maximum Hamiltonian Error: " << dHmax << endl;
+        cout << name << ": Maximum Hamiltonian Error: " << Hmax << endl;
     }
     return;
 }
