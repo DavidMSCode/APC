@@ -39,6 +39,17 @@ struct outputs
     double BootstrapFevals;
 };
 
+#define PBSTR "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+#define PBWIDTH 60
+
+void printProgress(double percentage) {
+    int val = (int) (percentage * 100);
+    int lpad = (int) (percentage * PBWIDTH);
+    int rpad = PBWIDTH - lpad;
+    printf("\r%3d%% [%.*s%*s]", val, lpad, PBSTR, rpad, "");
+    fflush(stdout);
+}
+
 vector<double> linspace(double a, double b, int n)
 {
     vector<double> array;
@@ -95,7 +106,7 @@ outputs run_trade_study(double alt, double d, bool hot_finish, bool DisableBoots
     orbit.SetIntegrationTime(t0, tf);
     orbit.SetComputeHamiltonian();
     orbit.SetMaxDegree(200);
-    orbit.SetTolerance(1e-15);
+    orbit.SetTolerance(1.1e-15);
     BootstrapOrbit bootstrap(orbit, followtime);
     if(DisableBootstrap)
     {
@@ -131,29 +142,33 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    vector<double> alts = {30};
+    vector<double> alts = {30,120,480,960};
     // vector<double> alts = {960};
-    vector<double> spacings = linspace(0, 10, 101);
+    vector<double> spacings = linspace(0, 0.5, 51);
     // vector<double> spacings = {0.26};
     map<pair<double, double>, outputs> DataBootstrap;
     map<pair<double, double>, outputs> DataFinish;
     map<pair<double, double>, outputs> DataDisabled;
+    int counter = 0;
+    printProgress(0.0);
     for (double alt : alts)
     {
         for (double d : spacings)
         {
-            cout << "Running alt: " << alt << " spacing: " << d << endl;
+            // cout << "Running alt: " << alt << " spacing: " << d << endl;
             outputs output = run_trade_study(alt, d, false, false);
             DataBootstrap.insert(make_pair(make_pair(alt, d), output));
             output = run_trade_study(alt, d, true, false);
             DataFinish.insert(make_pair(make_pair(alt, d), output));
             output = run_trade_study(alt, d, false, true);
             DataDisabled.insert(make_pair(make_pair(alt, d), output));
+            counter++;
+            printProgress((double)counter / (alts.size() * spacings.size()));
         }
     }
     // write Data to csv
     string headers = "Altitude,Spacing,Fevals,Hmax,Prepare Segmentation,Forward Satellite,Aftward Satellite,Bootstrapped Satellite";
-    string filename = "bootstrap_tradestudy_medium.csv";
+    string filename = "bootstrap_tradestudy_short960.csv";
     ofstream myfile;
     myfile.open(filename);
     myfile << headers<<"\n";
@@ -163,7 +178,7 @@ int main(int argc, char **argv)
         myfile << x.first.first << "," << x.first.second << "," << x.second.TotalFevals << "," << x.second.Hmax << "," << x.second.PrepFevals << "," << x.second.ForPIFevals << "," << x.second.AftPIFevals << ","  << x.second.BootstrapFevals << "\n";
     }
     myfile.close();
-    filename = "bootstrap_finish_tradestudy_medium.csv";
+    filename = "bootstrap_finish_tradestudy_short960.csv";
     myfile.open(filename);
     myfile << headers<<"\n";
     myfile << std::setprecision(15);
@@ -172,7 +187,7 @@ int main(int argc, char **argv)
         myfile << x.first.first << "," << x.first.second << "," << x.second.TotalFevals << "," << x.second.Hmax << "," << x.second.PrepFevals << "," << x.second.ForPIFevals << "," << x.second.AftPIFevals << "," << x.second.BootstrapFevals << "\n";
     }
     myfile.close();
-    filename = "bootstrap_disabled_tradestudy_medium.csv";
+    filename = "bootstrap_disabled_tradestudy_short960.csv";
     myfile.open(filename);
     myfile << headers<<"\n";
     myfile << std::setprecision(15);

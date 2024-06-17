@@ -36,6 +36,7 @@
 #include "perturbations.h"
 #include "picard_error_feedback.h"
 #include "reosc_perigee.h"
+#include "EGM2008.h"
 #include "GRGM1200b.h"
 
 using namespace std;

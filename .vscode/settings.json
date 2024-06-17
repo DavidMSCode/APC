@@ -124,5 +124,18 @@
   "python.testing.pytestEnabled": true,
   "esbonio.sphinx.confDir": "",
 
-  "lldb.verboseLogging":true
-}
+  "lldb.verboseLogging":true,
+
+
+  
+  "terminal.integrated.profiles.osx": {
+        "bash": null,
+        "tmux-shell": {
+          "path": "tmux",
+          "args": ["new-session", "-A", "-s", "vscode ${workspaceFolderBasename}"]
+        }
+    },
+    "terminal.integrated.defaultProfile.osx": "tmux-shell",
+  
+    
+}1
