@@ -54,12 +54,11 @@ vector<double> linspace(double a, double b, int n)
 {
     vector<double> array;
     double step = (b - a) / (n - 1);
-
-    while (a <= b)
+    for (int i=0;i<n;i++)
     {
-        array.push_back(a);
-        a += step;
+        array.push_back(a + (step * i));
     }
+
     return array;
 }
 
@@ -74,32 +73,31 @@ outputs run_trade_study(double alt, double d, bool hot_finish, bool DisableBoots
     bool compute_drag = false;       // atmostpheric drag toggle
     bool compute_SRP = false;        // Solar radiation pressure toggle
     bool compute_third_body = false; // Third body gravity toggle
-    bool compute_hamiltonian = true; // whether or not the hamiltonian should be compuited for the output
+    bool compute_hamiltonian = true; // whether or not the hamiltonian should be computed for the output
     // Ephemeris
     string spk = "de440.bsp";
     string lsk = "naif0012.tls";
-    list<string> bodies = {"SUN", "EARTH"};
-    string center = "MOON";
+    string center = "EARTH";
     string frame = "J2000";
 
-    double a = C_Rmoon + alt;
+    double a = C_Req + alt;
     double e = 0.0;
     double i = 0.0;
     double raan = 0.0;
     double aop = 0.0;
     double ta = 0.0;
-    vector<vector<double>> states = elms2rv(a, e, i, raan, aop, ta, C_MU_MOON);
+    vector<vector<double>> states = elms2rv(a, e, i, raan, aop, ta, C_MU_EARTH);
 
     vector<double> r0 = states[0]; // Initial Position (km)
     vector<double> v0 = states[1];
     double speed = sqrt(pow(v0[0], 2) + pow(v0[1], 2) + pow(v0[2], 2));
     double followtime = d / speed;                     // Follow time (s)
-    double T = 2 * C_PI * sqrt(pow(a, 3) / C_MU_MOON); // Orbital period (s)
+    double T = 2 * C_PI * sqrt(pow(a, 3) / C_MU_EARTH); // Orbital period (s)
     double t0 = 0;                                     // initial time (s)
     double tf = t0 + T;                                // final time (s)
 
     // Orbit orb = SinglePropagate(r0, v0, time_vec,  area,  reflectance,  mass,  drag_C,  compute_drag,  compute_SRP,  compute_third_body);
-    Orbit orbit("MOON", "MOON_PA", "J2000");
+    Orbit orbit("EARTH", "EARTH_IAU", "J2000");
     orbit.SetProperties(area, reflectance, mass, drag_C);
     orbit.SetPosition0(r0);
     orbit.SetVelocity0(v0);
@@ -112,7 +110,6 @@ outputs run_trade_study(double alt, double d, bool hot_finish, bool DisableBoots
     {
         bootstrap.DisableBootstrap();
     }
-    
 
     bootstrap.SetBootstrapHotFinish(hot_finish);
     bootstrap.BootstrapPropagate();
@@ -142,9 +139,9 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    vector<double> alts = {30,120,480,960};
+    vector<double> alts = {120, 480, 960};
     // vector<double> alts = {960};
-    vector<double> spacings = linspace(0, 0.5, 51);
+    vector<double> spacings = linspace(0, 0.5, 11);
     // vector<double> spacings = {0.26};
     map<pair<double, double>, outputs> DataBootstrap;
     map<pair<double, double>, outputs> DataFinish;
@@ -168,7 +165,7 @@ int main(int argc, char **argv)
     }
     // write Data to csv
     string headers = "Altitude,Spacing,Fevals,Hmax,Prepare Segmentation,Forward Satellite,Aftward Satellite,Bootstrapped Satellite";
-    string filename = "bootstrap_tradestudy_short960.csv";
+    string filename = "bootstrap_tradestudy_Earth.csv";
     ofstream myfile;
     myfile.open(filename);
     myfile << headers<<"\n";
@@ -178,7 +175,7 @@ int main(int argc, char **argv)
         myfile << x.first.first << "," << x.first.second << "," << x.second.TotalFevals << "," << x.second.Hmax << "," << x.second.PrepFevals << "," << x.second.ForPIFevals << "," << x.second.AftPIFevals << ","  << x.second.BootstrapFevals << "\n";
     }
     myfile.close();
-    filename = "bootstrap_finish_tradestudy_short960.csv";
+    filename = "bootstrap_finish_tradestudy_Earth.csv";
     myfile.open(filename);
     myfile << headers<<"\n";
     myfile << std::setprecision(15);
@@ -187,7 +184,7 @@ int main(int argc, char **argv)
         myfile << x.first.first << "," << x.first.second << "," << x.second.TotalFevals << "," << x.second.Hmax << "," << x.second.PrepFevals << "," << x.second.ForPIFevals << "," << x.second.AftPIFevals << "," << x.second.BootstrapFevals << "\n";
     }
     myfile.close();
-    filename = "bootstrap_disabled_tradestudy_short960.csv";
+    filename = "bootstrap_disabled_tradestudy_Earth.csv";
     myfile.open(filename);
     myfile << headers<<"\n";
     myfile << std::setprecision(15);

@@ -23,8 +23,8 @@ using namespace std;
 #define C_MU_MOON_CAN C_MU_MOON/C_MU_EARTH
 #define C_MU_SUN_CAN C_MU_SUN/C_MU_EARTH
 // #define C_omega 7292115.0e-011       // Angular Speed of Earth [rad/s]
-#define C_omega 2.661699624635926e-06   //angular speed of Moon [rad/s]
-// #define C_omega 0.0
+// #define C_omega 2.661699624635926e-06   //angular speed of Moon [rad/s]
+#define C_omega 0.0
 #define C_Req 6378.137               // Equatorial Radius of Earth [km]
 #define C_Rmoon 1738.0               // Reference Radius of the Moon [km] from GRAIL model
 #define C_ckm 299792.458             // Speed of Light (km/s)
@@ -32,10 +32,10 @@ using namespace std;
 #define g0 9.8065                    // Earth's Surface Gravity (m/s^2)
 #define C_J2 0.00108263              // Earth's Second Zonal Harmonic
 #define RS 696000.0                  // Solar Radius [km]
-// #define DU C_Req
-// #define TU sqrt(pow(DU,3.0)/C_MU_EARTH)
-#define DU C_Rmoon
-#define TU sqrt(pow(DU,3.0)/C_MU_MOON)
+#define DU C_Req
+#define TU sqrt(pow(DU,3.0)/C_MU_EARTH)
+// #define DU C_Rmoon
+// #define TU sqrt(pow(DU,3.0)/C_MU_MOON)
 #define VU DU/TU
 #define si2can pow(TU,2.0)/(DU*1000.0) // Canonical unit conversion factor
 #define JD2000 2451545.0             // Julian days of J2000

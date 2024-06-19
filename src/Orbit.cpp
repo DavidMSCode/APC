@@ -32,12 +32,10 @@
 #include "perturbed_gravity.h"
 #include "ecef2eci.h"
 #include "eci2ecef.h"
-#include "lunar_perturbed_gravity.h"
 #include "perturbations.h"
 #include "picard_error_feedback.h"
 #include "reosc_perigee.h"
 #include "EGM2008.h"
-#include "GRGM1200b.h"
 
 using namespace std;
 // Orbit Constructors
@@ -603,7 +601,7 @@ void Orbit::HamiltonianCheck()
     for (int i = 0; i < len; i++)
     {
 
-        jacobiIntegral_GRGM1200b(ts[i], &_y[i][0], &H, deg, *this);
+        jacobiIntegral(ts[i], &_y[i][0], &H, deg);
         if (i == 0)
         {
             H0 = H;
@@ -1088,7 +1086,7 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(EphemerisManager &ephem)
                 if (orbitRef == this && Bootstrap_On && !this->Exit_Bootstrap)
                 {
                     // Compute low fidelity
-                    lunar_Grav_Approx_Function(times[i - 1], xPrimaryFixed, aPrimaryFixed, Feval, lowDeg);
+                    Grav_Approx(times[i - 1], xPrimaryFixed, aPrimaryFixed, Feval);
                     // DEBUG check what the normal calculation would have been
 
                     // Compute approximation for the bootstrap orbit
@@ -1132,7 +1130,7 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(EphemerisManager &ephem)
                 else
                 {
                     // run normal APC procedures
-                    lunar_perturbed_gravity_error(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, del_G, lowDeg);
+                    perturbed_gravity_error(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, del_G);
                 }
 
                 // Calculate acceleration from drag
@@ -1149,7 +1147,7 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(EphemerisManager &ephem)
                 ecef2eci(et(times[i - 1]), aPrimaryFixed, aI);
                 // calculate SRP and Third Body
                 Perturbed_SRP(times[i - 1], xI, currOrbit, ephem, SRP_aI);
-                Perturbed_three_body_moon(times[i - 1], xI, currOrbit, ephem, third_body_aI);
+                Perturbed_three_body(times[i - 1], xI, currOrbit, ephem, third_body_aI);
                 // Add perturbations to acceleration
                 for (int k = 0; k < 3; k++)
                 {
@@ -1214,7 +1212,7 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(EphemerisManager &ephem)
                 eci2ecef(et(times[i - 1]), xI, vI, xPrimaryFixed, vPrimaryFixed);
                 // Linear Error Correction Acceleration
                 double del_aECEF[3] = {0.0};
-                picard_error_feedback_GRGM1200b(xPrimaryFixed, del_X, del_aECEF);
+                picard_error_feedback(xPrimaryFixed, del_X, del_aECEF);
                 // Convert from ECEF to ECI
                 ecef2eci(et(times[i - 1]), del_aECEF, del_aECI);
                 // BodyFixedAccelerationToInertial(del_aECEF,del_aECI,times[i-1],orbit);

@@ -44,6 +44,7 @@ struct IterCounters
  * @param ITRs Iteration struct for controlling full or approx calculations
  * @param del_G Difference between full and approximate gravity evaluation (km/s^2)
  */
+void perturbed_gravity_error(double t, double *Xo, double err, int i, int M, double deg, int hot, double *G, double tol, int *itr, double *Feval, IterCounters &ITRs, double *del_G);
 void perturbed_gravity(double t, double *Xo, double err, int i, int N, double deg, int hot, double *G, double tol, int *itr, double *Feval, IterCounters &ITRs, double *del_G);
 
 /**

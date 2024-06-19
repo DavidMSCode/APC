@@ -38,6 +38,37 @@
 #define debug_grav 0
 #define debug_grav_itr 0
 
+void perturbed_gravity_error(double t, double *Xo, double err, int i, int M, double deg, int hot, double *G, double tol, int *itr, double *Feval, IterCounters &ITRs, double *del_G)
+{
+  double& SF = ITRs.SF;
+  double Gapprox[3] = {0.0};
+  if(err<tol/ITRs.TOL_SCALE){
+    //adjust tolerance
+    if(ITRs.TOL_SCALE*SF<1){
+      ITRs.TOL_SCALE = ITRs.TOL_SCALE*SF;
+    }
+    else{
+      ITRs.TOL_SCALE = 1;
+    }
+    ITRs.DID_FULL = true;
+    Grav_Full(t, Xo, G, tol, deg, Feval);
+    Grav_Approx(t, Xo, Gapprox, Feval);
+    for (int j = 0; j <= 2; j++)
+    {
+      del_G[ID2(i, j + 1, Nmax + 1)] = G[j] - Gapprox[j];
+    }
+  }
+  else{
+    ITRs.DID_FULL = false;
+    Grav_Approx(t, Xo, Gapprox, Feval);
+    for (int j = 0; j <= 2; j++)
+    {
+      G[j] = Gapprox[j] + del_G[ID2(i, j + 1, Nmax + 1)];
+    }
+  }
+  return;
+}
+
 void perturbed_gravity(double t, double *Xo, double err, int i, int M, double deg, int hot, double *G, double tol, int *itr, double *Feval, IterCounters &ITRs, double *del_G)
 {
 
@@ -387,8 +418,8 @@ void Grav_Full(double t, double *Xo, double *acc, double tol, double deg, double
     }
   }
 
-  double grav = 0.0;
-  radial_gravity(Xo, tol, deg, &grav);
+  double grav = deg;
+  // radial_gravity(Xo, tol, deg, &grav);
   EGM2008(state, &dstate[3], grav);
   Feval[0] = Feval[0] + pow(grav, 2) / pow(deg, 2);
 

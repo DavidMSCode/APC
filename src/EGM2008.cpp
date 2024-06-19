@@ -409,11 +409,10 @@ void loc_gravityPot( double* p, double* P, int DEG, double* smlambda, double* cm
 * \param[out] H Jacobi Integral Output
 */
 void jacobiIntegral(double t, double* solN, double* H, int Deg){
-
 	double xI[3]    = {0.0};
 	double vI[3]    = {0.0};
-	double xECEF[3] = {0.0};
-	double vECEF[3] = {0.0};
+	double xF[3] = {0.0};
+	double vF[3] = {0.0};
 
 	xI[0] = solN[0];
 	xI[1] = solN[1];
@@ -422,22 +421,16 @@ void jacobiIntegral(double t, double* solN, double* H, int Deg){
 	vI[1] = solN[4];
 	vI[2] = solN[5];
 
-	// Convert from ECI to ECEF
-	eci2ecef(t,xI,vI,xECEF,vECEF);
-
-	solN[0] = xECEF[0];
-	solN[1] = xECEF[1];
-	solN[2] = xECEF[2];
-	solN[3] = vECEF[0];
-	solN[4] = vECEF[1];
-	solN[5] = vECEF[2];
-
+	// Convert from inertial frame to body fixed frame
+	//InertialToBodyFixed(xI,vI,xF,vF,t,orbit);
+	eci2ecef(t,xI,vI,xF,vF);
 	double KE,PE,RotTerm;
 
-	KE = 0.5*(solN[3]*solN[3] + solN[4]*solN[4] + solN[5]*solN[5]);
+	KE = 0.5*(vF[0]*vF[0] + vF[1]*vF[1] + vF[2]*vF[2]);		//Kinetic energy in inertial frame
 	EGM2008Pot(solN, &PE, Deg);
 	PE = -PE;
-	RotTerm = 0.5*C_omega*C_omega*(solN[0]*solN[0] + solN[1]*solN[1]);
+	RotTerm = 0.5*C_omega*C_omega*(xF[0]*xF[0] + xF[1]*xF[1]);
+
 	*H  = PE + KE - RotTerm; // Hamiltonian
 
 	// printf("KE: %e\tPE: %e\tRT: %e\tSum: %e\n ",KE,PE,RotTerm,*H);
