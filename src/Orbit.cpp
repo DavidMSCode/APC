@@ -670,16 +670,16 @@ void BootstrapOrbit::BootstrapPropagate()
     double *r0 = &_In_r0[0];
     double *v0 = &_In_v0[0];
     Bootstrap_Adaptive_Picard_Chebyshev(ephem);
-    double FullEvals = 0; // Total number of full function evaluations
-    double PartialEvals = 0;    // Total number of partial function evaluations
-    //Sum up all function evaluations
-    for(Orbit *orbitRef : orbitslist)
+    double FullEvals = 0;    // Total number of full function evaluations
+    double PartialEvals = 0; // Total number of partial function evaluations
+    // Sum up all function evaluations
+    for (Orbit *orbitRef : orbitslist)
     {
-        FullEvals += orbitRef->Feval.Prepare[0]+orbitRef->Feval.PicardIteration[0]+orbitRef->Feval.Bootstrap[0];
-        PartialEvals += orbitRef->Feval.Prepare[1]+orbitRef->Feval.PicardIteration[1]+orbitRef->Feval.Bootstrap[1];
+        FullEvals += orbitRef->Feval.Prepare[0] + orbitRef->Feval.PicardIteration[0] + orbitRef->Feval.Bootstrap[0];
+        PartialEvals += orbitRef->Feval.Prepare[1] + orbitRef->Feval.PicardIteration[1] + orbitRef->Feval.Bootstrap[1];
     }
     double partialRatio = pow(lowDeg, 2) / pow(deg, 2);
-    TotalFuncEvals = FullEvals + PartialEvals* partialRatio;
+    TotalFuncEvals = FullEvals + PartialEvals * partialRatio;
     if (g_VERBOSE)
     {
         cout << "Total Function Evaluations: " << TotalFuncEvals << endl;
@@ -700,7 +700,7 @@ void BootstrapOrbit::Bootstrap_Adaptive_Picard_Chebyshev(class EphemerisManager 
     // 1. DETERMINE DEGREE/SEGMENTATION SCHEME
     // Compute the polynomial degree and number of segments per orbit that will
     // result in a solution that satisfies the user specified tolerance.
-    double* Feval = &this->Feval.Prepare[0];
+    double *Feval = &this->Feval.Prepare[0];
     polydegree_segments(*this, Feval);
     // copy scheme to forward and aft orbits
     aftOrbit.seg = seg;
@@ -1025,7 +1025,7 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(EphemerisManager &ephem)
         }
         orbit.converged = false;
     }
-    this -> Exit_Bootstrap = false;
+    this->Exit_Bootstrap = false;
     bool notConverged = true;
     // Start the iteration loop
     while (notConverged)
@@ -1049,10 +1049,10 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(EphemerisManager &ephem)
             IterCounters &ITRs = currOrbit.ITRs;
             int &itr = currOrbit.itr;
             double &err = currOrbit.err;
-            double* Feval;
-            if(&currOrbit == this && Bootstrap_On && !this->Exit_Bootstrap)
+            double *Feval;
+            if (&currOrbit == this && Bootstrap_On && !this->Exit_Bootstrap)
             {
-                //point to the counter for the bootstrap orbit
+                // point to the counter for the bootstrap orbit
                 Feval = &currOrbit.Feval.Bootstrap[0];
             }
             else
@@ -1095,37 +1095,6 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(EphemerisManager &ephem)
                         del_G[ID2(i, j + 1, Nmax + 1)] = 0.5 * aftOrbit.del_G[ID2(i, j + 1, Nmax + 1)] + 0.5 * forOrbit.del_G[ID2(i, j + 1, Nmax + 1)];
                         aPrimaryFixed[j] += del_G[ID2(i, j + 1, Nmax + 1)];
                     }
-                    // if (g_DEBUG_BOOTSRAP)
-                    // {
-                    //     double aPrimaryFixed_normal[3] = {0.0};
-                    //     lunar_perturbed_gravity(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed_normal, tol, &itr, Feval, ITRs, &del_G_normal[0], lowDeg);
-
-                    //     double delg_G_mag = 0.0;
-                    //     double del_G_err_norm[3] = {0.0};
-                    //     for (int j = 0; j < 3; j++)
-                    //     {
-                    //         delg_G_mag += del_G[j] * del_G[j];
-                    //     }
-                    //     delg_G_mag = sqrt(delg_G_mag);
-                    //     for (int j = 0; j < 3; j++)
-                    //     {
-                    //         double del_G_err = (del_G[j] - del_G_normal[j]);
-                    //         if (delg_G_mag == 0.0 && del_G_err != 0.0)
-                    //         {
-                    //             del_G_err_norm[j] = INFINITY;
-                    //         }
-                    //         else if (delg_G_mag == 0.0 && del_G_err == 0.0)
-                    //         {
-                    //             del_G_err_norm[j] = 0.0;
-                    //         }
-
-                    //         else
-                    //         {
-                    //             del_G_err_norm[j] = del_G_err / delg_G_mag;
-                    //         }
-                    //     }
-                    //     cout << "del_G_err: " << del_G_err_norm[0] << "\t" << del_G_err_norm[1] << "\t" << del_G_err_norm[2] << endl;
-                    // }
                 }
                 else
                 {
@@ -1309,14 +1278,13 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(EphemerisManager &ephem)
             itr++;
             // Iteration Counter
 
-
             // End of orbit object for loop
         }
         if (aftOrbit.converged && forOrbit.converged && (this->converged || !Bootstrap_To_Convergence))
-            {
-                notConverged = false;
-            }
-        if(aftOrbit.converged && forOrbit.converged)
+        {
+            notConverged = false;
+        }
+        if (aftOrbit.converged && forOrbit.converged)
         {
             this->Exit_Bootstrap = true;
         }
@@ -1335,4 +1303,739 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(EphemerisManager &ephem)
         }
     }
     return;
+}
+
+InterpolatedOrbit::InterpolatedOrbit(const Orbit &orbit, double followTime) : forOrbit(_primary, _IOFrame, _epoch), Orbit(orbit)
+{
+    SetName("Bootstrap Orbit");
+    // Initialize orbit objects list
+    orbitslist = {&forOrbit, this};
+    // Initialize orbit object initial conditions
+    double z0[6] = {_In_r0[0], _In_r0[1], _In_r0[2], _In_v0[0], _In_v0[1], _In_v0[2]};
+    double zfor[6] = {0.0};
+    double zaft[6] = {0.0};
+    // Generate the state ahead and behind of the target orbit
+    FandG(z0, zfor, followTime, _mu);
+    FandG(z0, zaft, -followTime, _mu);
+    // assign values to the forward orbit
+    forOrbit.SetName("Forward Orbit");
+    forOrbit.SetPosition0({zfor[0], zfor[1], zfor[2]});
+    forOrbit.SetVelocity0({zfor[3], zfor[4], zfor[5]});
+    forOrbit.SetIntegrationTime(_Ephemeris_t0, _Ephemeris_tf);
+    forOrbit.SetProperties(satproperties._Area, satproperties._Reflectance, satproperties._Mass, satproperties._Cd);
+    forOrbit.SetComputeHamiltonian(Compute_Hamiltonian);
+    forOrbit.SetComputeSRP(Compute_SRP);
+    forOrbit.SetComputeThirdBody(Compute_Third_Body);
+    forOrbit.SetComputeDrag(Compute_Drag);
+    forOrbit.deg = this->deg;
+}
+
+InterpolatedOrbit::InterpolatedOrbit()
+{
+}
+
+void InterpolatedOrbit::InterpolatePropagate()
+{
+    double t0 = _Integrator_t0;
+    double tf = _Integrator_tf;
+    EphemerisManager ephem = cacheEphemeris(t0, tf + 3600);
+    // Initialize orbit object
+    double *r0 = &_In_r0[0];
+    double *v0 = &_In_v0[0];
+    Interpolate_Adaptive_Picard_Chebyshev(ephem);
+    double FullEvals = 0;    // Total number of full function evaluations
+    double PartialEvals = 0; // Total number of partial function evaluations
+    // Sum up all function evaluations
+    for (Orbit *orbitRef : orbitslist)
+    {
+        FullEvals += orbitRef->Feval.Prepare[0] + orbitRef->Feval.PicardIteration[0] + orbitRef->Feval.Bootstrap[0];
+        PartialEvals += orbitRef->Feval.Prepare[1] + orbitRef->Feval.PicardIteration[1] + orbitRef->Feval.Bootstrap[1];
+    }
+    double partialRatio = pow(lowDeg, 2) / pow(deg, 2);
+    TotalFuncEvals = FullEvals + PartialEvals * partialRatio;
+    if (g_VERBOSE)
+    {
+        cout << "Total Function Evaluations: " << TotalFuncEvals << endl;
+    }
+    if (Compute_Hamiltonian)
+    {
+        for (Orbit *orbitRef : orbitslist)
+        {
+            orbitRef->HamiltonianCheck();
+        }
+    }
+    return;
+}
+
+void InterpolatedOrbit::Interpolate_Adaptive_Picard_Chebyshev(class EphemerisManager ephem)
+{
+    // 1. DETERMINE DEGREE/SEGMENTATION SCHEME
+    // Compute the polynomial degree and number of segments per orbit that will
+    // result in a solution that satisfies the user specified tolerance.
+    double *Feval = &this->Feval.Prepare[0];
+    polydegree_segments(*this, Feval);
+    // copy scheme to forward and aft orbits
+    forOrbit.seg = seg;
+    forOrbit.N = N;
+    forOrbit.tp = tp;
+    // Array size for coefficients and solution
+    double &tf = _Integrator_tf;
+    coeff_size = int((tf / Period + 1.0) * (seg + 2.0) * (N + 1));
+    forOrbit.coeff_size = coeff_size;
+
+    // 2. PREPARE PROPAGATOR
+    // Compute and store the begin and end times for each segment (based on true
+    // anomaly segmentation) and load the constant matrices corresponding to N.
+    prep_HS = -1; // Hot start switch condition
+    forOrbit.prep_HS = prep_HS;
+    prepare_propagator(*this);
+    // FIXME: the quadrature matrices don't really need to be copied but it is easier to do this so that other code doesn't need to be modified.
+    forOrbit.T2 = T2; // [(M+1)x(N+1)] position chebyshev matrix
+    forOrbit.P2 = P2; // [(N+1)xN]  position integration matrix
+    forOrbit.T1 = T1; // [(M+1)xN] velocity chebyshev matrix
+    forOrbit.P1 = P1; // [Nx(N-1)] velocity integration matrix
+    forOrbit.Ta = Ta; // [(M+1)x(N-1)] acceleration chebyshev matrix
+    forOrbit.A = A;   // [(N-1)x(M+1)]
+    forOrbit.t_orig = t_orig;
+    forOrbit.tvec = tvec;
+
+    // 3. PICARD-CHEBYSHEV PROPAGATOR
+    // Propagate from t0 to tf, iterating on each segment (Picard Iteration), until
+    // completion. Stores solution as chebyshev nodes for each segment
+    M = N; // Number of Chebyshev nodes
+    CC.A.resize((coeff_size * 3), 0.0);
+    CC.B.resize((coeff_size * 3), 0.0);
+    CC.total_segs = 0; // running count of orbital path segments
+    forOrbit.M = M;
+    forOrbit.CC.A.resize((coeff_size * 3), 0.0);
+    forOrbit.CC.B.resize((coeff_size * 3), 0.0);
+    forOrbit.CC.total_segs = 0; // running count of orbital path segments
+    // reserve space in vectors for interpolation and solution
+    int sz = int(ceil(tf / Period) * (seg + 1)); // ensure sufficient space by overestimating the number of segments
+    segment_end_times.resize(sz, 0.0);
+    W1.resize(sz, 0.0);
+    W2.resize(sz, 0.0);
+    forOrbit.segment_end_times.resize(sz, 0.0);
+    forOrbit.W1.resize(sz, 0.0);
+    forOrbit.W2.resize(sz, 0.0);
+    Interpolate_Picard_Chebyshev_Propagator(ephem);
+
+    // 4. INTERPOLATE SOLUTION
+    // The Chebyshev coefficients from each of the orbit segments are used to compute
+    // the solution (position & velocity) at the user specified times.
+    for (Orbit *orbit : orbitslist)
+    {
+        // run interpolation using the output time vector for each orbit object
+        orbit->segment_end_times = segment_end_times;
+        orbit->total_segs = total_segs;
+        orbit->Interpolate();
+    }
+    return;
+}
+
+void InterpolatedOrbit::Interpolate_Picard_Chebyshev_Propagator(EphemerisManager ephem)
+{
+
+    if (g_DEBUG_PICARD)
+    {
+        cout << "Entering Bootstrap_Picard_chebyshev_Propagator" << std::endl;
+    }
+
+    int loop = 0;              // Break loop condition
+    k = 0;                     // Counter: segments per orbit
+    int &seg_cnt = total_segs; // Counter: total segments
+    double mu = GetPrimaryGravitationalParameter();
+    double w1, w2, tf;
+    vector<double> &segment_times = segment_end_times;
+
+    // Set segment initial conditions
+    for (int i = 0; i < 3; i++)
+    {
+        r0_seg[i] = _In_r0[i];
+        v0_seg[i] = _In_v0[i];
+        forOrbit.r0_seg[i] = forOrbit._In_r0[i];
+        forOrbit.v0_seg[i] = forOrbit._In_v0[i];
+    }
+
+    // PROPAGATION LOOP
+    while (loop == 0)
+    {
+        if (g_DEBUG_PICARD)
+        {
+            cout << "===" << std::endl;
+            cout << "Starting Segment " << seg_cnt + 1 << "." << std::endl;
+            double debug_altitude = 0.0;
+            double debug_velocity = 0.0;
+            for (int j = 0; j < 3; j++)
+            {
+                debug_altitude += r0_seg[j] * r0_seg[j];
+                debug_velocity += v0_seg[j] * v0_seg[j];
+            }
+            debug_altitude = sqrt(debug_altitude);
+            debug_velocity = sqrt(debug_velocity);
+            cout << "debug_altitude: " << debug_altitude << std::endl;
+            cout << "debug_velocity: " << debug_velocity << std::endl;
+        }
+
+        // A. CALCULATE CHEBYSHEV NODES
+        //  Compute cosine time vector for the current segment
+        double t0 = tvec[k];
+        tf = tvec[k + 1];
+        while (tf == 0.0)
+        {
+            k++;
+            t0 = tvec[k];
+            tf = tvec[k + 1];
+        }
+        if (tf > _Integrator_tf)
+        {
+            tf = _Integrator_tf;
+        }
+        w1 = (tf + t0) / 2.0;
+        w2 = (tf - t0) / 2.0;
+        W1[seg_cnt] = w1;
+        W2[seg_cnt] = w2;
+        forOrbit.W1[seg_cnt] = w1;
+        forOrbit.W2[seg_cnt] = w2;
+
+        //  Compute Chebyshev nodes for the current segment
+        for (Orbit *orbitRef : orbitslist)
+        {
+            Orbit &orbit = *orbitRef;
+            orbit.tau.resize(M + 1, 0.0);
+            orbit.times_seg.resize(M + 1, 0.0);
+            orbit.X_seg.resize((M + 1) * 3, 0.0);
+            orbit.V_seg.resize((M + 1) * 3, 0.0);
+            orbit.Beta_seg.resize(N * 3, 0.0);
+            orbit.Alpha_seg.resize((N + 1) * 3, 0.0);
+
+            // Keplerian warm start
+            // Initial state
+            for (int j = 0; j < 3; j++)
+            {
+                orbit.z0_seg[j] = orbit.r0_seg[j];
+                orbit.z0_seg[j + 3] = orbit.v0_seg[j];
+            }
+            double z[6] = {0.0};
+            for (int cnt = 0; cnt <= M; cnt++)
+            {
+                // compute cosine node
+                orbit.tau[cnt] = -cos(C_PI * cnt / M);
+                orbit.times_seg[cnt] = orbit.tau[cnt] * w2 + w1;
+                // compute F and G state at node
+                FandG(orbit.z0_seg, z, orbit.times_seg[cnt] - t0, mu);
+                // store initial segment guess
+                orbit.X_seg[ID2(cnt + 1, 1, M + 1)] = z[0];
+                orbit.X_seg[ID2(cnt + 1, 2, M + 1)] = z[1];
+                orbit.X_seg[ID2(cnt + 1, 3, M + 1)] = z[2];
+                orbit.V_seg[ID2(cnt + 1, 1, M + 1)] = z[3];
+                orbit.V_seg[ID2(cnt + 1, 2, M + 1)] = z[4];
+                orbit.V_seg[ID2(cnt + 1, 3, M + 1)] = z[5];
+            }
+            // End orbit list iteration
+        }
+        // Perform picard iteration for each orbit and move on when for and aft orbits converge
+        Interpolate_Picard_Iteration(ephem);
+
+        //  STORE TRAJECTORY COEFFICIENTS
+        for (Orbit *orbitRef : orbitslist)
+        {
+            std::vector<double> &BETA = orbitRef->CC.B;
+            std::vector<double> &ALPHA = orbitRef->CC.A;
+            std::vector<double> &Beta = orbitRef->Beta_seg;
+            std::vector<double> &Alpha = orbitRef->Alpha_seg;
+            for (int i = 1; i <= N; i++)
+            {
+                BETA[ID2(i + (seg_cnt * N), 1, coeff_size)] = Beta[ID2(i, 1, N)];
+                BETA[ID2(i + (seg_cnt * N), 2, coeff_size)] = Beta[ID2(i, 2, N)];
+                BETA[ID2(i + (seg_cnt * N), 3, coeff_size)] = Beta[ID2(i, 3, N)];
+            }
+            for (int i = 1; i <= N + 1; i++)
+            {
+                // Store X and V points
+                ALPHA[ID2(i + seg_cnt * (N + 1), 1, coeff_size)] = Alpha[ID2(i, 1, N + 1)];
+                ALPHA[ID2(i + seg_cnt * (N + 1), 2, coeff_size)] = Alpha[ID2(i, 2, N + 1)];
+                ALPHA[ID2(i + seg_cnt * (N + 1), 3, coeff_size)] = Alpha[ID2(i, 3, N + 1)];
+            }
+        }
+
+        // ASSIGN NEXT SEGMENT ICs
+        //  Assign the initial conditions for the next segment
+        for (Orbit *orbitRef : orbitslist)
+        {
+            Orbit &orbit = *orbitRef;
+            for (int j = 0; j < 3; j++)
+            {
+                orbit.r0_seg[j] = orbit.X_seg[ID2(M + 1, j + 1, M + 1)];
+                orbit.v0_seg[j] = orbit.V_seg[ID2(M + 1, j + 1, M + 1)];
+            }
+        }
+
+        // Reosc at next if current segment passes through perigee
+        orb_end = 0.0;
+        // FIXME: Modify forward and aft next initial conditions when the perigee reosculates. If the bootstrap orbit reosculates then the time vector is modified as is the next segments initial conditions.
+        reosc_perigee(tf, *this);
+        if (orb_end != 0.0)
+        {
+            segment_times[seg_cnt + 1] = orb_end;
+        }
+        else
+        {
+            segment_times[seg_cnt + 1] = tf;
+        }
+        // debug print segment start and end time
+        if (g_DEBUG_PICARD)
+        {
+            cout << "Segment end time: " << segment_times[seg_cnt + 1] << std::endl;
+        }
+        // Total segments counter
+        seg_cnt = seg_cnt + 1;
+        k = k + 1;
+        // Check if the end of the integration time has been reached
+        if (fabs(tf - _Integrator_tf) / tf < 1e-12)
+        {
+            loop = 1;
+        }
+    }
+}
+
+void InterpolatedOrbit::Interpolate_Picard_Iteration(EphemerisManager &ephem)
+{
+    int MaxIt = 300; // Maximum number of iterations
+    // Propagator values that are consistent between each orbit object
+    int N = this->N;
+    int M = this->M;
+    int hot = this->prep_HS;
+    double tol = this->tol;
+    int deg = this->deg;
+    vector<double> times = this->times_seg;
+
+    // Quadrature matrices
+    vector<double> P1 = this->P1;
+    vector<double> P2 = this->P2;
+    vector<double> T1 = this->T1;
+    vector<double> T2 = this->T2;
+    vector<double> A = this->A;
+
+    // Initialized node variables that may be reused at each step
+    bool suborbital = false;
+    double alt = 0.0;
+    double xI[3] = {0.0};
+    double vI[3] = {0.0};
+    double xPrimaryFixed[3] = {0.0};
+    double vPrimaryFixed[3] = {0.0};
+    double aPrimaryFixed[3] = {0.0};
+    double aI[3] = {0.0};
+    double del_X[3] = {0.0};
+    double del_aECI[3] = {0.0};
+    double drag_aECEF[3] = {0.0};
+    double SRP_aI[3] = {0.0};
+    double third_body_aI[3] = {0.0};
+
+    // initialized segment variables that may be reused for each iteration (do not carry necessary info between iterations)
+    std::vector<double> beta(N * 3, 0.0);
+    std::vector<double> alpha((N + 1) * 3, 0.0);
+    std::vector<double> gamma(N * 3, 0.0);
+    std::vector<double> kappa((N + 1) * 3, 0.0);
+    std::vector<double> Xorig;
+    std::vector<double> Vorig;
+    std::vector<double> Xnew;
+    std::vector<double> Vnew;
+    std::vector<double> xECEFp((M + 1) * 3, 0.0);
+    std::vector<double> xECIp((M + 1) * 3, 0.0);
+    std::vector<double> del_a((M + 1) * 3, 0.0);
+    double w2 = (times[M] - times[0]) / 2;
+    double w1 = (times[M] + times[0]) / 2;
+    vector<double> del_G_normal;
+    if (g_DEBUG_BOOTSRAP)
+    {
+        del_G_normal.resize((Nmax + 1) * 3, 0.0);
+    }
+    // Initialize orbit specific variables
+    for (Orbit *orbitRef : orbitslist)
+    {
+        Orbit &orbit = *orbitRef;
+        orbit.G.resize((M + 1) * 3, 0.0);
+        orbit.del_G.resize((Nmax + 1) * 3);
+        fill(orbit.del_G.begin(), orbit.del_G.end(), 0.0);
+        orbit.itr = 0;
+        orbit.ITRs = IterCounters(); // reset all counters to 0
+        if (hot == 1)
+        {
+            orbit.err = 1e-2;
+        }
+        else
+        {
+            orbit.err = 10;
+        }
+        orbit.converged = false;
+    }
+    this->Exit_Interpolate = false;
+    bool notConverged = true;
+    // Start the iteration loop
+    while (notConverged)
+    {
+        // Each iteration compute for each orbit object
+        for (Orbit *orbitRef : orbitslist)
+        {
+            Orbit &currOrbit = *orbitRef;
+            if (currOrbit.converged)
+            {
+                continue;
+            }
+            vector<double> &X = currOrbit.X_seg;
+            vector<double> &V = currOrbit.V_seg;
+            vector<double> &G = currOrbit.G;
+            double *del_G = &currOrbit.del_G[0];
+            double *Xint = &currOrbit.r0_seg[0];
+            double *Vint = &currOrbit.v0_seg[0];
+            vector<double> &Beta = currOrbit.Beta_seg;
+            vector<double> &Alpha = currOrbit.Alpha_seg;
+            vector<double> &LS = currOrbit.LS_seg;
+            IterCounters &ITRs = currOrbit.ITRs;
+            int &itr = currOrbit.itr;
+            double &err = currOrbit.err;
+            double *Feval;
+            if (&currOrbit == this && Interpolate_On && !this->Exit_Interpolate)
+            {
+                // point to the counter for the bootstrap orbit
+                Feval = &currOrbit.Feval.Bootstrap[0];
+            }
+            else
+            {
+                // point to the counter for the picard iteration counter
+                Feval = &currOrbit.Feval.PicardIteration[0];
+            }
+            // cout << currOrbit.name << " Iteration  " << itr << " error:" << err << endl;
+            for (int i = 1; i <= M + 1; i++) // Get forces at each node on the segment in inertial frame
+            {
+
+                for (int j = 1; j <= 3; j++)
+                {
+                    xI[j - 1] = X[ID2(i, j, M + 1)];
+                    vI[j - 1] = V[ID2(i, j, M + 1)];
+                }
+
+                // Exit loop early if xI or vI is NaN
+                if (isnan(xI[0]) || isnan(xI[1]) || isnan(xI[2]) || isnan(vI[0]) || isnan(vI[1]) || isnan(vI[2]))
+                {
+                    // print error message
+                    cout << "Error: NaN in Picard Iteration" << endl;
+                    // end picard iteration
+                    return;
+                }
+                // Convert from ECI to ECEF
+                // InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
+                eci2ecef(et(times[i - 1]), xI, vI, xPrimaryFixed, vPrimaryFixed);
+                // Compute Variable Fidelity Gravity for the for and aft satellites only
+
+                if (orbitRef == this && Interpolate_On && !this->Exit_Interpolate)
+                {
+                    //find the tau of the for satellite's segment that is closest in proximity to the current segment
+                    //use the tau for the current node as the initial guess for the for satellite's segment
+                    double tau_guess = this->tau[i-1];
+                    //Run Newton Optimization
+                    // convert doubl3 to vector
+                    vector<double> x_target(xPrimaryFixed, xPrimaryFixed + 3);
+                    double tau = FindNearestTau(tau_guess,x_target,forOrbit.LS_seg,forOrbit.Beta_seg,forOrbit.Alpha_seg,N,w1,w2);
+
+                    //DEBUG CALCULATIONS
+                    std::vector<double> x_tau_guess;
+                    std::vector<double> v_tau_guess;
+                    std::vector<double> a_tau_guess;
+                    InterpolateTau(tau_guess,forOrbit.LS_seg,forOrbit.Beta_seg,forOrbit.Alpha_seg,N,x_tau_guess,v_tau_guess,a_tau_guess);
+                    std::vector<double> x_min;
+                    std::vector<double> v_min;
+                    std::vector<double> a_min;
+                    InterpolateTau(tau,forOrbit.LS_seg,forOrbit.Beta_seg,forOrbit.Alpha_seg,N,x_min,v_min,a_min);
+                    // Compute distance between the two points (x_min and x_target)
+                    double distance = 0.0;
+                    for(int j = 0; j < 3; j++)
+                    {
+                        distance += pow(x_min[j] - x_target[j],2);
+                    }
+
+                    // // Compute low fidelity
+                    Grav_Approx(times[i - 1], xPrimaryFixed, aPrimaryFixed, Feval);
+                }
+                else
+                {
+                    // run normal APC procedures
+                    perturbed_gravity_error(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, del_G);
+                }
+
+                // Calculate acceleration from drag
+                Perturbed_Drag(xPrimaryFixed, vPrimaryFixed, currOrbit, drag_aECEF);
+
+                // sum pertubed gravity and drag accelerations
+                for (int k = 0; k < 3; k++)
+                {
+                    aPrimaryFixed[k] = aPrimaryFixed[k] + drag_aECEF[k];
+                }
+
+                // Convert acceleration vector from ECEF to ECI
+                // BodyFixedAccelerationToInertial(aPrimaryFixed,aI,times[i-1],orbit);
+                ecef2eci(et(times[i - 1]), aPrimaryFixed, aI);
+                // calculate SRP and Third Body
+                Perturbed_SRP(times[i - 1], xI, currOrbit, ephem, SRP_aI);
+                Perturbed_three_body(times[i - 1], xI, currOrbit, ephem, third_body_aI);
+                // Add perturbations to acceleration
+                for (int k = 0; k < 3; k++)
+                {
+                    aI[k] = aI[k] + SRP_aI[k] + third_body_aI[k];
+                }
+                for (int j = 1; j <= 3; j++)
+                {
+                    G[ID2(i, j, M + 1)] = aI[j - 1];
+                    xECIp[ID2(i, j, M + 1)] = xI[j - 1];
+                }
+            } // Forces found for each node
+
+            // Perform quadrature for velocity then position in inertial frame
+            // Velocity
+            std::vector<double> tmp2;
+            LS = matmul(A, G, N - 1, M + 1, 3, N - 1, M + 1); // Least Squares coefficients
+            tmp2 = matmul(P1, LS, N, N - 1, 3, N, N - 1);     // Interpolated Coefficients to velocity in tau time
+            for (int i = 1; i <= N; i++)
+            {
+                for (int j = 1; j <= 3; j++)
+                {
+                    beta[ID2(i, j, N)] = w2 * tmp2[ID2(i, j, N)]; // Convert from tau time to actual time
+                    if (i == 1)
+                    {
+                        beta[ID2(i, j, N)] = beta[ID2(i, j, N)] + Vint[j - 1];
+                    }
+                }
+            }
+            Vorig = matmul(T1, beta, M + 1, N, 3, M + 1, N);
+
+            // Position
+            std::vector<double> tmp3;
+            tmp3 = matmul(P2, beta, N + 1, N, 3, N + 1, N); // Interpolated Coefficients to position in tau time
+            for (int i = 1; i <= N + 1; i++)
+            {
+                for (int j = 1; j <= 3; j++)
+                {
+                    alpha[ID2(i, j, N + 1)] = w2 * tmp3[ID2(i, j, N + 1)];
+                    if (i == 1)
+                    {
+                        alpha[ID2(i, j, N + 1)] = alpha[ID2(i, j, N + 1)] + Xint[j - 1];
+                    }
+                }
+            }
+            Xorig = matmul(T2, alpha, M + 1, N + 1, 3, M + 1, N + 1);
+
+            for (int i = 1; i <= M + 1; i++)
+            {
+                for (int j = 1; j <= 3; j++)
+                {
+                    xI[j - 1] = Xorig[ID2(i, j, M + 1)];
+                    vI[j - 1] = Vorig[ID2(i, j, M + 1)];
+                }
+                // Linear Error Correction Position
+                for (int j = 1; j <= 3; j++)
+                {
+                    del_X[j - 1] = xI[j - 1] - xECIp[ID2(i, j, M + 1)];
+                }
+                // Convert from inertial to body fixed frame
+                // InertialToBodyFixed(xI,vI,xPrimaryFixed,vPrimaryFixed,times[i-1],orbit);
+                eci2ecef(et(times[i - 1]), xI, vI, xPrimaryFixed, vPrimaryFixed);
+                // Linear Error Correction Acceleration
+                double del_aECEF[3] = {0.0};
+                picard_error_feedback(xPrimaryFixed, del_X, del_aECEF);
+                // Convert from ECEF to ECI
+                ecef2eci(et(times[i - 1]), del_aECEF, del_aECI);
+                // BodyFixedAccelerationToInertial(del_aECEF,del_aECI,times[i-1],orbit);
+
+                for (int j = 1; j <= 3; j++)
+                {
+                    del_a[ID2(i, j, M + 1)] = del_aECI[j - 1];
+                }
+            }
+
+            // Linear Error Correction Velocity Coefficients
+            std::vector<double> tmp4;
+            std::vector<double> tmp5;
+            tmp4 = matmul(A, del_a, N - 1, M + 1, 3, N - 1, M + 1);
+            tmp5 = matmul(P1, tmp4, N, N - 1, 3, N, N - 1);
+            for (int i = 1; i <= N; i++)
+            {
+                for (int j = 1; j <= 3; j++)
+                {
+                    gamma[ID2(i, j, N)] = w2 * tmp5[ID2(i, j, N)];
+                }
+            }
+
+            // Corrected Velocity
+            for (int i = 1; i <= N; i++)
+            {
+                for (int j = 1; j <= 3; j++)
+                {
+                    Beta[ID2(i, j, N)] = beta[ID2(i, j, N)];
+                    if (err < 1e-13)
+                    {
+                        Beta[ID2(i, j, N)] = beta[ID2(i, j, N)] + gamma[ID2(i, j, N)];
+                    }
+                }
+            }
+            Vnew = matmul(T1, Beta, M + 1, N, 3, M + 1, N);
+
+            // Corrected Position
+            std::vector<double> tmp6;
+            tmp6 = matmul(P2, gamma, N + 1, N, 3, N + 1, N);
+            for (int i = 1; i <= N + 1; i++)
+            {
+                for (int j = 1; j <= 3; j++)
+                {
+                    kappa[ID2(i, j, N + 1)] = w2 * tmp6[ID2(i, j, N + 1)];
+                    Alpha[ID2(i, j, N + 1)] = alpha[ID2(i, j, N + 1)];
+                    if (err < 1e-13)
+                    {
+                        Alpha[ID2(i, j, N + 1)] = alpha[ID2(i, j, N + 1)] + kappa[ID2(i, j, N + 1)];
+                    }
+                }
+            }
+            Xnew = matmul(T2, Alpha, M + 1, N + 1, 3, M + 1, N + 1);
+
+            // Non-dimensional Error
+            double tmp = 0.0;
+            double curr_err = 0.0;
+
+            for (int i = 1; i <= M + 1; i++)
+            {
+                for (int j = 1; j <= 6; j++)
+                {
+                    if (j <= 3)
+                    {
+                        tmp = fabs(Xnew[ID2(i, j, M + 1)] - X[ID2(i, j, M + 1)]) / DU;
+                    }
+                    if (j > 3)
+                    {
+                        tmp = fabs(Vnew[ID2(i, j - 3, M + 1)] - V[ID2(i, j - 3, M + 1)]) / DU * TU;
+                    }
+                    if (tmp > curr_err)
+                    {
+                        curr_err = tmp;
+                    }
+                }
+            }
+            err = curr_err;
+
+            // check for convergence
+            if (err < tol)
+            {
+                if (ITRs.DID_FULL)
+                // if(true)
+                {
+                    currOrbit.converged = true;
+                    if (g_DEBUG_PICARD)
+                    {
+                        cout << currOrbit.name << " converged in " << itr << " iterations." << endl;
+                    }
+                }
+            }
+            // Update
+            X = Xnew;
+            V = Vnew;
+            itr++;
+            // Iteration Counter
+
+            // End of orbit object for loop
+        }
+        if (forOrbit.converged && (this->converged))
+        {
+            notConverged = false;
+        }
+        if (forOrbit.converged)
+        {
+            this->Exit_Interpolate = true;
+        }
+        // End of iteration while loop
+    }
+    if (g_DEBUG_PICARD)
+    {
+        for (Orbit *orbitRef : orbitslist)
+        {
+            Orbit &orbit = *orbitRef;
+            segment seg;
+            seg.itrs = orbit.itr;
+            seg.err = orbit.err;
+            seg.converged = orbit.converged;
+            orbit.DebugData.segments.push_back(seg);
+        }
+    }
+    return;
+};
+
+void InterpolatedOrbit::InterpolateTau(double tau, std::vector<double> acc_coeffs, std::vector<double> vel_coeffs, std::vector<double> pos_coeffs, int N, std::vector<double> &x_interp, std::vector<double> &v_interp, std::vector<double> &a_interp)
+{
+    // generate the chebyshev poly values at tau
+    std::vector<double> Tx(N + 1);
+    for (int kk = 0; kk <= N; kk++)
+    {
+        Tx[kk] = cos(kk * acos(tau));
+    }
+    // Copy all of Tx into Tv except the last element
+    std::vector<double> Tv(Tx.begin(), Tx.end() - 1);
+    // Copy all of Tx into Ta except the last two elements
+    std::vector<double> Ta(Tx.begin(), Tx.end() - 2);
+
+    x_interp = matmul(Tx, pos_coeffs, 1, N + 1, 3, 1, N + 1);
+    v_interp = matmul(Tv, vel_coeffs, 1, N, 3, 1, N);
+    a_interp = matmul(Ta, acc_coeffs, 1, N - 1, 3, 1, N - 1);
+
+    return;
+}
+
+/*Using Newton's method for optimization to find the tau value of the for satellite that corresponds to the point on the for satellites trajectory that is closest to the interpolated orbit's body fixed point.
+ */
+double InterpolatedOrbit::FindNearestTau(double tau, std::vector<double> x_target, std::vector<double> acc_coeffs, std::vector<double> vel_coeffs, std::vector<double> pos_coeffs, int N, double w1, double w2, double tol/*=1e-15*/)
+{
+    double delta = std::numeric_limits<double>::infinity();
+    while(abs(delta)>tol)
+    {
+        double tnew = tau*w2+w1;
+        //calculate the interpolated position, velocity, and acceleration at the current tau value
+        std::vector<double> x_interp;
+        std::vector<double> v_interp;
+        std::vector<double> a_interp;
+        InterpolateTau(tau, acc_coeffs, vel_coeffs, pos_coeffs, N, x_interp, v_interp, a_interp);
+        //Transform all three for the inertial frame to the body fixed frame
+        std::vector<double> xB;
+        std::vector<double> vB;
+        std::vector<double> aB;
+        eci2ecef(et(tnew), x_interp, v_interp,a_interp, xB, vB, aB);
+
+        //Relative position, velocity, and acceleration scaled to tau time
+        std::vector<double> x_rel(3);
+        std::vector<double> v_rel(3);
+        std::vector<double> a_rel(3);
+        for(int i=0; i<3; i++)
+        {
+            x_rel[i] = xB[i]-x_target[i];
+            v_rel[i] = w2*vB[i];
+            a_rel[i] = w2*w2*aB[i];
+        }
+
+        //Caclulate a simplified (without the magnitude scaling) first and second derivative of the distance between the target point and the interpolated point
+        double first = Cdot(x_rel,v_rel);
+        double second = Cdot(v_rel,v_rel)+Cdot(x_rel,a_rel);
+
+        //next step is the ratio of the first derivative to the second derivative (if the function is quadratic this will move to the minimum in 1 step)
+        delta = first/second;
+        tau = tau-delta;
+
+        //Ensure tau remains in the valid range of -1 to 1
+        if (tau < -1.0)
+        {
+            tau = -1.0;
+            break;
+        }
+        else if (tau > 1.0)
+        {
+            tau = 1.0;
+            break;
+        }
+    }
+    return tau;
 }

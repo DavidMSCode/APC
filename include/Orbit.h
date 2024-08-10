@@ -20,9 +20,9 @@
 using namespace std;
 struct FunctionEvals
 {
-double Prepare[2] = {0,0};
-double PicardIteration[2] = {0,0};
-double Bootstrap[2]  = {0,0};
+    double Prepare[2] = {0, 0};
+    double PicardIteration[2] = {0, 0};
+    double Bootstrap[2] = {0, 0};
 };
 
 struct ChebyshevCoefficients
@@ -72,9 +72,9 @@ public:
     vector<double> _Vx;
     vector<double> _Vy;
     vector<double> _Vz;
-    vector<vector<double> > _y; //output vector of states
-    vector<double> _dH;         // Hamiltonian error
-    double dHmax;               // Maximum Hamiltonian error
+    vector<vector<double>> _y; // output vector of states
+    vector<double> _dH;        // Hamiltonian error
+    double dHmax;              // Maximum Hamiltonian error
     struct SatProperties
     {
         double _Area;
@@ -116,6 +116,7 @@ public:
     vector<double> times_seg; // Current segment cosine spaced time vector
     vector<double> Beta_seg;  // Current segment beta chebyshev coefficents for integrator
     vector<double> Alpha_seg; // Current segment alpha chebyshev coefficients for integrator
+    vector<double> LS_seg;    // Current segment least squares chebychev coefficients for integrator
     vector<double> X_seg;     // Current segment chebyshev nodes positions for integrator
     vector<double> V_seg;     // Current segment chebyshev nodes velocities for integrator
 
@@ -127,13 +128,13 @@ public:
     bool suborbital = false;
     int prep_HS;
     double tol = 1e-15; // tolerance for APC
-    int deg = 200;       // Degree of high order spherical harmonic gravity evaluations
+    int deg = 200;      // Degree of high order spherical harmonic gravity evaluations
     int lowDeg = 6;     // Degree of low order spherical harmonic gravity evaluations
     int ID;
-    std::vector<double> T;  // user defined time vector
+    std::vector<double> T;             // user defined time vector
     std::vector<double> _Integrator_T; // first integration operator
-    bool USER_TIME = false; // flag if user time is used
-    int hot;                // hot start switch
+    bool USER_TIME = false;            // flag if user time is used
+    int hot;                           // hot start switch
 
     // Degree segmentation variables
     int seg;                          // number of segments per complete orbit
@@ -160,15 +161,15 @@ public:
     vector<double> Ta;     //-- Chebyshev acceleration matrix
 
     // Variables for the picard iteration
-    std::vector<double> G;                  // Gravity at each node in segment
-    std::vector<double> del_G;              // Gravity at each node in segment
-    IterCounters ITRs;                      // Iteration counters
-    int itr;                                // iteration counter
-    double err;                             // Normalized truncation error
-    bool converged;                         // Convergence flag
+    std::vector<double> G;     // Gravity at each node in segment
+    std::vector<double> del_G; // Gravity at each node in segment
+    IterCounters ITRs;         // Iteration counters
+    int itr;                   // iteration counter
+    double err;                // Normalized truncation error
+    bool converged;            // Convergence flag
 
-    FunctionEvals Feval;                    // Function evaluation counters
-    double TotalFuncEvals;                // Total number of full gravity function evaluations
+    FunctionEvals Feval;   // Function evaluation counters
+    double TotalFuncEvals; // Total number of full gravity function evaluations
     // Constructors
     Orbit();
     Orbit(string primary, string frame, string epoch = "J2000");
@@ -211,8 +212,8 @@ public:
 
     /**
      * @brief Sets the name of the orbit object
-    */
-    void SetName(string in_name){name = in_name;};
+     */
+    void SetName(string in_name) { name = in_name; };
 
     /// @brief
     /// @param item
@@ -382,18 +383,36 @@ public:
     bool Exit_Bootstrap = false;                           // flag to exit bootstrap gravitty eval for a segment
     Orbit forOrbit;                                        // forward orbit object
     Orbit aftOrbit;                                        // aft orbit object
-    vector<Orbit*> orbitslist;                             // list of orbit orbject references                           
-    BootstrapOrbit(const Orbit &orbit, double followTime); // Copy orbit config and generate the for anfd aft orbits
+    vector<Orbit *> orbitslist;                            // list of orbit orbject references
+    BootstrapOrbit(const Orbit &orbit, double followTime); // Copy orbit config and generate the for and aft orbits
     // construct bootstrap orbit from a predefined orbit
     BootstrapOrbit();
     void BootstrapPropagate(); // Runs integrator on all 3 orbits but uses approximations of gravity calcs from the for and aft orbits for the bootstrap orbit
     void Bootstrap_Adaptive_Picard_Chebyshev(EphemerisManager ephem);
     void Bootstrap_Picard_Chebyshev_Propagator(EphemerisManager ephem);
     void Bootstrap_Picard_Iteration(EphemerisManager &ephem);
-    void DisableBootstrap(){Bootstrap_On = false;};
-    void EnableBootstrap(){Bootstrap_On = true;};
-    void SetBootstrapHotFinish(bool input){Bootstrap_To_Convergence = input;};
+    void DisableBootstrap() { Bootstrap_On = false; };
+    void EnableBootstrap() { Bootstrap_On = true; };
+    void SetBootstrapHotFinish(bool input) { Bootstrap_To_Convergence = input; };
 };
 
-#endif
+class InterpolatedOrbit : public Orbit
+{
+public:
+    bool Interpolate_On = true;    // flag to indicate interpolation
+    bool Exit_Interpolate = false; // flag to exit interpolation gravity eval for a segment
+    Orbit forOrbit;                // forward orbit object
+    vector<Orbit *> orbitslist;    // list of orbit orbject references
 
+    InterpolatedOrbit(const Orbit &orbit, double followTime);
+    InterpolatedOrbit();
+    void InterpolatePropagate(); // Runs integrator on the two orbits but uses approximations of gravity calcs from interpolating values from the for orbit
+    void Interpolate_Adaptive_Picard_Chebyshev(EphemerisManager ephem);
+    void Interpolate_Picard_Chebyshev_Propagator(EphemerisManager ephem);
+    void Interpolate_Picard_Iteration(EphemerisManager &ephem);
+    void InterpolateTau(double tau, std::vector<double> acc_coeffs, std::vector<double> vel_coeffs, std::vector<double> pos_coeffs, int N, std::vector<double> &x_interp, std::vector<double> &v_interp, std::vector<double> &a_interp);
+    double FindNearestTau(double tau, std::vector<double> x_target, std::vector<double> acc_coeffs, std::vector<double> vel_coeffs, std::vector<double> pos_coeffs, int N, double w1, double w2, double tol = 1e-15);
+    void DisableInterpolation() { Interpolate_On = false; };
+    void EnableInterpolation() { Interpolate_On = true; };
+};
+#endif

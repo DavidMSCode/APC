@@ -76,4 +76,7 @@ set_property(TARGET RK45 PROPERTY CXX_STANDARD 14)
 
 add_executable(main_bootstrap_tradestudy main_bootstrap_tradestudy.cpp)
 target_link_libraries(main_bootstrap_tradestudy APC)
-set_property(TARGET main_bootstrap_tradestudy PROPERTY CXX_STANDARD 14) 
+set_property(TARGET main_bootstrap_tradestudy PROPERTY CXX_STANDARD 14)
+
+add_executable(main_interpolate main_interpolate.cpp)
+target_link_libraries(main_interpolate APC)
