@@ -85,14 +85,16 @@ int main(int argc, char** argv){
   orbit.SetMaxDegree(200);
   orbit.SetTolerance(1e-15);
   //run propagation
-  InterpolatedOrbit bootstrap(orbit, followtime);
+  InterpolatedOrbit InterpolatedOrbit(orbit, followtime);
  
   std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;
   
   std::cout << "Bootstrap orbit test starting" << std::endl << "====================================" << std::endl;
 
-  bootstrap.InterpolatePropagate();
+  InterpolatedOrbit.InterpolatePropagate();
 
   std::cout << "Bootstrap orbit test complete" << std::endl << "====================================" << std::endl;
+  std::cout << "Max error for the interpolated orbit is: " << InterpolatedOrbit.dHmax << std::endl;
+  std::cout << "Max error for the forward orbit is:" << InterpolatedOrbit.forOrbit.dHmax << std::endl;
   return 0;
 }

@@ -411,7 +411,7 @@ public:
     void Interpolate_Picard_Chebyshev_Propagator(EphemerisManager ephem);
     void Interpolate_Picard_Iteration(EphemerisManager &ephem);
     void InterpolateTau(double tau, std::vector<double> acc_coeffs, std::vector<double> vel_coeffs, std::vector<double> pos_coeffs, int N, std::vector<double> &x_interp, std::vector<double> &v_interp, std::vector<double> &a_interp);
-    double FindNearestTau(double tau, std::vector<double> x_target, std::vector<double> acc_coeffs, std::vector<double> vel_coeffs, std::vector<double> pos_coeffs, int N, double w1, double w2, double tol = 1e-15);
+    double FindNearestTau(double tau, std::vector<double> x_target, std::vector<double> acc_coeffs, std::vector<double> vel_coeffs, std::vector<double> pos_coeffs, int N, double w1, double w2, double tol = 1e-14);
     void DisableInterpolation() { Interpolate_On = false; };
     void EnableInterpolation() { Interpolate_On = true; };
 };

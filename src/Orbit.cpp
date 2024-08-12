@@ -1731,32 +1731,53 @@ void InterpolatedOrbit::Interpolate_Picard_Iteration(EphemerisManager &ephem)
 
                 if (orbitRef == this && Interpolate_On && !this->Exit_Interpolate)
                 {
-                    //find the tau of the for satellite's segment that is closest in proximity to the current segment
-                    //use the tau for the current node as the initial guess for the for satellite's segment
-                    double tau_guess = this->tau[i-1];
-                    //Run Newton Optimization
-                    // convert doubl3 to vector
+                    // find the tau of the for satellite's segment that is closest in proximity to the current segment
+                    // use the tau for the current node as the initial guess for the for satellite's segment
+                    double tau_guess = this->tau[i - 1];
+                    // Run Newton Optimization
+                    //  convert doubl3 to vector
                     vector<double> x_target(xPrimaryFixed, xPrimaryFixed + 3);
-                    double tau = FindNearestTau(tau_guess,x_target,forOrbit.LS_seg,forOrbit.Beta_seg,forOrbit.Alpha_seg,N,w1,w2);
+                    double tau = FindNearestTau(tau_guess, x_target, forOrbit.LS_seg, forOrbit.Beta_seg, forOrbit.Alpha_seg, N, w1, w2);
 
-                    //DEBUG CALCULATIONS
+                    // DEBUG CALCULATIONS
                     std::vector<double> x_tau_guess;
                     std::vector<double> v_tau_guess;
                     std::vector<double> a_tau_guess;
-                    InterpolateTau(tau_guess,forOrbit.LS_seg,forOrbit.Beta_seg,forOrbit.Alpha_seg,N,x_tau_guess,v_tau_guess,a_tau_guess);
-                    std::vector<double> x_min;
-                    std::vector<double> v_min;
-                    std::vector<double> a_min;
-                    InterpolateTau(tau,forOrbit.LS_seg,forOrbit.Beta_seg,forOrbit.Alpha_seg,N,x_min,v_min,a_min);
-                    // Compute distance between the two points (x_min and x_target)
-                    double distance = 0.0;
-                    for(int j = 0; j < 3; j++)
-                    {
-                        distance += pow(x_min[j] - x_target[j],2);
-                    }
+                    InterpolateTau(tau, forOrbit.LS_seg, forOrbit.Beta_seg, forOrbit.Alpha_seg, N, x_tau_guess, v_tau_guess, a_tau_guess);
 
-                    // // Compute low fidelity
-                    Grav_Approx(times[i - 1], xPrimaryFixed, aPrimaryFixed, Feval);
+                    if (tau >= -1 && tau <= 1)
+                    {
+                        std::vector<double> x_I_int;
+                        std::vector<double> v_I_int;
+                        std::vector<double> a_I_int;
+                        std::vector<double> x_E_int;
+                        std::vector<double> v_E_int;
+                        std::vector<double> a_E_int;
+                        double t_int = w2 * tau + w1;
+                        InterpolateTau(tau, forOrbit.LS_seg, forOrbit.Beta_seg, forOrbit.Alpha_seg, N, x_I_int, v_I_int, a_I_int);
+                        eci2ecef(t_int, x_I_int, v_I_int, a_I_int, x_E_int, v_E_int, a_E_int);
+                        // Compute distance between the two points (x_min and x_target)
+                        double distance = 0.0;
+                        for (int j = 0; j < 3; j++)
+                        {
+                            distance += pow(x_E_int[j] - x_target[j], 2);
+                        }
+                        double a_E_low_int[3]; // low fidelity gravity calculated at the nearest point on the trajectory
+                        Grav_Approx(t_int, &x_E_int[0], a_E_low_int, Feval);
+                        // Compute low fidelity
+                        Grav_Approx(times[i - 1], xPrimaryFixed, aPrimaryFixed, Feval); // low fidelity gravity calculated at node
+                        for (int ll = 0; ll < 3; ll++)
+                        {
+                            del_G[ll] = a_E_int[ll]-a_E_int[ll];
+                            aPrimaryFixed[ll] = aPrimaryFixed[ll] + del_G[ll]; // calculate approximated gravity
+                        }
+
+                    }
+                    else
+                    {
+                        //If nearest point outside of trajectory range, calculate gravity normally.
+                        perturbed_gravity_error(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, del_G);
+                    }
                 }
                 else
                 {
@@ -1924,15 +1945,12 @@ void InterpolatedOrbit::Interpolate_Picard_Iteration(EphemerisManager &ephem)
             // check for convergence
             if (err < tol)
             {
-                if (ITRs.DID_FULL)
-                // if(true)
-                {
                     currOrbit.converged = true;
                     if (g_DEBUG_PICARD)
                     {
                         cout << currOrbit.name << " converged in " << itr << " iterations." << endl;
                     }
-                }
+                
             }
             // Update
             X = Xnew;
@@ -1948,7 +1966,7 @@ void InterpolatedOrbit::Interpolate_Picard_Iteration(EphemerisManager &ephem)
         }
         if (forOrbit.converged)
         {
-            this->Exit_Interpolate = true;
+            this->Exit_Interpolate = false;
         }
         // End of iteration while loop
     }
@@ -1989,43 +2007,43 @@ void InterpolatedOrbit::InterpolateTau(double tau, std::vector<double> acc_coeff
 
 /*Using Newton's method for optimization to find the tau value of the for satellite that corresponds to the point on the for satellites trajectory that is closest to the interpolated orbit's body fixed point.
  */
-double InterpolatedOrbit::FindNearestTau(double tau, std::vector<double> x_target, std::vector<double> acc_coeffs, std::vector<double> vel_coeffs, std::vector<double> pos_coeffs, int N, double w1, double w2, double tol/*=1e-15*/)
+double InterpolatedOrbit::FindNearestTau(double tau, std::vector<double> x_target, std::vector<double> acc_coeffs, std::vector<double> vel_coeffs, std::vector<double> pos_coeffs, int N, double w1, double w2, double tol /*=1e-15*/)
 {
     double delta = std::numeric_limits<double>::infinity();
-    while(abs(delta)>tol)
+    while (abs(delta) > tol)
     {
-        double tnew = tau*w2+w1;
-        //calculate the interpolated position, velocity, and acceleration at the current tau value
+        double tnew = tau * w2 + w1;
+        // calculate the interpolated position, velocity, and acceleration at the current tau value
         std::vector<double> x_interp;
         std::vector<double> v_interp;
         std::vector<double> a_interp;
         InterpolateTau(tau, acc_coeffs, vel_coeffs, pos_coeffs, N, x_interp, v_interp, a_interp);
-        //Transform all three for the inertial frame to the body fixed frame
+        // Transform all three for the inertial frame to the body fixed frame
         std::vector<double> xB;
         std::vector<double> vB;
         std::vector<double> aB;
-        eci2ecef(et(tnew), x_interp, v_interp,a_interp, xB, vB, aB);
+        eci2ecef(et(tnew), x_interp, v_interp, a_interp, xB, vB, aB);
 
-        //Relative position, velocity, and acceleration scaled to tau time
+        // Relative position, velocity, and acceleration scaled to tau time
         std::vector<double> x_rel(3);
         std::vector<double> v_rel(3);
         std::vector<double> a_rel(3);
-        for(int i=0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
-            x_rel[i] = xB[i]-x_target[i];
-            v_rel[i] = w2*vB[i];
-            a_rel[i] = w2*w2*aB[i];
+            x_rel[i] = xB[i] - x_target[i];
+            v_rel[i] = w2 * vB[i];
+            a_rel[i] = w2 * w2 * aB[i];
         }
 
-        //Caclulate a simplified (without the magnitude scaling) first and second derivative of the distance between the target point and the interpolated point
-        double first = Cdot(x_rel,v_rel);
-        double second = Cdot(v_rel,v_rel)+Cdot(x_rel,a_rel);
+        // Caclulate a simplified (without the magnitude scaling) first and second derivative of the distance between the target point and the interpolated point
+        double first = Cdot(x_rel, v_rel);
+        double second = Cdot(v_rel, v_rel) + Cdot(x_rel, a_rel);
 
-        //next step is the ratio of the first derivative to the second derivative (if the function is quadratic this will move to the minimum in 1 step)
-        delta = first/second;
-        tau = tau-delta;
+        // next step is the ratio of the first derivative to the second derivative (if the function is quadratic this will move to the minimum in 1 step)
+        delta = first / second;
+        tau = tau - delta;
 
-        //Ensure tau remains in the valid range of -1 to 1
+        // Ensure tau remains in the valid range of -1 to 1
         if (tau < -1.0)
         {
             tau = -1.0;
