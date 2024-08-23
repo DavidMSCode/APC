@@ -115,7 +115,9 @@ public:
     vector<double> tau;       // Current segment cosine spaced integration variable from -1 to 1
     vector<double> times_seg; // Current segment cosine spaced time vector
     vector<double> Beta_seg;  // Current segment beta chebyshev coefficents for integrator
+    vector<double> Beta_seg_prev; // Previous iteration segment beta chebyshev coefficents for integrator
     vector<double> Alpha_seg; // Current segment alpha chebyshev coefficients for integrator
+    vector<double> Alpha_seg_prev; // Previous iteration segment alpha chebyshev coefficients for integrator
     vector<double> LS_seg;    // Current segment least squares chebychev coefficients for integrator
     vector<double> X_seg;     // Current segment chebyshev nodes positions for integrator
     vector<double> V_seg;     // Current segment chebyshev nodes velocities for integrator

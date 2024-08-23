@@ -1,7 +1,6 @@
 /*! \mainpage EGM2008.c Calculates gravity according to the EGM 2008 Spherical Harmonic Model
-*  AUTHORS:          Austin Probe (abprobe88@gmail.com) and Brent Macomber (brentmacomber@gmail.com)
-*  DATE WRITTEN:     October 2014
-*  LAST MODIFIED:    May 2016
+*  DATE WRITTEN:     March 2023
+*  LAST MODIFIED:    August 2024
 *  AFFILIATION:      Department of Aerospace Engineering, Texas A&M University, College Station, TX
 *  DESCRIPTION:      Computes Spherical Harmonic gravity for Orbit propagation using MCPI
 *

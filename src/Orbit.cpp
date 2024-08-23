@@ -1307,6 +1307,7 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(EphemerisManager &ephem)
 
 InterpolatedOrbit::InterpolatedOrbit(const Orbit &orbit, double followTime) : forOrbit(_primary, _IOFrame, _epoch), Orbit(orbit)
 {
+    bool printStats=false;
     SetName("Bootstrap Orbit");
     // Initialize orbit objects list
     orbitslist = {&forOrbit, this};
@@ -1316,7 +1317,6 @@ InterpolatedOrbit::InterpolatedOrbit(const Orbit &orbit, double followTime) : fo
     double zaft[6] = {0.0};
     // Generate the state ahead and behind of the target orbit
     FandG(z0, zfor, followTime, _mu);
-    FandG(z0, zaft, -followTime, _mu);
     // assign values to the forward orbit
     forOrbit.SetName("Forward Orbit");
     forOrbit.SetPosition0({zfor[0], zfor[1], zfor[2]});
@@ -1328,6 +1328,16 @@ InterpolatedOrbit::InterpolatedOrbit(const Orbit &orbit, double followTime) : fo
     forOrbit.SetComputeThirdBody(Compute_Third_Body);
     forOrbit.SetComputeDrag(Compute_Drag);
     forOrbit.deg = this->deg;
+
+    if (printStats)
+    {
+        double seperation_distance = 0.0;
+        for(int i=0;i<3;i++)
+        {
+            seperation_distance += pow(zfor[i]-this->_In_r0[i],2);
+        }
+        cout << "Forward Orbit Seperation Distance: " << sqrt(seperation_distance) << endl;
+    }
 }
 
 InterpolatedOrbit::InterpolatedOrbit()
@@ -1675,6 +1685,7 @@ void InterpolatedOrbit::Interpolate_Picard_Iteration(EphemerisManager &ephem)
     // Start the iteration loop
     while (notConverged)
     {
+        bool grav_full;
         // Each iteration compute for each orbit object
         for (Orbit *orbitRef : orbitslist)
         {
@@ -1696,6 +1707,7 @@ void InterpolatedOrbit::Interpolate_Picard_Iteration(EphemerisManager &ephem)
             int &itr = currOrbit.itr;
             double &err = currOrbit.err;
             double *Feval;
+
             if (&currOrbit == this && Interpolate_On && !this->Exit_Interpolate)
             {
                 // point to the counter for the bootstrap orbit
@@ -1705,6 +1717,11 @@ void InterpolatedOrbit::Interpolate_Picard_Iteration(EphemerisManager &ephem)
             {
                 // point to the counter for the picard iteration counter
                 Feval = &currOrbit.Feval.PicardIteration[0];
+            }
+            if (&currOrbit != this)
+            {
+                // determine whether to use full or partial gravity on this loop
+                grav_full = fullgravswitch(err, tol, hot, itr, ITRs);
             }
             // cout << currOrbit.name << " Iteration  " << itr << " error:" << err << endl;
             for (int i = 1; i <= M + 1; i++) // Get forces at each node on the segment in inertial frame
@@ -1729,23 +1746,23 @@ void InterpolatedOrbit::Interpolate_Picard_Iteration(EphemerisManager &ephem)
                 eci2ecef(et(times[i - 1]), xI, vI, xPrimaryFixed, vPrimaryFixed);
                 // Compute Variable Fidelity Gravity for the for and aft satellites only
 
-                if (orbitRef == this && Interpolate_On && !this->Exit_Interpolate)
+                if (orbitRef == this && Interpolate_On && !this->Exit_Interpolate && itr!=0 && not(forOrbit.converged))
                 {
                     // find the tau of the for satellite's segment that is closest in proximity to the current segment
                     // use the tau for the current node as the initial guess for the for satellite's segment
                     double tau_guess = this->tau[i - 1];
                     // Run Newton Optimization
-                    //  convert doubl3 to vector
+                    //  convert double to vector
                     vector<double> x_target(xPrimaryFixed, xPrimaryFixed + 3);
-                    double tau = FindNearestTau(tau_guess, x_target, forOrbit.LS_seg, forOrbit.Beta_seg, forOrbit.Alpha_seg, N, w1, w2);
+                    double tau = FindNearestTau(tau_guess, x_target, forOrbit.LS_seg, forOrbit.Beta_seg_prev, forOrbit.Alpha_seg_prev, N, w1, w2);
 
                     // DEBUG CALCULATIONS
                     std::vector<double> x_tau_guess;
                     std::vector<double> v_tau_guess;
                     std::vector<double> a_tau_guess;
-                    InterpolateTau(tau, forOrbit.LS_seg, forOrbit.Beta_seg, forOrbit.Alpha_seg, N, x_tau_guess, v_tau_guess, a_tau_guess);
+                    InterpolateTau(tau, forOrbit.LS_seg, forOrbit.Beta_seg_prev, forOrbit.Alpha_seg_prev, N, x_tau_guess, v_tau_guess, a_tau_guess);
 
-                    if (tau >= -1 && tau <= 1)
+                    if (tau >= -1 && tau <= 1 && grav_full)
                     {
                         std::vector<double> x_I_int;
                         std::vector<double> v_I_int;
@@ -1754,37 +1771,50 @@ void InterpolatedOrbit::Interpolate_Picard_Iteration(EphemerisManager &ephem)
                         std::vector<double> v_E_int;
                         std::vector<double> a_E_int;
                         double t_int = w2 * tau + w1;
-                        InterpolateTau(tau, forOrbit.LS_seg, forOrbit.Beta_seg, forOrbit.Alpha_seg, N, x_I_int, v_I_int, a_I_int);
-                        eci2ecef(t_int, x_I_int, v_I_int, a_I_int, x_E_int, v_E_int, a_E_int);
+                        InterpolateTau(tau, forOrbit.LS_seg, forOrbit.Beta_seg_prev, forOrbit.Alpha_seg_prev, N, x_I_int, v_I_int, a_I_int);
+                        eci2ecef_notransport(t_int, x_I_int, v_I_int, a_I_int, x_E_int, v_E_int, a_E_int);
                         // Compute distance between the two points (x_min and x_target)
                         double distance = 0.0;
                         for (int j = 0; j < 3; j++)
                         {
                             distance += pow(x_E_int[j] - x_target[j], 2);
                         }
-                        double a_E_low_int[3]; // low fidelity gravity calculated at the nearest point on the trajectory
-                        Grav_Approx(t_int, &x_E_int[0], a_E_low_int, Feval);
+                        // cout << "The closest point is " << distance << "km away from the target point at tau: " << tau << endl;
+                        double a_E_low_int[3]; 
+                        Grav_Approx(t_int, &x_E_int[0], a_E_low_int, Feval); // low fidelity gravity calculated at the nearest point on the trajectory
                         // Compute low fidelity
                         Grav_Approx(times[i - 1], xPrimaryFixed, aPrimaryFixed, Feval); // low fidelity gravity calculated at node
                         for (int ll = 0; ll < 3; ll++)
                         {
-                            del_G[ll] = a_E_int[ll]-a_E_int[ll];
-                            aPrimaryFixed[ll] = aPrimaryFixed[ll] + del_G[ll]; // calculate approximated gravity
+                            del_G[ID2(i, ll + 1, Nmax + 1)] = a_E_int[ll] - a_E_low_int[ll];
+                            // aPrimaryFixed[ll] = aPrimaryFixed[ll] + del_G[ID2(i, ll + 1, Nmax + 1)]; // calculate approximated gravity
+                            // aPrimaryFixed[ll] += del_G[ll];
+                            aPrimaryFixed[ll] = a_E_int[ll];
                         }
+                        // std::vector<double> a_primary_fixed_compare(3, 0.0);
+                        // double dummy_del_G[(Nmax + 1) * 3];
+                        // variableGrav(times[i - 1], xPrimaryFixed, &a_primary_fixed_compare[0], dummy_del_G, tol, i, currOrbit.deg, Feval, grav_full, currOrbit.GetPrimaryBody());
+                        // std::vector<double> a_diff;
+                        // for (int ll = 0; ll < 3; ll++)
+                        // {
+                        //     a_diff.push_back(a_primary_fixed_compare[ll] - aPrimaryFixed[ll]);
+                        // }
+                        // cout << "The difference between the two gravity calculations is: " << a_diff[0] << " " << a_diff[1] << " " << a_diff[2]<<endl;
+                        
 
                     }
                     else
                     {
-                        //If nearest point outside of trajectory range, calculate gravity normally.
-                        perturbed_gravity_error(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, del_G);
+                        // If nearest point outside of trajectory range, calculate gravity normally.
+                    variableGrav(times[i - 1], xPrimaryFixed, aPrimaryFixed, del_G, tol, i, currOrbit.deg, Feval, grav_full, currOrbit.GetPrimaryBody());
                     }
                 }
-                else
+                else 
                 {
                     // run normal APC procedures
-                    perturbed_gravity_error(times[i - 1], xPrimaryFixed, err, i, M, deg, hot, aPrimaryFixed, tol, &itr, Feval, ITRs, del_G);
-                }
 
+                    variableGrav(times[i - 1], xPrimaryFixed, aPrimaryFixed, del_G, tol, i, currOrbit.deg, Feval, grav_full, currOrbit.GetPrimaryBody());
+                }
                 // Calculate acceleration from drag
                 Perturbed_Drag(xPrimaryFixed, vPrimaryFixed, currOrbit, drag_aECEF);
 
@@ -1888,6 +1918,7 @@ void InterpolatedOrbit::Interpolate_Picard_Iteration(EphemerisManager &ephem)
             }
 
             // Corrected Velocity
+            currOrbit.Beta_seg_prev = Beta; // store the previous beta values for use in interpolation
             for (int i = 1; i <= N; i++)
             {
                 for (int j = 1; j <= 3; j++)
@@ -1902,6 +1933,7 @@ void InterpolatedOrbit::Interpolate_Picard_Iteration(EphemerisManager &ephem)
             Vnew = matmul(T1, Beta, M + 1, N, 3, M + 1, N);
 
             // Corrected Position
+            currOrbit.Alpha_seg_prev = Alpha; // store the previous alpha values for use in interpolation
             std::vector<double> tmp6;
             tmp6 = matmul(P2, gamma, N + 1, N, 3, N + 1, N);
             for (int i = 1; i <= N + 1; i++)
@@ -1945,12 +1977,11 @@ void InterpolatedOrbit::Interpolate_Picard_Iteration(EphemerisManager &ephem)
             // check for convergence
             if (err < tol)
             {
-                    currOrbit.converged = true;
-                    if (g_DEBUG_PICARD)
-                    {
-                        cout << currOrbit.name << " converged in " << itr << " iterations." << endl;
-                    }
-                
+                currOrbit.converged = true;
+                if (g_DEBUG_PICARD)
+                {
+                    cout << currOrbit.name << " converged in " << itr << " iterations." << endl;
+                }
             }
             // Update
             X = Xnew;
@@ -2046,12 +2077,10 @@ double InterpolatedOrbit::FindNearestTau(double tau, std::vector<double> x_targe
         // Ensure tau remains in the valid range of -1 to 1
         if (tau < -1.0)
         {
-            tau = -1.0;
             break;
         }
         else if (tau > 1.0)
         {
-            tau = 1.0;
             break;
         }
     }

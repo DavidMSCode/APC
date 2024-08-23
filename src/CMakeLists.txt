@@ -80,3 +80,6 @@ set_property(TARGET main_bootstrap_tradestudy PROPERTY CXX_STANDARD 14)
 
 add_executable(main_interpolate main_interpolate.cpp)
 target_link_libraries(main_interpolate APC)
+
+add_executable(main_interpolate_tradestudy main_interpolate_tradestudy.cpp)
+target_link_libraries(main_interpolate_tradestudy APC)

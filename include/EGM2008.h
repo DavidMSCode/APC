@@ -1,6 +1,3 @@
-#ifndef __EGM__
-#define __EGM__
-
 /*! \mainpage EGM2008.h Calculates gravity according to the EGM 2008 Spherical Harmonic Model
  *  AUTHORS:          Austin Probe (abprobe88@gmail.com) and Brent Macomber (brentmacomber@gmail.com)
  *  DATE WRITTEN:     October 2014
@@ -9,6 +6,8 @@
  *  DESCRIPTION:      Computes Spherical Harmonic gravity for Orbit propagation using MCPI
  */
 
+#ifndef __EGM__
+#define __EGM__
 /* Macro for looking up indices using "1" based addressing ( a la fortran and matlab )
  and column-major array format [Note ld = Num of rows]
  */

@@ -8,7 +8,7 @@
 
 #ifndef __PERT__
 #define __PERT__
-
+#include <string>
 /**
  * @brief Iteration struct for controlling full or approximate calculations in the pertubed_gravity() function
  *
@@ -76,5 +76,9 @@ void Grav_Approx(double t, double *X, double *dX, double *Feval);
  * @param Feval Function evaluations counter
  */
 void Grav_Full(double t, double *Xo, double *acc, double tol, double deg, double *Feval);
+
+bool fullgravswitch(double err, double tol, int hot, int itr, IterCounters & ITRs);
+
+void variableGrav(double t, double *Xo, double *G, double *del_G, double tol, int i, double deg, double *Feval, bool fullgravswitch, std::string primary);
 
 #endif

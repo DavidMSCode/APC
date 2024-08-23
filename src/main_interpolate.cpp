@@ -66,7 +66,7 @@ int main(int argc, char** argv){
   double aop = 0.0;
   double ta = 0.0;
   vector<vector<double>> states = elms2rv(a,e,i,raan,aop,ta,C_MU_EARTH);
-  double followtime = 3;
+  double followtime = 1;
   vector<double> r0 = states[0];                // Initial Position (km)
   vector<double> v0 = states[1];
   double T = 2*C_PI*sqrt(pow(a,3)/C_MU_EARTH);                             //Orbital period (s)
@@ -97,4 +97,5 @@ int main(int argc, char** argv){
   std::cout << "Max error for the interpolated orbit is: " << InterpolatedOrbit.dHmax << std::endl;
   std::cout << "Max error for the forward orbit is:" << InterpolatedOrbit.forOrbit.dHmax << std::endl;
   return 0;
+  
 }
