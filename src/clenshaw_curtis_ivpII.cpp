@@ -33,14 +33,12 @@ void clenshaw_curtis_ivpII( int N, int M, std::vector<double> &T2, std::vector<d
 
   // Least Squares Operator (A) [(N-1)x(M+1)]
   lsq_chebyshev_fit(-1.0,N-2,M,Ta,A);
-
   // Compute "Velocity" Constants of Integration (i.e. evaluated T at tau = -1).
   std::vector<double> Lv(N*N,0.0);
   //memset( Lv, 0.0, ((N*N)*sizeof(double)));
   for (int k=0; k<=N-1; k++){
     Lv[ID2(1,k+1,N)] = cos(k*acos(-1));   // Const of Integration (CoI)
   }
-
   // Compute "Position" Constants of Integration (i.e. evaluated T at tau = -1).
   std::vector<double> Lp((N+1)*(N+1),0.0);
   //memset( Lp, 0.0, ((N+1)*(N+1)*sizeof(double)));

@@ -9,6 +9,7 @@
 #ifndef _C_FUNC_H_
 #define _C_FUNC_H_
 #include <vector>
+#include <iostream>
 // Macro for looking up array indices in a 2-d array, using "1"-based indexing (Brent Macomber).
 // INPUT: i = desired row number, j = desired col number, ld = number of rows
 #define ID2(i, j, ld) ((((j) - 1) * (ld)) + ((i) - 1))
@@ -83,9 +84,10 @@ void matsub(double *a, double *b, int size, double *c);
  * \param[out] B Matrix Output (size m x q)
  */
 
-#include <vector>
 std::vector<double> matmul(std::vector<double> A, std::vector<double> B,
                            const int m, const int n, const int q,
                            const int ldA, const int ldB);
+
+void pretty_print_matrix(std::vector<double> A, int lr, int prec=6);
 
 #endif

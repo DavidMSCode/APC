@@ -10,11 +10,14 @@
 
 #include <vector>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 #include "c_functions.h"
 // Cross Product in 3D
 // INPUT:  vector a & vector b
 // OUTPUT: vector c, (c = axb)
+using namespace std;
 void cross_product_3D(double *a, double *b, double *c)
 {
   c[0] = a[1] * b[2] - a[2] * b[1];
@@ -130,4 +133,64 @@ std::vector<double> matmul(std::vector<double> A, std::vector<double> B,
     } // end for jj
   } // end for ii
   return C;
+}
+
+void pretty_print_matrix(std::vector<double> A, int lr, int prec/*=6*/)
+{
+
+  // print everything to machine precision
+  cout.precision(prec);
+  // get the length of the matrix
+  int cnt = A.size();
+  // lr is the number of rows
+  int lc = cnt / lr;
+  // get the name of the type
+  string type = typeid(A[0]).name();
+
+  // for each column get the maximum width by finding the length of the string representation of the number
+  int widths[lc];
+  for (int j = 1; j <= lc; j++)
+  {
+    int min_width = 2;
+    for (int i = 1; i <= lr; i++)
+    {
+      int idx = ID2(i, j, lr);
+      double val = A[idx];
+      // get the string representation of the number
+      std::stringstream ss;
+      ss << std::fixed << std::setprecision(prec) << val;
+      std::string str = ss.str();
+      // Ensure that there is a decimal point somewhere (there should be)
+      if(str.find('.') != std::string::npos)
+      {
+        // Remove trailing zeroes
+        str = str.substr(0, str.find_last_not_of('0')+1);
+        // If the decimal point is now the last character, remove that as well
+        if(str.find('.') == str.size()-1)
+        {
+            str = str.substr(0, str.size()-1);
+        }
+      }
+      // get the length of the string
+      int len = str.length();
+      // if the length is greater than the current minimum width, update the minimum width
+      if (len > min_width)
+      {
+        min_width = len;
+      }
+    }
+    widths[j - 1] = min_width;
+  }
+
+  // print lrxlc Matrix{type} to the screen
+  cout << lr << "x" << lc << " Matrix{" << typeid(A[0]).name() << "}" << endl;
+  for (int i = 1; i <= lr; i++)
+  {
+    for (int j = 1; j <= lc; j++)
+    {
+      int idx = ID2(i, j, lr);
+      cout << setw(widths[j - 1]) << A[idx] << " ";
+    }
+    cout << endl;
+  }
 }
