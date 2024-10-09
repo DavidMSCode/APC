@@ -1096,6 +1096,11 @@ void BootstrapOrbit::Bootstrap_Picard_Iteration(EphemerisManager &ephem)
                         aPrimaryFixed[j] += del_G[ID2(i, j + 1, Nmax + 1)];
                     }
                 }
+                else if(orbitRef == this && zonal_only)
+                {
+                    //run without any higher order terms
+                    Grav_Approx(times[i - 1], xPrimaryFixed, aPrimaryFixed, Feval);
+                }
                 else
                 {
                     // run normal APC procedures

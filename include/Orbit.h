@@ -128,6 +128,7 @@ public:
     bool Compute_Third_Body = false;
     bool Compute_Hamiltonian = false;
     bool suborbital = false;
+    bool zonal_only = false;
     int prep_HS;
     double tol = 1e-15; // tolerance for APC
     int deg = 200;      // Degree of high order spherical harmonic gravity evaluations
@@ -196,6 +197,7 @@ public:
     void SetComputeThirdBody(bool compute_third_body = true) { Compute_Third_Body = compute_third_body; };
     void SetComputeSRP(bool compute_SRP = true) { Compute_SRP = compute_SRP; };
     void SetComputeHamiltonian(bool compute_hamiltonian = true) { Compute_Hamiltonian = compute_hamiltonian; };
+    void computeZonalOnly(bool zonal = true) { zonal_only = zonal; };
     void SetGravityApproximationDegree(int degree) { lowDeg = degree; };
     void SetCC(std::vector<double> A, std::vector<double> B, std::vector<double> W1, std::vector<double> W2, int N, int coeff_size, std::vector<double> seg_times, double TF, double T0, int total_segs);
     void SetMaxDegree(int degree) { deg = degree; };

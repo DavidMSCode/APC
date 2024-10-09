@@ -38,7 +38,9 @@ prepare_propagator.cpp
 radial_gravity.cpp
 reosc_perigee.cpp
 rv2elm.cpp
-TwoBody.cpp) 
+TwoBody.cpp
+clohessywiltshire.cpp
+) 
 
 add_library(Grav
 EGM2008.cc
@@ -83,3 +85,6 @@ target_link_libraries(main_interpolate APC)
 
 add_executable(main_interpolate_tradestudy main_interpolate_tradestudy.cpp)
 target_link_libraries(main_interpolate_tradestudy APC)
+
+add_executable(main_CW_tradestudy main_CW_tradestudy.cpp)
+target_link_libraries(main_CW_tradestudy APC)
