@@ -25,4 +25,6 @@ std::vector<double> interpolateDefault(Orbit &orbit);
  */
 std::vector<double> interpolate(Orbit &orbit);
 
+std::vector<double> nodes(Orbit &orbit);
+
 #endif

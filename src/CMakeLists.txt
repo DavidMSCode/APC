@@ -87,3 +87,7 @@ target_link_libraries(main_interpolate_tradestudy APC)
 add_executable(CCQ_tests CCQ_tests.cpp)
 target_link_libraries(CCQ_tests APC)
 set_property(TARGET CCQ_tests PROPERTY CXX_STANDARD 14)
+
+add_executable(main_nodes main_nodes.cpp)
+target_link_libraries(main_nodes APC)
+set_property(TARGET main_nodes PROPERTY CXX_STANDARD 14)

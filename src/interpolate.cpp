@@ -32,6 +32,7 @@
 #include "interpolate.h"
 #include "c_functions.h"
 #include "Orbit.h"
+#include "const.h"
 
 
 std::vector<double> interpolateDefault(Orbit &orbit){
@@ -73,7 +74,7 @@ std::vector<double> interpolate(Orbit &orbit){
   double test_time = 0.0;
   // Loop through all segments
   for (int i=1; i<=total_segs; i++){
-    int sz = count_if(time_out.begin(),time_out.end(),[&](int timestep){return (timestep>=seg_times[i-1] && timestep<= seg_times[i]);});
+    int sz = count_if(time_out.begin(),time_out.end(),[&](int timestep){return (timestep>=seg_times[i-1] && timestep <= seg_times[i]);});
     // Initialization
     std::vector<double> Beta(N*3);
     std::vector<double> Alpha((N+1)*3);
@@ -164,3 +165,103 @@ return Soln;
 }
 
 
+std::vector<double> nodes(Orbit &orbit){
+  //returns the positions of all nodes
+  std::vector<double> &ALPHA = orbit.CC.A;
+  std::vector<double> &BETA = orbit.CC.B;
+  int coeff_size = orbit.coeff_size;
+  int N = orbit.N;
+  int M = orbit.M;
+  std::vector<double> &seg_times = orbit.segment_end_times;
+  std::vector<double> &W1 = orbit.W1;
+  std::vector<double> &W2 = orbit.W2;
+  int total_segs = orbit.total_segs;
+  std::vector<double> &time_out = orbit.T;
+  int prev_cnt=0;
+  int soln_size = (M+1)*total_segs;
+  // User specified output times
+  std::vector<double> Soln(soln_size*7,0.0);
+  //memset( time_out, 0.0, (len*sizeof(double)));
+  double test_time = 0.0;
+  // Loop through all segments
+  for (int i=1; i<=total_segs; i++){
+    int sz = count_if(time_out.begin(),time_out.end(),[&](int timestep){return (timestep>=seg_times[i-1] && timestep <= seg_times[i]);});
+    // Initialization
+    std::vector<double> Beta(N*3);
+    std::vector<double> Alpha((N+1)*3);
+    std::vector<double> tt(M+1);
+    std::vector<double> tau(M+1);
+
+    double w1, w2;
+    w1 = W1[i-1];
+    w2 = W2[i-1];
+
+    for (int cnt = 0; cnt <= M; cnt++)
+    {
+      // Warm start
+      // Use F and G equations to get two body guess for inertial position and velocity  relative to the primary body
+      tau[cnt] = -cos(cnt * C_PI / M);
+      tt[cnt] = orbit.tau[cnt] * w2 + w1;
+    }
+  
+    // Chebyshev Velocity & Position Matrices
+    std::vector<double> Tv((M+1)*N);
+    std::vector<double> Tp((M+1)*(N+1));
+
+    for (int t=1; t<=(M+1); t++){
+      for (int kk=0; kk<=N-1; kk++){
+        // Velocity
+        Tv[ID2(t,kk+1,M+1)] = cos(kk*acos(tau[t-1]));
+      }
+      for (int kk=0; kk<=N; kk++){
+        // Position
+        Tp[ID2(t,kk+1,M+1)] = cos(kk*acos(tau[t-1]));
+      }
+    }
+
+    // Velocity Coefficients for a Segment
+    for (int p=1; p<=N; p++){
+      Beta[ID2(p,1,N)] = BETA[ID2(p+((i-1)*N),1,coeff_size)];
+      Beta[ID2(p,2,N)] = BETA[ID2(p+((i-1)*N),2,coeff_size)];
+      Beta[ID2(p,3,N)] = BETA[ID2(p+((i-1)*N),3,coeff_size)];
+    }
+    std::vector<double> v_interp;
+    v_interp = matmul(Tv,Beta,M+1,N,3,M+1,N);
+
+    //sanity check
+    int check = ID2(M+1+prev_cnt,7,soln_size);
+    if (check >=soln_size*7){
+        std::cout << "exceeding soln size\n";
+    }
+
+    // Velocity
+    for (int p=1; p<=(M+1); p++){
+      Soln[ID2(p+prev_cnt,4,soln_size)] = v_interp[ID2(p,1,M+1)];
+      Soln[ID2(p+prev_cnt,5,soln_size)] = v_interp[ID2(p,2,M+1)];
+      Soln[ID2(p+prev_cnt,6,soln_size)] = v_interp[ID2(p,3,M+1)];
+    }
+
+    // Position Coefficients for a Segment
+    for (int p=1; p<=N+1; p++){
+      Alpha[ID2(p,1,N+1)] = ALPHA[ID2(p+((i-1)*(N+1)),1,coeff_size)];
+      Alpha[ID2(p,2,N+1)] = ALPHA[ID2(p+((i-1)*(N+1)),2,coeff_size)];
+      Alpha[ID2(p,3,N+1)] = ALPHA[ID2(p+((i-1)*(N+1)),3,coeff_size)];
+    }
+    std::vector<double> x_interp;
+    x_interp = matmul(Tp,Alpha,M+1,N+1,3,M+1,N+1);
+    // Position
+    for (int p=1; p<=(M+1); p++){
+      Soln[ID2(p+prev_cnt,1,soln_size)] = x_interp[ID2(p,1,M+1)];
+      Soln[ID2(p+prev_cnt,2,soln_size)] = x_interp[ID2(p,2,M+1)];
+      Soln[ID2(p+prev_cnt,3,soln_size)] = x_interp[ID2(p,3,M+1)];
+      // printf("Soln %f\t%f\t%f\n",Soln[ID2(p+prev_cnt,1,soln_size)],Soln[ID2(p+prev_cnt,2,soln_size)],Soln[ID2(p+prev_cnt,3,soln_size)]);
+    }
+    //write the time to sol 7
+    for (int p=1; p<=(M+1); p++){
+      Soln[ID2(p+prev_cnt,7,soln_size)] = tt[p-1];
+    }
+    // printf("tfdt %f\t%f\n",tf,dt);
+    prev_cnt = prev_cnt + M+1;  // Counter to track position in Soln array
+  }
+return Soln;
+}

@@ -27,7 +27,8 @@ void lsq_chebyshev_fit(double s, int N, int M, std::vector<double> &T, std::vect
 
   // Generate Chebyshev Polyniomials
   chebyshev(s,N,M,2,T);
-
+  cout << "T: " << endl;
+  pretty_print_matrix(T,M+1,N+1);
   // Weight Matrix
   std::vector<double> W((M+1)*(M+1),0.0);
   //memset( W, 0.0, ((M+1)*(M+1)*sizeof(double)));
@@ -58,7 +59,8 @@ void lsq_chebyshev_fit(double s, int N, int M, std::vector<double> &T, std::vect
   if (M > N){
     V[ID2(1,1,N+1)] = 1.0/M;
   }
-
+  cout << "V: " << endl;
+  pretty_print_matrix(V,N+1,N+1);
   // T Transpose
   std::vector<double> TT((N+1)*(M+1),0.0);
   //memset( TT, 0.0, ((N+1)*(M+1)*sizeof(double)));
@@ -67,11 +69,20 @@ void lsq_chebyshev_fit(double s, int N, int M, std::vector<double> &T, std::vect
       TT[ID2(i,j,N+1)] = T[ID2(j,i,M+1)];
     }
   }
+  cout << "TT: " << endl;
+  pretty_print_matrix(TT,N+1,M+1);
 
   // Least Squares Operator
   std::vector<double> TTW((M+1)*(M+1),0.0);
   //memset( TTW, 0.0, ((M+1)*(M+1)*sizeof(double)));
   TTW =matmul(TT,W,N+1,M+1,M+1,N+1,M+1);
+
+  cout << "TTW: " << endl;
+  pretty_print_matrix(TTW,N+1,M+1);
+
   A = matmul(V,TTW,N+1,N+1,M+1,N+1,N+1);
+
+  cout << "A: " << endl;
+  pretty_print_matrix(A,N+1,M+1);
 
 }

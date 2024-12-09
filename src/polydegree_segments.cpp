@@ -133,7 +133,7 @@ void polydegree_segments(Orbit &orbit, double *Feval)
   fit_check = 0; // Loop check condition
   seg = 3;       // Minimum number of segments per orbit
   coeff = 3;     // Value of last 3 coefficients must be below tolerance
-  jmax = 2;      // Loop Maximum (corresponds to Nmax = 80)
+  jmax = 3;      // Loop Maximum (corresponds to Nmax = 80)
 
   // Perigee initial conditions
   z0[0] = rp[0];
@@ -280,7 +280,10 @@ void polydegree_segments(Orbit &orbit, double *Feval)
           }
         }
       }
-
+      if (fit_check == coeff)
+        {
+          break; // Break if last 3 coeffs are less than the tolerance
+        }
       // Reinitialize
       Nprev = N;
       memset(tau, 0.0, ((300) * sizeof(double)));

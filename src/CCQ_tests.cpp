@@ -23,19 +23,14 @@ int N = 5;
 int M = 5;
 int arg = 2;
 // Compute Clenshaw-Curtis Quadrature Constant Matrices
-std::vector<double> T2((M+1)*(N+1),0.0);
-//memset( T2, 0.0, ((M+1)*(N+1)*sizeof(double)));
-std::vector<double> P2((N+1)*N,0.0);
-//memset( P2, 0.0, ((N+1)*N*sizeof(double)));
-std::vector<double> T1((M+1)*N,0.0);
-//memset( T1, 0.0, ((M+1)*N*sizeof(double)));
-std::vector<double> P1(N*(N-1),0.0);
-//memset( P1, 0.0, (N*(N-1)*sizeof(double)));
-std::vector<double> Ta((M+1)*(N-1),0.0);
-//memset( Ta, 0.0, ((M+1)*(N-1)*sizeof(double)));
-std::vector<double> A((N-1)*(M+1),0.0);
-//memset( A, 0.0, ((N-1)*(M+1)*sizeof(double)));
-clenshaw_curtis_ivpII(N,M,T2,P2,T1,P1,Ta,A);
+std::vector<double> Ta((M+1)*(N+1),0.0);
+std::vector<double> A((N+1)*(M+1),0.0);
+lsq_chebyshev_fit(-1.0, N, M, Ta, A);
 
+// print A
+cout<<"A: "<<endl;
+pretty_print_matrix(A,N+1,16);
+cout<<"Ta: "<<endl;
+pretty_print_matrix(Ta,M+1,16);
 return 0;
 }

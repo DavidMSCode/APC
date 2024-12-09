@@ -9,7 +9,9 @@
 */
 #include <string>
 #include <iostream>
-
+#include <sstream>
+#include <iomanip>
+#include <fstream>
 #include <vector>
 #include <iostream>
 #include <utility>
@@ -59,15 +61,16 @@ int main(int argc, char** argv){
   string center = "EARTH";
   string frame = "J2000";
 
-  double alt = 120 ; //km
-  double a = C_Req+alt;
-  double e = 0.0;
+  double alt = 360 ; //km
+  double a = 7000;
+  double e = 0;
   double i = 0.0;
   double raan = 0.0;
   double aop = 0.0;
   double ta = 0.0;
+
   vector<vector<double>> states = elms2rv(a,e,i,raan,aop,ta,C_MU_EARTH);
-  double followtime = 1;
+  double followtime = 0;
   vector<double> r0 = states[0];                // Initial Position (km)
   vector<double> v0 = states[1];
   double T = 2*C_PI*sqrt(pow(a,3)/C_MU_EARTH);                             //Orbital period (s)
@@ -83,20 +86,54 @@ int main(int argc, char** argv){
   // orbit.SetComputeThirdBody();
   // orbit.SetComputeSRP();
   orbit.SetComputeHamiltonian();
-  orbit.SetMaxDegree(200);
-  orbit.SetTolerance(1e-15);
+  orbit.SetMaxDegree(70);
+  orbit.SetTolerance(1e-14);
   //run propagation
   InterpolatedOrbit InterpolatedOrbit(orbit, followtime);
- 
+  InterpolatedOrbit.InterpolatePropagate();
+  vector<double> node_soln = nodes(InterpolatedOrbit);
+  int M  = InterpolatedOrbit.M;
+  int segs = InterpolatedOrbit.total_segs;
+  int soln_size = (M+1)*segs;
+  //seperate out the x y z components of the nodes from the soln vector
+  vector<double> x_nodes(soln_size,0.0);
+  vector<double> y_nodes(soln_size,0.0);
+  vector<double> z_nodes(soln_size,0.0);
+  vector<double> t_nodes(soln_size,0.0);
+  for(int i=1;i<=soln_size;i++)
+  {
+    x_nodes[i-1] = node_soln[ID2(i,1,soln_size)];
+    y_nodes[i-1] = node_soln[ID2(i,2,soln_size)];
+    z_nodes[i-1] = node_soln[ID2(i,3,soln_size)];
+    t_nodes[i-1] = node_soln[ID2(i,7,soln_size)];
+  }
+  
+  stringstream ss;
+  ss << std::fixed << std::setprecision(3);
+  ss << "Nodes_a="<<a<<"_e="<<e<<".csv";
+  string filename = ss.str();
+
+  ofstream myfile;
+  myfile.open(filename);
+  myfile << fixed << setprecision(16);
+  //number of nodes poly degree and the number of segments
+
+  myfile << "Orbit had the following properties a="<<a<<" e="<<e<<" i="<<i<<" raan="<<raan<<" aop="<<aop<<" ta="<<ta;
+  myfile << " Number of nodes per segment="<<M+1<<" Number of segments="<<segs <<" Total nodes="<<soln_size<<" Polynomial degree="<<M<<"\n";
+  //write the orbital elements to the file header
+  myfile << "x,y,z,t\n";
+  for(int i=0;i<soln_size;i++)
+  {
+    myfile << x_nodes[i] << "," << y_nodes[i] << "," << z_nodes[i] << "," << t_nodes[i] << "\n";
+  }
+  myfile.close();
+
+
   std::cout << "Single Propagation Test Complete" << std::endl << "====================================" << std::endl;
   
   std::cout << "Bootstrap orbit test starting" << std::endl << "====================================" << std::endl;
 
-  InterpolatedOrbit.InterpolatePropagate();
-
   std::cout << "Bootstrap orbit test complete" << std::endl << "====================================" << std::endl;
-  std::cout << "Max error for the interpolated orbit is: " << InterpolatedOrbit.dHmax << std::endl;
-  std::cout << "Max error for the forward orbit is:" << InterpolatedOrbit.forOrbit.dHmax << std::endl;
   return 0;
   
 }

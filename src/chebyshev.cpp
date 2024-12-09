@@ -32,7 +32,7 @@ void chebyshev(double s, int N, int M, int arg, std::vector<double> &T){
   for (int i=0; i<=M; i++){
     tau[i] = s*cos(i*C_PI/M);
   }
-
+cout<<"tau: "<<endl;
   if (arg == 1){
     // Chebyshev Polynomials (Recursive Formulation)
     for (int j=1; j<=N+1; j++){
